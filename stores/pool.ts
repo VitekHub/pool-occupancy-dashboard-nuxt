@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import poolsConfig from '~/config/pools.json'
+import { parseOccupancyCSV } from '~/utils/csv'
 import type {
   PoolConfig,
   PoolType,
@@ -82,21 +83,21 @@ export const usePoolStore = defineStore('pool', {
       this.error = null
 
       try {
-        // Use the pool data composable to fetch CSV data
-        const { occupancyData, pending, error } = usePoolData(this.csvFileName)
+        // Fetch CSV data directly
+        const csvUrl = `https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/${this.csvFileName}`
 
-        // Wait for data to load
-        await until(pending).toBe(false)
+        const response = await $fetch<string>(csvUrl)
 
-        if (error.value) {
-          throw new Error(
-            error.value.message || 'Failed to fetch occupancy data'
-          )
+        if (!response) {
+          throw new Error('No data received from CSV file')
         }
 
-        // Process the data using the pool data processor
+        // Parse CSV data
+        const occupancyData = parseOccupancyCSV(response)
+
+        // Process the data
         const processed = processAllOccupancyData(
-          [...occupancyData.value],
+          occupancyData,
           this.selectedPool,
           this.selectedPoolType
         )
@@ -106,7 +107,7 @@ export const usePoolStore = defineStore('pool', {
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'
-        console.error('Error loading and processing occupancy data:', error)
+        console.error('Error loading occupancy data:', error)
       } finally {
         this.isLoading = false
       }

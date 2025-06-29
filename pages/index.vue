@@ -11,6 +11,15 @@
       </p>
     </div>
 
+    <!-- Overall Occupancy Heatmap -->
+    <div class="mb-8">
+      <Heatmap
+        :overall-occupancy-map="poolStore.overallOccupancyMap"
+        :heatmap-high-threshold="60"
+        tooltip-translation-key="heatmap:overallTooltip"
+      />
+    </div>
+
     <!-- Content Area -->
     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <!-- Sample Cards -->
@@ -76,6 +85,9 @@
 </template>
 
 <script setup lang="ts">
+// Get pool store
+const poolStore = usePoolStore()
+
 // Page meta
 definePageMeta({
   title: 'Dashboard - Pool Occupancy',
