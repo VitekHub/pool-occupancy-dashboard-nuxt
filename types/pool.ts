@@ -17,12 +17,12 @@ export const UTILIZATION_THRESHOLDS = {
 } as const
 
 export const UTILIZATION_COLORS = {
-  EMPTY: 'bg-gray-100 dark:bg-gray-600',
-  VERY_LOW: 'bg-green-100 dark:bg-green-500',
-  LOW: 'bg-green-300 dark:bg-green-800',
-  MEDIUM: 'bg-yellow-300 dark:bg-orange-600',
-  HIGH: 'bg-orange-400 dark:bg-red-700',
-  VERY_HIGH: 'bg-red-500 dark:bg-yellow-900',
+  EMPTY: 'bg-gray-100 dark:bg-gray-700',
+  VERY_LOW: 'bg-blue-100 dark:bg-blue-600',
+  LOW: 'bg-blue-300 dark:bg-blue-800',
+  MEDIUM: 'bg-teal-300 dark:bg-teal-600',
+  HIGH: 'bg-orange-300 dark:bg-orange-600',
+  VERY_HIGH: 'bg-red-400 dark:bg-red-600',
 } as const
 
 interface PoolTypeConfig {

@@ -16,6 +16,7 @@
   "dependencies": {
     "@nuxt/ui": "^2.18.4",
     "@pinia/nuxt": "^0.5.1",
+    "css-select": "^4.3.0",
     "nuxt": "^3.13.0",
     "date-fns": "^3.6.0"
   },

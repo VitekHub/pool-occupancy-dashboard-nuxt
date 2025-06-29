@@ -32,7 +32,7 @@
         <div class="flex items-center gap-3 min-w-0 flex-1">
           <div class="flex-shrink-0">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              High Threshold
+              Threshold
             </label>
           </div>
           <div class="flex items-center gap-2 flex-1">
