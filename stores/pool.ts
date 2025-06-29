@@ -37,6 +37,11 @@ export const usePoolStore = defineStore('pool', {
   }),
 
   getters: {
+    // Get available week IDs from the weekly occupancy map
+    availableWeekIds: (state): string[] => {
+      return Object.keys(state.weeklyOccupancyMap).sort()
+    },
+
     // Get the CSV file name for the selected pool and type
     csvFileName: (state): string => {
       if (!state.selectedPool) return ''
