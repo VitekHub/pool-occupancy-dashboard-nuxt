@@ -54,27 +54,18 @@
 
       <!-- Navigation Items -->
       <div class="flex-1 overflow-y-auto py-4">
-        <NuxtLink
-          to="/"
+        <button
+          v-for="(pool, index) in filteredPools"
+          :key="pool.name"
           class="sidebar-menu-item"
           :class="{
             'bg-blue-100 dark:bg-blue-600 hover:bg-blue-200 dark:hover:bg-blue-700 text-blue-900 dark:text-white':
-              $route.path === '/',
+              poolStore.selectedPool?.name === pool.name,
           }"
-          :title="!showText ? 'Dashboard' : undefined"
-          @click="closeMobileMenu"
-        >
-          <UIcon name="i-heroicons-home" class="sidebar-icon" />
-          <span v-if="showText" class="sidebar-text"> Dashboard </span>
-        </NuxtLink>
-
-        <button
-          v-for="pool in poolAreas"
-          :key="pool.id"
-          class="sidebar-menu-item"
           :title="!showText ? pool.name : undefined"
+          @click="selectPool(pool)"
         >
-          <UIcon :name="pool.icon" class="sidebar-icon" />
+          <UIcon :name="getPoolIcon(pool, index)" class="sidebar-icon" />
           <span v-if="showText" class="sidebar-text">
             {{ pool.name }}
           </span>
@@ -97,23 +88,21 @@
 </template>
 
 <script setup lang="ts">
-const { isMobileMenuOpen, closeMobileMenu } = useSidebar()
+import { POOL_TYPES } from '~/types'
 
-// Track if component is mounted to avoid hydration mismatches
-const isMounted = ref(false)
+const { isMobileMenuOpen, closeMobileMenu } = useSidebar()
+const poolStore = usePoolStore()
 
 // Desktop hover state
 const isDesktopExpanded = ref(false)
 
+// Use media query for consistent responsive behavior
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+
 // Computed to determine when to show text
 const showText = computed(() => {
-  // Don't check window size until mounted to avoid hydration mismatch
-  if (!isMounted.value) {
-    return false
-  }
-
-  // Always show text on mobile
-  if (process.client && window.innerWidth < 1024) {
+  // Always show text on mobile (when not desktop)
+  if (!isDesktop.value) {
     return true
   }
   // On desktop, show text when expanded via hover
@@ -122,53 +111,51 @@ const showText = computed(() => {
 
 // Computed for overall expanded state
 const isExpanded = computed(() => {
-  // Don't check window size until mounted to avoid hydration mismatch
-  if (!isMounted.value) {
-    return false
-  }
-
-  // Mobile: always expanded when open
-  if (process.client && window.innerWidth < 1024) {
+  if (!isDesktop.value) {
     return true
   }
   // Desktop: expanded on hover
   return isDesktopExpanded.value
 })
 
-// Set mounted flag after component is mounted
-onMounted(() => {
-  isMounted.value = true
-})
-
 // Mouse events for desktop hover
 const onMouseEnter = () => {
-  if (isMounted.value && process.client && window.innerWidth >= 1024) {
+  if (isDesktop.value) {
     isDesktopExpanded.value = true
   }
 }
 
 const onMouseLeave = () => {
-  if (isMounted.value && process.client && window.innerWidth >= 1024) {
+  if (isDesktop.value) {
     isDesktopExpanded.value = false
   }
 }
 
-// Sample pool areas data
-const poolAreas = [
-  {
-    id: 1,
-    name: 'Main Pool',
-    icon: 'i-heroicons-square-3-stack-3d',
-    occupancy: 12,
-  },
-  { id: 2, name: 'Kids Pool', icon: 'i-heroicons-heart', occupancy: 5 },
-  {
-    id: 3,
-    name: 'Lap Pool',
-    icon: 'i-heroicons-arrow-long-right',
-    occupancy: 8,
-  },
+// Icons array for assigning to pools
+const icons = [
+  'i-heroicons-building-office-2',
+  'i-heroicons-sun',
+  'i-heroicons-beaker',
+  'i-heroicons-sparkles',
+  'i-heroicons-bolt',
+  'i-heroicons-square-3-stack-3d',
 ]
+
+// Filter pools that have outside pool configuration
+const filteredPools = computed(() => {
+  return poolStore.pools.filter(pool => pool.outsidePool)
+})
+
+// Get icon for a pool based on its index
+const getPoolIcon = (pool: any, index: number) => {
+  return pool.icon || icons[index] || 'i-heroicons-building-office-2'
+}
+
+// Handle pool selection
+const selectPool = (pool: any) => {
+  poolStore.setSelectedPool(pool, POOL_TYPES.OUTSIDE)
+  closeMobileMenu() // Close mobile menu after selection
+}
 </script>
 
 <style scoped>

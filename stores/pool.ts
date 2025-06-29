@@ -73,9 +73,12 @@ export const usePoolStore = defineStore('pool', {
       try {
         this.pools = poolsConfig
 
-        // Auto-select first pool's outside pool if available
-        if (this.pools.length > 0 && !this.selectedPool) {
-          this.selectedPool = this.pools[0]
+        // Auto-select first pool that has outside pool configuration
+        if (!this.selectedPool) {
+          const firstPoolWithOutside = this.pools.find(pool => pool.outsidePool)
+          if (firstPoolWithOutside) {
+            this.selectedPool = firstPoolWithOutside
+          }
           this.selectedPoolType = POOL_TYPES.OUTSIDE
         }
       } catch (error) {
