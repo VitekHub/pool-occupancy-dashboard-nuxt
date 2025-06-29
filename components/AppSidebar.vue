@@ -93,16 +93,21 @@ import { POOL_TYPES } from '~/types'
 const { isMobileMenuOpen, closeMobileMenu } = useSidebar()
 const poolStore = usePoolStore()
 
+// Track if component is mounted to avoid hydration mismatches
+const isMounted = ref(false)
+
 // Desktop hover state
 const isDesktopExpanded = ref(false)
 
-// Use media query for consistent responsive behavior
-const isDesktop = useMediaQuery('(min-width: 1024px)')
-
 // Computed to determine when to show text
 const showText = computed(() => {
-  // Always show text on mobile (when not desktop)
-  if (!isDesktop.value) {
+  // Don't check window size until mounted to avoid hydration mismatch
+  if (!isMounted.value) {
+    return false
+  }
+
+  // Always show text on mobile
+  if (process.client && window.innerWidth < 1024) {
     return true
   }
   // On desktop, show text when expanded via hover
@@ -111,22 +116,33 @@ const showText = computed(() => {
 
 // Computed for overall expanded state
 const isExpanded = computed(() => {
-  if (!isDesktop.value) {
+  // Don't check window size until mounted to avoid hydration mismatch
+  if (!isMounted.value) {
+    return false
+  }
+
+  // Mobile: always expanded when open
+  if (process.client && window.innerWidth < 1024) {
     return true
   }
   // Desktop: expanded on hover
   return isDesktopExpanded.value
 })
 
+// Set mounted flag after component is mounted
+onMounted(() => {
+  isMounted.value = true
+})
+
 // Mouse events for desktop hover
 const onMouseEnter = () => {
-  if (isDesktop.value) {
+  if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = true
   }
 }
 
 const onMouseLeave = () => {
-  if (isDesktop.value) {
+  if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = false
   }
 }
