@@ -9,6 +9,27 @@ export const isInsidePool = (poolType: PoolType): boolean => {
   return poolType === POOL_TYPES.INSIDE;
 }
 
+interface PoolTypeConfig {
+  customName?: string;
+  url: string;
+  pattern: string;
+  csvFile: string;
+  maximumCapacity: number;
+  totalLanes?: number;
+  weekdaysOpeningHours: string;
+  weekendOpeningHours: string;
+  collectStats: boolean;
+  viewStats: boolean;
+  temporarilyClosed?: string;
+}
+
+export interface PoolConfig {
+  name: string;
+  icon?: string; // Icon name for UIcon component (e.g., 'i-heroicons-users')
+  insidePool?: PoolTypeConfig;
+  outsidePool?: Omit<PoolTypeConfig, 'totalLanes'>;
+}
+
 export interface OccupancyRecord {
   date: Date;
   day: string;
