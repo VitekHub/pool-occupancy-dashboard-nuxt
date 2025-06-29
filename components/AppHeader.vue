@@ -29,7 +29,12 @@
 
         <!-- Mobile View Toggle (Desktop Only) -->
         <div class="hidden lg:flex items-center space-x-2">
-          <UToggle v-model="forceMobileView" color="blue" />
+          <UToggle
+            v-model="forceMobileView"
+            color="blue"
+            size="sm"
+            class="shrink-0"
+          />
           <span class="text-sm text-gray-700 dark:text-gray-300"
             >Mobile View</span
           >

@@ -27,7 +27,12 @@
 
         <!-- Uniform Bar Height Toggle -->
         <div class="flex items-center gap-2 flex-shrink-0">
-          <UToggle v-model="uniformBarHeight" color="blue" />
+          <UToggle
+            v-model="uniformBarHeight"
+            color="blue"
+            size="sm"
+            class="shrink-0"
+          />
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
             Show Uniform Bar Height
           </label>
