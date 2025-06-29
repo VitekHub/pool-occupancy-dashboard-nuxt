@@ -7,7 +7,8 @@ export const parseOccupancyCSV = (csvText: string): OccupancyRecord[] => {
 
   return lines.slice(1).map((line) => {
     const values = line.split(',')
-    const date = parseDate(values[0])
+    const parsedDate = parseDate(values[0])
+    const date = createPragueDate(parsedDate)
     return {
       date,
       day: values[1],

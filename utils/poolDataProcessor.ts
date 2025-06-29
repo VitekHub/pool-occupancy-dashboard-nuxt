@@ -239,7 +239,9 @@ class OccupancyDataProcessor {
     occupancyRecord: OccupancyRecord,
     hourlyMaxCapacity: number
   ): void {
-    const { date, day, hour, occupancy: hourlyOccupancy } = occupancyRecord
+    const { day, hour, occupancy: hourlyOccupancy } = occupancyRecord
+    // Ensure the date is in Prague timezone
+    const date = createPragueDate(occupancyRecord.date)
     const weekId = getWeekId(date)
     this.initializeWeeklyOccupancyEntry(weekId, day, hour, date)
     this.initializeOverallOccupancyEntry(day, hour)

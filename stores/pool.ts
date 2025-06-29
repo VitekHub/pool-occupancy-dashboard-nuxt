@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import poolsConfig from '~/config/pools.json'
 import { parseOccupancyCSV } from '~/utils/csv'
+import { nowInPrague } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
@@ -83,7 +84,7 @@ export const usePoolStore = defineStore('pool', {
     currentOccupancy: (state): number | null => {
       if (state.rawOccupancyData.length === 0) return null
       
-      const today = new Date()
+      const today = nowInPrague()
       const todayString = today.toLocaleDateString('en-GB').replace(/\//g, '.')
       
       // Find the most recent record for today
@@ -122,7 +123,7 @@ export const usePoolStore = defineStore('pool', {
     isPoolOpen: (state): boolean => {
       if (!state.selectedPool) return false
       
-      const now = new Date()
+      const now = nowInPrague()
       const currentHour = now.getHours()
       const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
       
@@ -155,7 +156,7 @@ export const usePoolStore = defineStore('pool', {
    todayOpeningHours: (state): string => {
      if (!state.selectedPool) return ''
      
-     const now = new Date()
+     const now = nowInPrague()
      const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
      
      let openingHours: string
