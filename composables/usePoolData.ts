@@ -1,15 +1,15 @@
 import type { OccupancyRecord } from '~/types'
 
-export const usePoolData = () => {
+export const usePoolData = (csvFileName: string) => {
   const {
     data: csvData,
     pending,
     error,
     refresh,
   } = useFetch<string>(
-    'https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/kravi_hora_outside_pool_occupancy.csv',
+    `https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/${csvFileName}`,
     {
-      key: 'pool-occupancy-data',
+      key: `pool-occupancy-data-${csvFileName}`,
       default: () => '',
     }
   )

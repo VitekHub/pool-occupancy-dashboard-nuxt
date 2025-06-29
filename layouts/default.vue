@@ -18,3 +18,20 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const poolStore = usePoolStore()
+
+// Initialize the store with pool configurations and occupancy data
+onMounted(async () => {
+  try {
+    // First load the pool configurations
+    await poolStore.loadPoolsConfig()
+
+    // Then load and process the occupancy data for the selected pool
+    await poolStore.loadAndProcessOccupancyData()
+  } catch (error) {
+    console.error('Error initializing pool data:', error)
+  }
+})
+</script>
