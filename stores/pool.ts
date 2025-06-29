@@ -15,6 +15,8 @@ interface PoolState {
   pools: PoolConfig[]
   selectedPool: PoolConfig | null
   selectedPoolType: PoolType
+  heatmapHighThreshold: number
+  uniformHeatmapBarHeight: boolean
 
   // Processed data
   weeklyOccupancyMap: WeeklyOccupancyMap
@@ -30,6 +32,8 @@ export const usePoolStore = defineStore('pool', {
     pools: [],
     selectedPool: null,
     selectedPoolType: POOL_TYPES.OUTSIDE,
+    heatmapHighThreshold: 60,
+    uniformHeatmapBarHeight: false,
     weeklyOccupancyMap: {},
     overallOccupancyMap: {},
     isLoading: false,
@@ -127,6 +131,14 @@ export const usePoolStore = defineStore('pool', {
       this.selectedPoolType = poolType
       // Automatically reload data when pool selection changes
       this.loadAndProcessOccupancyData()
+    },
+
+    setHeatmapHighThreshold(threshold: number) {
+      this.heatmapHighThreshold = threshold
+    },
+
+    setUniformHeatmapBarHeight(uniform: boolean) {
+      this.uniformHeatmapBarHeight = uniform
     },
   },
 })

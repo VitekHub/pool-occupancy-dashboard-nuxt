@@ -9,7 +9,6 @@
         :weekly-occupancy-map="weeklyOccupancyMap"
         :view-mode="currentViewMode"
         :selected-week-id="currentSelectedWeekId"
-        :heatmap-high-threshold="60"
         tooltip-translation-key="heatmap:overallTooltip"
       />
     </div>

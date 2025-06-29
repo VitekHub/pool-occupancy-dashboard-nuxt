@@ -31,7 +31,6 @@ interface Props {
   weeklyOccupancyMap?: WeeklyOccupancyMap
   viewMode?: ViewMode
   selectedWeekId?: string | null
-  heatmapHighThreshold?: number
   tooltipTranslationKey?: string
 }
 
@@ -39,9 +38,11 @@ const props = withDefaults(defineProps<Props>(), {
   weeklyOccupancyMap: () => ({}),
   viewMode: 'overall',
   selectedWeekId: null,
-  heatmapHighThreshold: 60,
   tooltipTranslationKey: 'heatmap:overallTooltip',
 })
+
+// Get pool store for heatmap threshold
+const poolStore = usePoolStore()
 
 // Dummy translation function
 const t = (
@@ -80,7 +81,7 @@ const dataProcessor = computed(() => {
   return new HeatmapDataProcessor(
     props.weeklyOccupancyMap || {},
     props.overallOccupancyMap,
-    props.heatmapHighThreshold,
+    poolStore.heatmapHighThreshold,
     props.tooltipTranslationKey,
     t
   )

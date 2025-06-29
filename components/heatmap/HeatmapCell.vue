@@ -16,7 +16,10 @@
         isDesktop ? 'rounded-b' : 'rounded-lg',
       ]"
       :style="{
-        height: `${cellData?.colorFillRatio * 100 || 0}%`,
+        height: HeatmapDataProcessor.getBarHeight(
+          colorFillRatio,
+          uniformHeatmapBarHeight
+        ),
       }"
     ></div>
     <span
@@ -30,11 +33,21 @@
 
 <script setup lang="ts">
 import type { BaseCellData } from '~/types'
+import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
 interface Props {
   cellData?: BaseCellData
   isDesktop: boolean
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+// Get pool store for uniform bar height setting
+const poolStore = usePoolStore()
+
+// Computed values for the bar height calculation
+const colorFillRatio = computed(() => props.cellData?.colorFillRatio || 0)
+const uniformHeatmapBarHeight = computed(
+  () => poolStore.uniformHeatmapBarHeight
+)
 </script>

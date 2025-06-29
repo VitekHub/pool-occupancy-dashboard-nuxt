@@ -20,6 +20,13 @@ export default class HeatmapDataProcessor {
     private t: TranslationFunction
   ) {}
 
+  public static getBarHeight(
+    colorFillRatio: number,
+    uniformHeatmapBarHeight: boolean
+  ) {
+    return `${colorFillRatio > 0 ? (uniformHeatmapBarHeight ? 100 : colorFillRatio * 100) : 0}%`
+  }
+
   private adjustHeatmapThreshold(threshold: number) {
     return Math.round(this.heatmapHighThreshold * (threshold / 100))
   }
