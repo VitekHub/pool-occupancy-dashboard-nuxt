@@ -126,15 +126,15 @@ class OccupancyDataProcessor {
     if (hourlyOccupancy > 0) {
       this.occupancyAccumulator.sum += hourlyOccupancy
       this.occupancyAccumulator.count += 1
-      this.occupancyAccumulator.min = Math.min(
-        hourlyOccupancy,
-        hourlyOccupancySummary.minOccupancy || hourlyOccupancy
-      )
-      this.occupancyAccumulator.max = Math.max(
-        hourlyOccupancy,
-        hourlyOccupancySummary.maxOccupancy || hourlyOccupancy
-      )
     }
+    this.occupancyAccumulator.min = Math.min(
+      hourlyOccupancy,
+      hourlyOccupancySummary.minOccupancy || hourlyOccupancy
+    )
+    this.occupancyAccumulator.max = Math.max(
+      hourlyOccupancy,
+      hourlyOccupancySummary.maxOccupancy || hourlyOccupancy
+    )
   }
 
   private processPreviousHour(): void {
