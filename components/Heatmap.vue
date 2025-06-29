@@ -55,7 +55,12 @@ const t = (
   )
 }
 
-const isDesktop = useMediaQuery('(min-width: 1024px)')
+// Override isDesktop when mobile view is forced
+const isDesktop = computed(() => {
+  if (poolStore.forceMobileView) return false
+  return useMediaQuery('(min-width: 1024px)').value
+})
+
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 
 const dataProcessor = computed(() => {

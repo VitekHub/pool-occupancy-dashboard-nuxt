@@ -5,7 +5,12 @@
       <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
         Occupancy Rate Legend
       </h3>
-      <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+      <div
+        :class="[
+          'flex flex-col gap-6',
+          !poolStore.forceMobileView && 'lg:flex-row lg:items-center',
+        ]"
+      >
         <!-- Legend Items -->
         <div class="flex flex-wrap gap-2">
           <div
@@ -85,6 +90,8 @@
 </template>
 
 <script setup lang="ts">
+const poolStore = usePoolStore()
+
 interface LegendItem {
   color: string
   label: string
@@ -95,9 +102,6 @@ interface Props {
 }
 
 defineProps<Props>()
-
-// Get pool store
-const poolStore = usePoolStore()
 
 // Computed property for threshold value with getter/setter
 const thresholdValue = computed({

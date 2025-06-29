@@ -1,5 +1,8 @@
 <template>
-  <div class="max-w-fit mx-auto">
+  <div
+    :class="poolStore.forceMobileView ? '' : 'max-w-fit mx-auto'"
+    :style="poolStore.forceMobileView ? 'width: 500px; margin: 0 auto;' : ''"
+  >
     <DashboardViewControls @view-state-changed="handleViewStateChanged" />
 
     <!-- Occupancy Heatmap -->
@@ -17,6 +20,8 @@
 
 <script setup lang="ts">
 import type { OverallOccupancyMap, WeeklyOccupancyMap } from '~/types'
+
+const poolStore = usePoolStore()
 
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 

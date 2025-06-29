@@ -17,6 +17,7 @@ interface PoolState {
   selectedPoolType: PoolType
   heatmapHighThreshold: number
   uniformHeatmapBarHeight: boolean
+  forceMobileView: boolean
 
   // Processed data
   weeklyOccupancyMap: WeeklyOccupancyMap
@@ -34,6 +35,7 @@ export const usePoolStore = defineStore('pool', {
     selectedPoolType: POOL_TYPES.OUTSIDE,
     heatmapHighThreshold: 60,
     uniformHeatmapBarHeight: false,
+    forceMobileView: false,
     weeklyOccupancyMap: {},
     overallOccupancyMap: {},
     isLoading: false,
@@ -139,6 +141,10 @@ export const usePoolStore = defineStore('pool', {
 
     setUniformHeatmapBarHeight(uniform: boolean) {
       this.uniformHeatmapBarHeight = uniform
+    },
+
+    setForceMobileView(force: boolean) {
+      this.forceMobileView = force
     },
   },
 })

@@ -26,6 +26,15 @@
       <div class="flex items-center space-x-4">
         <!-- Notifications -->
         <UButton variant="ghost" icon="i-heroicons-bell" class="relative" />
+
+        <!-- Mobile View Toggle (Desktop Only) -->
+        <div class="hidden lg:flex items-center space-x-2">
+          <UToggle v-model="forceMobileView" color="blue" />
+          <span class="text-sm text-gray-700 dark:text-gray-300"
+            >Mobile View</span
+          >
+        </div>
+
         <ColorModeToggle />
       </div>
     </div>
@@ -34,4 +43,11 @@
 
 <script setup lang="ts">
 const { toggleMobileMenu } = useSidebar()
+const poolStore = usePoolStore()
+
+// Computed property for mobile view toggle
+const forceMobileView = computed({
+  get: () => poolStore.forceMobileView,
+  set: (value: boolean) => poolStore.setForceMobileView(value),
+})
 </script>

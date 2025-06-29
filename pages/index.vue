@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-// Get pool store
 const poolStore = usePoolStore()
 
 // Page meta

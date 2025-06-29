@@ -76,7 +76,6 @@
 <script setup lang="ts">
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 
-// Get pool store
 const poolStore = usePoolStore()
 
 // Emits - only emit the current state when it changes
