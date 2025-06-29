@@ -9,6 +9,22 @@ export const isInsidePool = (poolType: PoolType): boolean => {
   return poolType === POOL_TYPES.INSIDE
 }
 
+export const UTILIZATION_THRESHOLDS = {
+  VERY_LOW: 25,
+  LOW: 50,
+  MEDIUM: 75,
+  HIGH: 100,
+} as const
+
+export const UTILIZATION_COLORS = {
+  EMPTY: 'bg-gray-100',
+  VERY_LOW: 'bg-green-100',
+  LOW: 'bg-green-300',
+  MEDIUM: 'bg-yellow-300',
+  HIGH: 'bg-orange-400',
+  VERY_HIGH: 'bg-red-500',
+} as const
+
 interface PoolTypeConfig {
   customName?: string
   url: string
@@ -80,4 +96,11 @@ export interface OverallOccupancyMap {
       averageUtilizationRate: number
     }
   }
+}
+
+export interface BaseCellData {
+  color: string
+  colorFillRatio: number
+  displayText: string
+  title: string
 }
