@@ -1,7 +1,12 @@
 import type { OccupancyRecord } from '~/types'
 
 export const usePoolData = () => {
-  const { data: csvData, pending, error, refresh } = useFetch<string>(
+  const {
+    data: csvData,
+    pending,
+    error,
+    refresh,
+  } = useFetch<string>(
     'https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/kravi_hora_outside_pool_occupancy.csv',
     {
       key: 'pool-occupancy-data',
