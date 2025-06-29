@@ -9,7 +9,7 @@
   <!-- Sidebar -->
   <div
     :class="[
-      'fixed left-0 top-0 h-full bg-gray-800 dark:bg-gray-900 text-white shadow-lg transition-all duration-300 z-50',
+      'fixed left-0 top-0 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg transition-all duration-300 z-50',
       // Mobile: slide in/out, Desktop: always visible with hover expansion
       'lg:translate-x-0',
       isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
@@ -20,7 +20,7 @@
   >
     <div class="flex flex-col h-full">
       <!-- Header -->
-      <div class="p-4 border-b border-gray-700 dark:border-gray-600">
+      <div class="p-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <div
@@ -33,7 +33,7 @@
             </div>
             <h1
               v-if="showText"
-              class="ml-3 text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis"
+              class="ml-3 text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis text-gray-900 dark:text-white"
             >
               Pool Dashboard
             </h1>
@@ -42,9 +42,12 @@
           <!-- Mobile close button -->
           <button
             @click="closeMobileMenu"
-            class="lg:hidden p-1 rounded-md hover:bg-gray-700 transition-colors"
+            class="lg:hidden p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
-            <UIcon name="i-heroicons-x-mark" class="h-5 w-5" />
+            <UIcon
+              name="i-heroicons-x-mark"
+              class="h-5 w-5 text-gray-600 dark:text-gray-300"
+            />
           </button>
         </div>
       </div>
@@ -54,7 +57,10 @@
         <NuxtLink
           to="/"
           class="sidebar-menu-item"
-          :class="{ 'bg-blue-600 hover:bg-blue-700': $route.path === '/' }"
+          :class="{
+            'bg-blue-100 dark:bg-blue-600 hover:bg-blue-200 dark:hover:bg-blue-700 text-blue-900 dark:text-white':
+              $route.path === '/',
+          }"
           :title="!showText ? 'Dashboard' : undefined"
           @click="closeMobileMenu"
         >
@@ -77,11 +83,11 @@
 
       <!-- Footer -->
       <div
-        class="p-4 border-t border-gray-700 dark:border-gray-600 h-16 flex items-center"
+        class="p-4 border-t border-gray-200 dark:border-gray-700 h-16 flex items-center"
       >
         <p
           v-if="showText"
-          class="text-xs text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis"
+          class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis"
         >
           Pool Occupancy Dashboard v1.0.0
         </p>
@@ -167,7 +173,7 @@ const poolAreas = [
 
 <style scoped>
 .sidebar-menu-item {
-  @apply w-full flex items-center px-4 py-3 text-left transition-colors hover:bg-gray-700 dark:hover:bg-gray-800;
+  @apply w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700;
 }
 
 .sidebar-icon {

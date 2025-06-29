@@ -179,12 +179,7 @@ class OccupancyDataProcessor {
       maximumCapacity: hourlyMaxCapacity,
     } as HourlyOccupancySummaryWithLanes
 
-    this.updateWeeklyMaxDayValues(
-      weekId,
-      day,
-      utilizationRate,
-      maxOccupancy
-    )
+    this.updateWeeklyMaxDayValues(weekId, day, utilizationRate, maxOccupancy)
   }
 
   private updateWeeklyMaxDayValues(

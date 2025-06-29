@@ -3,7 +3,7 @@
     :class="[
       'relative dark:border-gray-600 cursor-pointer transition-opacity duration-200 hover:opacity-80 flex items-center justify-center',
       isDesktop
-        ? 'border border-gray-200 min-w-12 h-10 rounded p-1'
+        ? 'border border-gray-200 w-12 h-10 rounded p-1'
         : 'flex-1 min-w-2 h-16',
     ]"
     :title="cellData?.title || ''"
@@ -21,7 +21,7 @@
     ></div>
     <span
       v-if="isDesktop && cellData?.displayText"
-      class="text-xs font-medium text-center text-gray-800 dark:text-gray-200 z-10 relative"
+      class="text-xs font-medium text-center text-gray-800 dark:text-gray-200 z-10 relative leading-tight break-words overflow-hidden px-1"
     >
       {{ cellData.displayText }}
     </span>

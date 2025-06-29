@@ -26,6 +26,7 @@
       <div class="flex items-center space-x-4">
         <!-- Notifications -->
         <UButton variant="ghost" icon="i-heroicons-bell" class="relative" />
+        <ColorModeToggle />
       </div>
     </div>
   </header>
