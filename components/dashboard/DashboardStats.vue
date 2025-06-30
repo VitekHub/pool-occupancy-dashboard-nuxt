@@ -59,7 +59,7 @@
         >
           {{
             shouldShowOccupancy
-              ? `${currentOccupancy}/${poolStore.currentMaxCapacity}`
+              ? `${currentOccupancy} / ${poolStore.currentMaxCapacity}`
               : $t('common.na')
           }}
         </div>

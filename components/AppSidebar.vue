@@ -26,10 +26,7 @@
             <div
               class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0"
             >
-              <UIcon
-                name="i-heroicons-building-office-2"
-                class="h-5 w-5 text-white"
-              />
+              <UIcon name="i-heroicons-lifebuoy" class="h-5 w-5 text-white" />
             </div>
             <h1
               v-if="showText"

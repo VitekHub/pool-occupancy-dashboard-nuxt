@@ -42,7 +42,7 @@
       "poolStatus": "Stav bazénu",
       "poolOpenReady": "Bazén je otevřen a připraven",
       "poolClosed": "Bazén je momentálně zavřen",
-      "peopleInPool": "Lidí aktuálně v bazénu",
+      "peopleInPool": "Aktuálně lidí / Max. kapacita",
       "noDataToday": "Žádná data pro dnešek",
       "visitWebsite": "Navštívit web"
     },

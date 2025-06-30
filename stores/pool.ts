@@ -207,9 +207,9 @@ export const usePoolStore = defineStore('pool', {
       }
     },
 
-    async loadAndProcessOccupancyData() {
-      if (!this.selectedPool || !this.csvFileName) {
-        this.error = 'No pool selected or CSV file not found'
+    processOccupancyCsvData(csvText: string) {
+      if (!this.selectedPool || !csvText) {
+        this.error = 'No pool selected or no CSV data provided'
         return
       }
 
@@ -217,22 +217,10 @@ export const usePoolStore = defineStore('pool', {
       this.error = null
 
       try {
-        // Fetch CSV data directly
-        const csvUrl = this.csvUrl
+        const occupancyData = parseOccupancyCSV(csvText)
 
-        const response = await $fetch<string>(csvUrl)
-
-        if (!response) {
-          throw new Error('No data received from CSV file')
-        }
-
-        // Parse CSV data
-        const occupancyData = parseOccupancyCSV(response)
-
-        // Store raw occupancy data
         this.rawOccupancyData = occupancyData
 
-        // Process the data
         const processed = processAllOccupancyData(
           occupancyData,
           this.selectedPool,
@@ -250,15 +238,9 @@ export const usePoolStore = defineStore('pool', {
       }
     },
 
-    async refresh() {
-      await this.loadAndProcessOccupancyData()
-    },
-
     setSelectedPool(pool: PoolConfig, poolType: PoolType) {
       this.selectedPool = pool
       this.selectedPoolType = poolType
-      // Automatically reload data when pool selection changes
-      this.loadAndProcessOccupancyData()
     },
 
     setHeatmapHighThreshold(threshold: number) {

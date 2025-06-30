@@ -41,7 +41,7 @@ interface Props {
   hours: number[]
   isDesktop: boolean
   getCellData: (day: string, hour: number) => BaseCellData | undefined
-  selectedWeekId: string
+  selectedWeekId: string | null
 }
 
 const props = defineProps<Props>()
