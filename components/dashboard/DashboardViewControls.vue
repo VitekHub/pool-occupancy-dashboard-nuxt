@@ -24,7 +24,7 @@
       </div>
 
       <!-- Week Selection (only for weekly views) -->
-      <div v-if="viewMode !== 'overall'">
+      <div v-if="viewMode !== VIEW_MODES.OVERALL">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -74,13 +74,14 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
+import type { ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
 const poolStore = usePoolStore()
 defineEmits<{
   'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
 }>()
 
-const viewMode = ref<ViewMode>('overall')
+const viewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
 const selectedWeekId = ref<string | null>(null)
 const availableWeeks = computed(() => poolStore.availableWeekIds)
 const canGoPreviousWeek = computed(() => {
@@ -94,19 +95,14 @@ const canGoNextWeek = computed(() => {
   return currentIndex < availableWeeks.value.length - 1
 })
 const viewModeOptions = [
-  {
-    value: 'overall',
-    label: computed(() => t('dashboard.viewControls.overallAverage')),
-  },
-  {
-    value: 'weekly-average',
-    label: computed(() => t('dashboard.viewControls.weeklyAverage')),
-  },
-  {
-    value: 'weekly-raw',
-    label: computed(() => t('dashboard.viewControls.weeklyMinMax')),
-  },
-]
+  VIEW_MODES.OVERALL,
+  VIEW_MODES.WEEKLY_AVERAGE,
+  VIEW_MODES.WEEKLY_RAW,
+].map((viewMode) => ({
+  value: viewMode,
+  label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
+}))
+
 const weekOptions = computed(() => {
   return availableWeeks.value.map((weekId) => ({
     value: weekId,
@@ -159,7 +155,7 @@ const emit = getCurrentInstance()?.emit
 watch(
   [viewMode, availableWeeks],
   ([newViewMode, newAvailableWeeks]) => {
-    if (newViewMode !== 'overall' && newAvailableWeeks.length > 0) {
+    if (newViewMode !== VIEW_MODES.OVERALL && newAvailableWeeks.length > 0) {
       // If no week is selected or selected week is not available, select the most recent week
       if (
         !selectedWeekId.value ||
@@ -174,7 +170,7 @@ watch(
 
 // Reset week selection when switching back to overall
 watch(viewMode, (newViewMode) => {
-  if (newViewMode === 'overall') {
+  if (newViewMode === VIEW_MODES.OVERALL) {
     updateSelectedWeekId(null)
   }
 })

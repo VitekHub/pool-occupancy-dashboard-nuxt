@@ -23,10 +23,11 @@ import type {
   OverallOccupancyMap,
   WeeklyOccupancyMap,
   BaseCellData,
+  ViewMode,
 } from '~/types'
+import { VIEW_MODES } from '~/types'
+import { getWeekId } from '~/utils/dateUtils'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
-
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 
 interface Props {
   overallOccupancyMap: OverallOccupancyMap
@@ -37,20 +38,13 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   weeklyOccupancyMap: () => ({}),
-  viewMode: 'overall',
+  viewMode: VIEW_MODES.OVERALL,
   selectedWeekId: null,
 })
 const poolStore = usePoolStore()
-const tooltipTranslationKey = computed(() => {
-  switch (props.viewMode) {
-    case 'weekly-average':
-      return 'heatmap.weeklyAverage.tooltip'
-    case 'weekly-raw':
-      return 'heatmap.weeklyRaw.tooltip'
-    default:
-      return 'heatmap.overall.tooltip'
-  }
-})
+const tooltipTranslationKey = computed(
+  () => `heatmap.${props.viewMode}.tooltip`
+)
 const isDesktop = computed(() => {
   if (poolStore.forceMobileView) return false
   return useMediaQuery('(min-width: 1024px)').value
@@ -58,7 +52,7 @@ const isDesktop = computed(() => {
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 const dataProcessor = computed(() => {
   // For overall view, check if overallOccupancyMap has data
-  if (props.viewMode === 'overall') {
+  if (props.viewMode === VIEW_MODES.OVERALL) {
     if (
       !props.overallOccupancyMap ||
       Object.keys(props.overallOccupancyMap).length === 0
@@ -77,7 +71,7 @@ const dataProcessor = computed(() => {
   }
 
   return new HeatmapDataProcessor(
-    props.weeklyOccupancyMap || {},
+    props.weeklyOccupancyMap,
     props.overallOccupancyMap,
     poolStore.heatmapHighThreshold,
     tooltipTranslationKey.value,
@@ -86,22 +80,7 @@ const dataProcessor = computed(() => {
 })
 
 const sortedDays = computed(() => {
-  if (props.viewMode === 'overall') {
-    if (!props.overallOccupancyMap) return []
-    const days = Object.keys(props.overallOccupancyMap)
-    return sortDaysByWeekOrder(days)
-  } else {
-    // For weekly views
-    if (!props.weeklyOccupancyMap || !props.selectedWeekId) return []
-    const weekData = props.weeklyOccupancyMap[props.selectedWeekId]
-    if (!weekData) return []
-    const days = Object.keys(weekData).filter((key) => key !== 'maxDayValues')
-    return sortDaysByWeekOrder(days)
-  }
-})
-
-const sortDaysByWeekOrder = (days: string[]): string[] => {
-  const dayOrder = [
+  const days = [
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -110,18 +89,34 @@ const sortDaysByWeekOrder = (days: string[]): string[] => {
     'Saturday',
     'Sunday',
   ]
-  return days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
-}
+  if (props.viewMode === VIEW_MODES.OVERALL) {
+    if (!props.overallOccupancyMap) return []
+    return days
+  } else {
+    // For weekly views
+    if (!props.weeklyOccupancyMap || !props.selectedWeekId) return []
+    const today = new Date()
+    const currentWeekId = getWeekId(today)
+    if (props.selectedWeekId === currentWeekId) {
+      // for this week filter out future (empty) days
+      return days.slice(0, today.getDay())
+    }
+    return days
+  }
+})
 
 // Function to get cell data for a specific day and hour
 const getCellData = (day: string, hour: number): BaseCellData | undefined => {
   if (!dataProcessor.value) return undefined
 
-  if (props.viewMode === 'overall') {
+  if (props.viewMode === VIEW_MODES.OVERALL) {
     return dataProcessor.value.getOverallCellData(day, hour)
-  } else if (props.viewMode === 'weekly-average' && props.selectedWeekId) {
+  } else if (
+    props.viewMode === VIEW_MODES.WEEKLY_AVERAGE &&
+    props.selectedWeekId
+  ) {
     return dataProcessor.value.getCellData(props.selectedWeekId, day, hour)
-  } else if (props.viewMode === 'weekly-raw' && props.selectedWeekId) {
+  } else if (props.viewMode === VIEW_MODES.WEEKLY_RAW && props.selectedWeekId) {
     return dataProcessor.value.getRawCellData(props.selectedWeekId, day, hour)
   }
   return undefined

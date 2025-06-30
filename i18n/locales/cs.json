@@ -49,9 +49,9 @@
     },
     "viewControls": {
       "viewMode": "Režim zobrazení",
-      "overallAverage": "Celkový průměr",
+      "overall": "Celkový průměr",
       "weeklyAverage": "Týdenní průměr",
-      "weeklyMinMax": "Týdenní Min/Max",
+      "weeklyRaw": "Týdenní Min/Max",
       "selectWeek": "Vybrat týden",
       "selectWeekPlaceholder": "Vyberte týden"
     }
@@ -65,14 +65,12 @@
     "weeklyAverage": {
       "title": "Týdenní mapa obsazenosti bazénu (Průměr)",
       "description": "Průměrné míry obsazenosti pro týden začínající {date}",
-      "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno",
-      "selectWeek": "Vyberte týden pro zobrazení průměrných měr obsazenosti"
+      "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno"
     },
     "weeklyRaw": {
       "title": "Týdenní mapa obsazenosti bazénu (Min/Max)",
       "description": "Min/Max hodnoty obsazenosti pro týden začínající {date}",
-      "tooltip": "{day} v {hour}:00 - {min} až {max} lidí",
-      "selectWeek": "Vyberte týden pro zobrazení min/max hodnot obsazenosti"
+      "tooltip": "{day} v {hour}:00 - {min} až {max} lidí"
     },
     "loading": "Načítání dat mapy...",
     "legend": {

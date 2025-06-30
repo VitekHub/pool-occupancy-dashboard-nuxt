@@ -14,17 +14,17 @@
 </template>
 
 <script setup lang="ts">
-import type { OverallOccupancyMap, WeeklyOccupancyMap } from '~/types'
+import type { OverallOccupancyMap, WeeklyOccupancyMap, ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
 
 const poolStore = usePoolStore()
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 interface Props {
   overallOccupancyMap: OverallOccupancyMap
   weeklyOccupancyMap: WeeklyOccupancyMap
 }
 defineProps<Props>()
 
-const currentViewMode = ref<ViewMode>('overall')
+const currentViewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
 const currentSelectedWeekId = ref<string | null>(null)
 const handleViewStateChanged = ({
   viewMode,

@@ -155,35 +155,35 @@ export const usePoolStore = defineStore('pool', {
         .map((h) => parseInt(h))
       return currentHour >= openHour && currentHour < closeHour
     },
-  },
 
-  // Get today's opening hours
-  todayOpeningHours: (state): string => {
-    if (!state.selectedPool) return ''
+    // Get today's opening hours
+    todayOpeningHours: (state): string => {
+      if (!state.selectedPool) return ''
 
-    const now = nowInPrague()
-    const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
+      const now = nowInPrague()
+      const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
 
-    let openingHours: string
-    if (
-      state.selectedPoolType === POOL_TYPES.INSIDE &&
-      state.selectedPool.insidePool
-    ) {
-      openingHours = isWeekend
-        ? state.selectedPool.insidePool.weekendOpeningHours
-        : state.selectedPool.insidePool.weekdaysOpeningHours
-    } else if (
-      state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-      state.selectedPool.outsidePool
-    ) {
-      openingHours = isWeekend
-        ? state.selectedPool.outsidePool.weekendOpeningHours
-        : state.selectedPool.outsidePool.weekdaysOpeningHours
-    } else {
-      return ''
-    }
+      let openingHours: string
+      if (
+        state.selectedPoolType === POOL_TYPES.INSIDE &&
+        state.selectedPool.insidePool
+      ) {
+        openingHours = isWeekend
+          ? state.selectedPool.insidePool.weekendOpeningHours
+          : state.selectedPool.insidePool.weekdaysOpeningHours
+      } else if (
+        state.selectedPoolType === POOL_TYPES.OUTSIDE &&
+        state.selectedPool.outsidePool
+      ) {
+        openingHours = isWeekend
+          ? state.selectedPool.outsidePool.weekendOpeningHours
+          : state.selectedPool.outsidePool.weekdaysOpeningHours
+      } else {
+        return ''
+      }
 
-    return openingHours
+      return openingHours
+    },
   },
   actions: {
     loadPoolsConfig() {

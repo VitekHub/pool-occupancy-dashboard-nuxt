@@ -49,9 +49,9 @@
     },
     "viewControls": {
       "viewMode": "View Mode",
-      "overallAverage": "Overall Average",
+      "overall": "Overall Average",
       "weeklyAverage": "Weekly Average",
-      "weeklyMinMax": "Weekly Min/Max",
+      "weeklyRaw": "Weekly Min/Max",
       "selectWeek": "Select Week",
       "selectWeekPlaceholder": "Select a week"
     }
@@ -65,14 +65,12 @@
     "weeklyAverage": {
       "title": "Weekly Pool Occupancy Heatmap (Average)",
       "description": "Average occupancy rates for week starting {date}",
-      "tooltip": "{day} at {hour}:00 - {utilization}% occupied",
-      "selectWeek": "Select a week to view average occupancy rates"
+      "tooltip": "{day} at {hour}:00 - {utilization}% occupied"
     },
     "weeklyRaw": {
       "title": "Weekly Pool Occupancy Heatmap (Min/Max)",
       "description": "Min/Max occupancy values for week starting {date}",
-      "tooltip": "{day} at {hour}:00 - {min} to {max} people",
-      "selectWeek": "Select a week to view min/max occupancy values"
+      "tooltip": "{day} at {hour}:00 - {min} to {max} people"
     },
     "loading": "Loading heatmap data...",
     "legend": {

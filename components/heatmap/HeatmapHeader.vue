@@ -12,7 +12,8 @@
 <script setup lang="ts">
 const { t, locale } = useI18n()
 
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
+import type { ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
 
 interface Props {
   viewMode?: ViewMode
@@ -20,39 +21,17 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  viewMode: 'overall',
+  viewMode: VIEW_MODES.OVERALL,
   selectedWeekId: null,
 })
 
-const headerTitle = computed(() => {
-  switch (props.viewMode) {
-    case 'weekly-average':
-      return t('heatmap.weeklyAverage.title')
-    case 'weekly-raw':
-      return t('heatmap.weeklyRaw.title')
-    default:
-      return t('heatmap.overall.title')
-  }
-})
+const headerTitle = computed(() => t(`heatmap.${props.viewMode}.title`))
 
-const headerDescription = computed(() => {
-  switch (props.viewMode) {
-    case 'weekly-average':
-      return props.selectedWeekId
-        ? t('heatmap.weeklyAverage.description', {
-            date: formatWeekId(props.selectedWeekId),
-          })
-        : t('heatmap.weeklyAverage.selectWeek')
-    case 'weekly-raw':
-      return props.selectedWeekId
-        ? t('heatmap.weeklyRaw.description', {
-            date: formatWeekId(props.selectedWeekId),
-          })
-        : t('heatmap.weeklyRaw.selectWeek')
-    default:
-      return t('heatmap.overall.description')
-  }
-})
+const headerDescription = computed(() =>
+  t(`heatmap.${props.viewMode}.description`, {
+    date: formatWeekId(props.selectedWeekId),
+  })
+)
 
 const formatWeekId = (weekId: string): string => {
   try {
