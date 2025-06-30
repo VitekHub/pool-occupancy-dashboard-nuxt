@@ -19,12 +19,12 @@
   },
   "header": {
     "title": "Dashboard obsazenosti bazénů",
-    "subtitle": "Obsazenost bazénu",
+    "subtitle": "Obsazenost",
     "mobileView": "Mobilní zobrazení",
     "notifications": "Oznámení"
   },
   "sidebar": {
-    "title": "Pool Dashboard",
+    "title": "Obsazenost bazénů",
     "version": "Pool Occupancy Dashboard v1.0.0"
   },
   "footer": {
@@ -39,6 +39,7 @@
       "mobileView": "Mobilní zobrazení",
       "currentOccupancy": "Aktuální obsazenost",
       "capacityUsage": "% kapacity",
+      "capacityTime": "v čase",
       "poolStatus": "Stav bazénu",
       "poolOpen": "Bazén je otevřen",
       "poolClosed": "Bazén je momentálně zavřen",

@@ -59,7 +59,7 @@
         >
           {{
             shouldShowOccupancy
-              ? `${currentOccupancy} / ${poolStore.currentMaxCapacity}`
+              ? `${currentOccupancy?.occupancy} / ${poolStore.currentMaxCapacity}`
               : $t('common.na')
           }}
         </div>
@@ -68,20 +68,16 @@
         </p>
         <div
           v-if="shouldShowOccupancy && poolStore.currentMaxCapacity > 0"
-          class="mt-2"
+          class="mt-4"
         >
           <div class="text-sm text-gray-500 dark:text-gray-400">
-            {{
-              Math.round(
-                (currentOccupancy / poolStore.currentMaxCapacity) * 100
-              )
-            }}{{ $t('dashboard.stats.capacityUsage') }}
+            {{ capacityUsageText }}
           </div>
-          <div class="mt-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
               class="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
               :style="{
-                width: `${Math.min((currentOccupancy / poolStore.currentMaxCapacity) * 100, 100)}%`,
+                width: `${Math.min((currentOccupancy?.occupancy / poolStore.currentMaxCapacity) * 100, 100)}%`,
               }"
             ></div>
           </div>
@@ -211,5 +207,18 @@ const poolWebsiteUrl = computed((): string | null => {
   }
 
   return null
+})
+const capacityUsageText = computed(() => {
+  if (
+    shouldShowOccupancy.value &&
+    poolStore.currentMaxCapacity > 0 &&
+    currentOccupancy.value
+  ) {
+    const percent = Math.round(
+      (currentOccupancy.value.occupancy / poolStore.currentMaxCapacity) * 100
+    )
+    return `${percent}${t('dashboard.stats.capacityUsage')} (${t('dashboard.stats.capacityTime')} ${currentOccupancy.value.time})`
+  }
+  return ''
 })
 </script>

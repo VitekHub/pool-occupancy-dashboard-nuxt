@@ -19,7 +19,7 @@
   },
   "header": {
     "title": "Pool Occupancy Dashboard",
-    "subtitle": "Pool Occupancy",
+    "subtitle": "Occupancy",
     "mobileView": "Mobile View",
     "notifications": "Notifications"
   },
@@ -39,6 +39,7 @@
       "mobileView": "Mobile View",
       "currentOccupancy": "Current Occupancy",
       "capacityUsage": "% of capacity",
+      "capacityTime": "at time",
       "poolStatus": "Pool Status",
       "poolOpen": "Pool is open",
       "poolClosed": "Pool is currently closed",

@@ -83,7 +83,7 @@ export const usePoolStore = defineStore('pool', {
     },
 
     // Get current occupancy (last record for today)
-    currentOccupancy: (state): number | null => {
+    currentOccupancy: (state): OccupancyRecord | null => {
       if (state.rawOccupancyData.length === 0) return null
 
       const today = nowInPrague()
@@ -100,8 +100,7 @@ export const usePoolStore = defineStore('pool', {
       if (todayRecords.length === 0) return null
 
       // Get the most recent record (last one in the array since they should be chronologically ordered)
-      const mostRecentRecord = todayRecords[todayRecords.length - 1]
-      return mostRecentRecord.occupancy
+      return todayRecords[todayRecords.length - 1]
     },
 
     // Get maximum capacity for current pool

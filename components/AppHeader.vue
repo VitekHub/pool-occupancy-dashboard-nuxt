@@ -24,14 +24,6 @@
 
       <!-- Right Side -->
       <div class="flex items-center space-x-4">
-        <!-- Notifications -->
-        <UButton
-          variant="ghost"
-          icon="i-heroicons-bell"
-          class="relative"
-          :title="$t('header.notifications')"
-        />
-
         <!-- Mobile View Toggle (Desktop Only) -->
         <div class="hidden lg:flex items-center space-x-2">
           <label class="flex items-center space-x-2 cursor-pointer select-none">
