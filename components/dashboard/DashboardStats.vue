@@ -11,8 +11,8 @@
       </template>
 
       <div class="space-y-3">
-        <UButton block variant="soft" color="blue" @click="scrollToAnalytics">
-          {{ $t('dashboard.stats.viewAnalytics') }}
+        <UButton block variant="soft" color="blue" @click="scrollToStatistics">
+          {{ $t('dashboard.stats.viewStatistics') }}
         </UButton>
         <UButton block variant="soft" color="green" @click="exportData">
           {{ $t('dashboard.stats.exportData') }}
@@ -57,7 +57,11 @@
               : 'text-gray-400 dark:text-gray-500',
           ]"
         >
-          {{ shouldShowOccupancy ? currentOccupancy : $t('common.na') }}
+          {{
+            shouldShowOccupancy
+              ? `${currentOccupancy}/${poolStore.currentMaxCapacity}`
+              : $t('common.na')
+          }}
         </div>
         <p class="text-gray-600 dark:text-gray-400">
           {{ getOccupancyStatusText() }}
@@ -152,11 +156,11 @@ const { t } = useI18n()
 
 const poolStore = usePoolStore()
 
-// Scroll to analytics section
-const scrollToAnalytics = () => {
-  const analyticsSection = document.getElementById('analytics-section')
-  if (analyticsSection) {
-    analyticsSection.scrollIntoView({
+// Scroll to statistics section
+const scrollToStatistics = () => {
+  const statisticsSection = document.getElementById('statistics-section')
+  if (statisticsSection) {
+    statisticsSection.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     })

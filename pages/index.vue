@@ -5,7 +5,7 @@
     </div>
     <div class="mb-8">
       <DashboardHeatmapSection
-        id="analytics-section"
+        id="statistics-section"
         :overall-occupancy-map="poolStore.overallOccupancyMap"
         :weekly-occupancy-map="poolStore.weeklyOccupancyMap"
       />

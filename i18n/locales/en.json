@@ -34,7 +34,7 @@
   "dashboard": {
     "stats": {
       "quickActions": "Quick Actions",
-      "viewAnalytics": "View Analytics",
+      "viewStatistics": "View Statistics",
       "exportData": "Export Data",
       "mobileView": "Mobile View",
       "currentOccupancy": "Current Occupancy",

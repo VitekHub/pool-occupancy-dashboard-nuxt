@@ -34,7 +34,7 @@
   "dashboard": {
     "stats": {
       "quickActions": "Rychlé akce",
-      "viewAnalytics": "Zobrazit analytiku",
+      "viewStatistics": "Zobrazit statistiku",
       "exportData": "Exportovat data",
       "mobileView": "Mobilní zobrazení",
       "currentOccupancy": "Aktuální obsazenost",

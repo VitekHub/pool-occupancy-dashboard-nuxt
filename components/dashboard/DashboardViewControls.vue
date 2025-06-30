@@ -186,12 +186,14 @@ const emit = getCurrentInstance()?.emit
 watch(
   [viewMode, availableWeeks],
   ([newViewMode, newAvailableWeeks]) => {
-    if (
-      newViewMode !== 'overall' &&
-      newAvailableWeeks.length > 0 &&
-      !selectedWeekId.value
-    ) {
-      updateSelectedWeekId(newAvailableWeeks[newAvailableWeeks.length - 1]) // Select most recent week
+    if (newViewMode !== 'overall' && newAvailableWeeks.length > 0) {
+      // If no week is selected or selected week is not available, select the most recent week
+      if (
+        !selectedWeekId.value ||
+        !newAvailableWeeks.includes(selectedWeekId.value)
+      ) {
+        updateSelectedWeekId(newAvailableWeeks[newAvailableWeeks.length - 1])
+      }
     }
   },
   { immediate: true }
