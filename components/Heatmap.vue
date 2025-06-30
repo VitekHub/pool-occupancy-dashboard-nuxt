@@ -17,6 +17,8 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 import type {
   OverallOccupancyMap,
   WeeklyOccupancyMap,
@@ -31,29 +33,28 @@ interface Props {
   weeklyOccupancyMap?: WeeklyOccupancyMap
   viewMode?: ViewMode
   selectedWeekId?: string | null
-  tooltipTranslationKey?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   weeklyOccupancyMap: () => ({}),
   viewMode: 'overall',
   selectedWeekId: null,
-  tooltipTranslationKey: 'heatmap:overallTooltip',
 })
 
 // Get pool store for heatmap threshold
 const poolStore = usePoolStore()
 
-// Dummy translation function
-const t = (
-  key: string,
-  options?: { [key: string]: string | number }
-): string => {
-  return (
-    (options?.utilization ? ` ${options.utilization}%` : '') +
-    (options?.hour ? ` at ${options.hour}:00` : '')
-  )
-}
+// Construct tooltip translation key based on view mode
+const tooltipTranslationKey = computed(() => {
+  switch (props.viewMode) {
+    case 'weekly-average':
+      return 'heatmap.weeklyAverage.tooltip'
+    case 'weekly-raw':
+      return 'heatmap.weeklyRaw.tooltip'
+    default:
+      return 'heatmap.overall.tooltip'
+  }
+})
 
 // Override isDesktop when mobile view is forced
 const isDesktop = computed(() => {
@@ -87,7 +88,7 @@ const dataProcessor = computed(() => {
     props.weeklyOccupancyMap || {},
     props.overallOccupancyMap,
     poolStore.heatmapHighThreshold,
-    props.tooltipTranslationKey,
+    tooltipTranslationKey.value,
     t
   )
 })

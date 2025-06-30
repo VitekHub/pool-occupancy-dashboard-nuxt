@@ -95,7 +95,7 @@ export default class HeatmapDataProcessor {
         maxDayUtilizationRate > 0 ? utilizationRate / maxDayUtilizationRate : 0,
       displayText: utilizationRate > 0 ? `${utilizationRate}%` : '',
       title: this.t(this.tooltipTranslationKey, {
-        day: this.t(`common:days.${day.toLowerCase()}`),
+        day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
         utilization: utilizationRate,
       }),
@@ -171,7 +171,7 @@ export default class HeatmapDataProcessor {
             : 0, // Fill ratio based on max occupancy of the day
       displayText,
       title: this.t(this.tooltipTranslationKey, {
-        day: this.t(`common:days.${day.toLowerCase()}`),
+        day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
         min: hourlyData.minOccupancy,
         max: hourlyData.maxOccupancy,

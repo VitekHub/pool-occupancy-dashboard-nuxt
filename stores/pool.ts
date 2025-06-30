@@ -75,26 +75,30 @@ export const usePoolStore = defineStore('pool', {
     csvUrl: (state): string => {
       const csvFileName = state.csvFileName
       if (!csvFileName) return ''
-      
-      const baseUrl = import.meta.env.VITE_CSV_BASE_URL || 'https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/'
+
+      const baseUrl =
+        import.meta.env.VITE_CSV_BASE_URL ||
+        'https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/'
       return `${baseUrl}${csvFileName}`
     },
 
     // Get current occupancy (last record for today)
     currentOccupancy: (state): number | null => {
       if (state.rawOccupancyData.length === 0) return null
-      
+
       const today = nowInPrague()
       const todayString = today.toLocaleDateString('en-GB').replace(/\//g, '.')
-      
+
       // Find the most recent record for today
-      const todayRecords = state.rawOccupancyData.filter(record => {
-        const recordDateString = record.date.toLocaleDateString('en-GB').replace(/\//g, '.')
+      const todayRecords = state.rawOccupancyData.filter((record) => {
+        const recordDateString = record.date
+          .toLocaleDateString('en-GB')
+          .replace(/\//g, '.')
         return recordDateString === todayString
       })
-      
+
       if (todayRecords.length === 0) return null
-      
+
       // Get the most recent record (last one in the array since they should be chronologically ordered)
       const mostRecentRecord = todayRecords[todayRecords.length - 1]
       return mostRecentRecord.occupancy
@@ -103,7 +107,7 @@ export const usePoolStore = defineStore('pool', {
     // Get maximum capacity for current pool
     currentMaxCapacity: (state): number => {
       if (!state.selectedPool) return 0
-      
+
       if (
         state.selectedPoolType === POOL_TYPES.INSIDE &&
         state.selectedPool.insidePool
@@ -115,71 +119,73 @@ export const usePoolStore = defineStore('pool', {
       ) {
         return state.selectedPool.outsidePool.maximumCapacity
       }
-      
+
       return 0
     },
 
     // Check if pool is currently open
     isPoolOpen: (state): boolean => {
       if (!state.selectedPool) return false
-      
+
       const now = nowInPrague()
       const currentHour = now.getHours()
       const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
-      
+
       let openingHours: string
       if (
         state.selectedPoolType === POOL_TYPES.INSIDE &&
         state.selectedPool.insidePool
       ) {
-        openingHours = isWeekend 
+        openingHours = isWeekend
           ? state.selectedPool.insidePool.weekendOpeningHours
           : state.selectedPool.insidePool.weekdaysOpeningHours
       } else if (
         state.selectedPoolType === POOL_TYPES.OUTSIDE &&
         state.selectedPool.outsidePool
       ) {
-        openingHours = isWeekend 
+        openingHours = isWeekend
           ? state.selectedPool.outsidePool.weekendOpeningHours
           : state.selectedPool.outsidePool.weekdaysOpeningHours
       } else {
         return false
       }
-      
+
       // Parse opening hours (format: "6-22" or "8-21")
-      const [openHour, closeHour] = openingHours.split('-').map(h => parseInt(h))
+      const [openHour, closeHour] = openingHours
+        .split('-')
+        .map((h) => parseInt(h))
       return currentHour >= openHour && currentHour < closeHour
     },
   },
 
-   // Get today's opening hours
-   todayOpeningHours: (state): string => {
-     if (!state.selectedPool) return ''
-     
-     const now = nowInPrague()
-     const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
-     
-     let openingHours: string
-     if (
-       state.selectedPoolType === POOL_TYPES.INSIDE &&
-       state.selectedPool.insidePool
-     ) {
-       openingHours = isWeekend 
-         ? state.selectedPool.insidePool.weekendOpeningHours
-         : state.selectedPool.insidePool.weekdaysOpeningHours
-     } else if (
-       state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-       state.selectedPool.outsidePool
-     ) {
-       openingHours = isWeekend 
-         ? state.selectedPool.outsidePool.weekendOpeningHours
-         : state.selectedPool.outsidePool.weekdaysOpeningHours
-     } else {
-       return ''
-     }
-     
-     return openingHours
-   },
+  // Get today's opening hours
+  todayOpeningHours: (state): string => {
+    if (!state.selectedPool) return ''
+
+    const now = nowInPrague()
+    const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
+
+    let openingHours: string
+    if (
+      state.selectedPoolType === POOL_TYPES.INSIDE &&
+      state.selectedPool.insidePool
+    ) {
+      openingHours = isWeekend
+        ? state.selectedPool.insidePool.weekendOpeningHours
+        : state.selectedPool.insidePool.weekdaysOpeningHours
+    } else if (
+      state.selectedPoolType === POOL_TYPES.OUTSIDE &&
+      state.selectedPool.outsidePool
+    ) {
+      openingHours = isWeekend
+        ? state.selectedPool.outsidePool.weekendOpeningHours
+        : state.selectedPool.outsidePool.weekdaysOpeningHours
+    } else {
+      return ''
+    }
+
+    return openingHours
+  },
   actions: {
     loadPoolsConfig() {
       try {
@@ -187,7 +193,9 @@ export const usePoolStore = defineStore('pool', {
 
         // Auto-select first pool that has outside pool configuration
         if (!this.selectedPool) {
-          const firstPoolWithOutside = this.pools.find(pool => pool.outsidePool)
+          const firstPoolWithOutside = this.pools.find(
+            (pool) => pool.outsidePool
+          )
           if (firstPoolWithOutside) {
             this.selectedPool = firstPoolWithOutside
           }
@@ -220,7 +228,7 @@ export const usePoolStore = defineStore('pool', {
 
         // Parse CSV data
         const occupancyData = parseOccupancyCSV(response)
-        
+
         // Store raw occupancy data
         this.rawOccupancyData = occupancyData
 

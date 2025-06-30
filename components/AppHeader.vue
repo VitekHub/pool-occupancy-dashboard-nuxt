@@ -14,10 +14,10 @@
         />
         <div>
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-            {{ poolStore.selectedPool?.name || 'Pool Occupancy Dashboard' }}
+            {{ poolStore.selectedPool?.name || $t('header.title') }}
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Real-time analytics
+            {{ $t('header.subtitle') }}
           </p>
         </div>
       </div>
@@ -25,7 +25,12 @@
       <!-- Right Side -->
       <div class="flex items-center space-x-4">
         <!-- Notifications -->
-        <UButton variant="ghost" icon="i-heroicons-bell" class="relative" />
+        <UButton
+          variant="ghost"
+          icon="i-heroicons-bell"
+          class="relative"
+          :title="$t('header.notifications')"
+        />
 
         <!-- Mobile View Toggle (Desktop Only) -->
         <div class="hidden lg:flex items-center space-x-2">
@@ -35,11 +40,11 @@
             size="sm"
             class="shrink-0"
           />
-          <span class="text-sm text-gray-700 dark:text-gray-300"
-            >Mobile View</span
-          >
+          <span class="text-sm text-gray-700 dark:text-gray-300">{{
+            $t('header.mobileView')
+          }}</span>
         </div>
-
+        <LanguageSwitcher />
         <ColorModeToggle />
       </div>
     </div>

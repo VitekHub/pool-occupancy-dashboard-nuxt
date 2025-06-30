@@ -35,7 +35,7 @@
               v-if="showText"
               class="ml-3 text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis text-gray-900 dark:text-white"
             >
-              Pool Dashboard
+              {{ $t('sidebar.title') }}
             </h1>
           </div>
 
@@ -80,7 +80,7 @@
           v-if="showText"
           class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis"
         >
-          Pool Occupancy Dashboard v1.0.0
+          {{ $t('sidebar.version') }}
         </p>
       </div>
     </div>
@@ -159,7 +159,7 @@ const icons = [
 
 // Filter pools that have outside pool configuration
 const filteredPools = computed(() => {
-  return poolStore.pools.filter(pool => pool.outsidePool)
+  return poolStore.pools.filter((pool) => pool.outsidePool)
 })
 
 // Get icon for a pool based on its index

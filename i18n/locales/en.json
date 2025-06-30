@@ -1,0 +1,93 @@
+{
+  "common": {
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "loading": "Loading...",
+    "error": "Error",
+    "na": "N/A",
+    "version": "Version",
+    "today": "Today",
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "header": {
+    "title": "Pool Occupancy Dashboard",
+    "subtitle": "Pool Occupancy",
+    "mobileView": "Mobile View",
+    "notifications": "Notifications"
+  },
+  "sidebar": {
+    "title": "Pool Dashboard",
+    "version": "Pool Occupancy Dashboard v1.0.0"
+  },
+  "footer": {
+    "copyright": "© 2025 Pool Occupancy Dashboard. All rights reserved.",
+    "version": "Version 1.0.0"
+  },
+  "dashboard": {
+    "stats": {
+      "quickActions": "Quick Actions",
+      "viewAnalytics": "View Analytics",
+      "exportData": "Export Data",
+      "mobileView": "Mobile View",
+      "currentOccupancy": "Current Occupancy",
+      "capacityUsage": "% of capacity",
+      "poolStatus": "Pool Status",
+      "poolOpenReady": "Pool is open and ready",
+      "poolClosed": "Pool is currently closed",
+      "peopleInPool": "People currently in pool",
+      "noDataToday": "No data for today",
+      "visitWebsite": "Visit Website"
+    },
+    "viewControls": {
+      "viewMode": "View Mode",
+      "overallAverage": "Overall Average",
+      "weeklyAverage": "Weekly Average",
+      "weeklyMinMax": "Weekly Min/Max",
+      "selectWeek": "Select Week",
+      "selectWeekPlaceholder": "Select a week"
+    }
+  },
+  "heatmap": {
+    "overall": {
+      "title": "Overall Pool Occupancy Heatmap",
+      "description": "Average occupancy rates across all recorded weeks",
+      "tooltip": "{day} at {hour}:00 - average {utilization}% occupied"
+    },
+    "weeklyAverage": {
+      "title": "Weekly Pool Occupancy Heatmap (Average)",
+      "description": "Average occupancy rates for week starting {date}",
+      "tooltip": "{day} at {hour}:00 - {utilization}% occupied",
+      "selectWeek": "Select a week to view average occupancy rates"
+    },
+    "weeklyRaw": {
+      "title": "Weekly Pool Occupancy Heatmap (Min/Max)",
+      "description": "Min/Max occupancy values for week starting {date}",
+      "tooltip": "{day} at {hour}:00 - {min} to {max} people",
+      "selectWeek": "Select a week to view min/max occupancy values"
+    },
+    "loading": "Loading heatmap data...",
+    "legend": {
+      "title": "Occupancy Rate Legend",
+      "uniformBarHeight": "Show Uniform Bar Height",
+      "threshold": "Threshold",
+      "explanations": {
+        "color": "The color represents absolute occupancy rate compared to maximum pool capacity - darker colors indicate higher occupancy.",
+        "height": "The height of the colored bar represents relative occupancy within that day - a taller bar indicates higher occupancy compared to other hours of the same day."
+      }
+    },
+    "overallTooltip": "{day} at {hour}:00 - {utilization}% occupancy",
+    "weekOfLabel": "Week of"
+  },
+  "meta": {
+    "title": "Pool Occupancy Dashboard",
+    "description": "Monitor real-time pool occupancy and analytics"
+  }
+}

@@ -5,23 +5,27 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Quick Actions
+            {{ $t('dashboard.stats.quickActions') }}
           </h3>
         </div>
       </template>
 
       <div class="space-y-3">
-        <UButton block variant="soft" color="blue" @click="scrollToAnalytics"> View Analytics </UButton>
-        <UButton block variant="soft" color="green" @click="exportData"> Export Data </UButton>
-        
+        <UButton block variant="soft" color="blue" @click="scrollToAnalytics">
+          {{ $t('dashboard.stats.viewAnalytics') }}
+        </UButton>
+        <UButton block variant="soft" color="green" @click="exportData">
+          {{ $t('dashboard.stats.exportData') }}
+        </UButton>
+
         <!-- Mobile View Toggle (Desktop Only) -->
-        <button 
+        <button
           v-if="isDesktop"
           @click="forceMobileView = !forceMobileView"
           class="w-full flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors cursor-pointer border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700"
         >
           <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
-            Mobile View
+            {{ $t('dashboard.stats.mobileView') }}
           </span>
           <UToggle
             v-model="forceMobileView"
@@ -38,32 +42,43 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mr-6">
-            Current Occupancy
+            {{ $t('dashboard.stats.currentOccupancy') }}
           </h3>
           <UIcon name="i-heroicons-users" class="h-5 w-5 text-blue-600" />
         </div>
       </template>
 
       <div class="text-center py-2">
-        <div 
+        <div
           :class="[
             'text-3xl font-bold mb-2',
-            shouldShowOccupancy ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'
+            shouldShowOccupancy
+              ? 'text-blue-600 dark:text-blue-400'
+              : 'text-gray-400 dark:text-gray-500',
           ]"
         >
-          {{ shouldShowOccupancy ? currentOccupancy : 'N/A' }}
+          {{ shouldShowOccupancy ? currentOccupancy : $t('common.na') }}
         </div>
         <p class="text-gray-600 dark:text-gray-400">
           {{ getOccupancyStatusText() }}
         </p>
-        <div v-if="shouldShowOccupancy && poolStore.currentMaxCapacity > 0" class="mt-2">
+        <div
+          v-if="shouldShowOccupancy && poolStore.currentMaxCapacity > 0"
+          class="mt-2"
+        >
           <div class="text-sm text-gray-500 dark:text-gray-400">
-            {{ Math.round((currentOccupancy / poolStore.currentMaxCapacity) * 100) }}% of capacity
+            {{
+              Math.round(
+                (currentOccupancy / poolStore.currentMaxCapacity) * 100
+              )
+            }}{{ $t('dashboard.stats.capacityUsage') }}
           </div>
           <div class="mt-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div 
+            <div
               class="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
-              :style="{ width: `${Math.min((currentOccupancy / poolStore.currentMaxCapacity) * 100, 100)}%` }"
+              :style="{
+                width: `${Math.min((currentOccupancy / poolStore.currentMaxCapacity) * 100, 100)}%`,
+              }"
             ></div>
           </div>
         </div>
@@ -75,13 +90,17 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Pool Status
+            {{ $t('dashboard.stats.poolStatus') }}
           </h3>
           <UIcon
-            :name="poolStore.isPoolOpen ? 'i-heroicons-check-circle' : 'i-heroicons-x-circle'"
+            :name="
+              poolStore.isPoolOpen
+                ? 'i-heroicons-check-circle'
+                : 'i-heroicons-x-circle'
+            "
             :class="[
               'h-5 w-5',
-              poolStore.isPoolOpen ? 'text-green-600' : 'text-red-600'
+              poolStore.isPoolOpen ? 'text-green-600' : 'text-red-600',
             ]"
           />
         </div>
@@ -91,21 +110,27 @@
         <div
           :class="[
             'text-xl font-semibold mb-2',
-            poolStore.isPoolOpen ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+            poolStore.isPoolOpen
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400',
           ]"
         >
-          {{ poolStore.isPoolOpen ? 'Open' : 'Closed' }}
+          {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
         </div>
         <p class="text-gray-600 dark:text-gray-400">
           {{ getPoolStatusText() }}
         </p>
-        <div v-if="poolStore.isPoolOpen && poolStore.todayOpeningHours" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Today: {{ formatOpeningHours(poolStore.todayOpeningHours) }}
+        <div
+          v-if="poolStore.isPoolOpen && poolStore.todayOpeningHours"
+          class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{ $t('common.today') }}:
+          {{ formatOpeningHours(poolStore.todayOpeningHours) }}
         </div>
-        
+
         <!-- Pool Website Link -->
         <div v-if="poolWebsiteUrl" class="mt-3">
-          <UButton 
+          <UButton
             :to="poolWebsiteUrl"
             external
             target="_blank"
@@ -114,7 +139,7 @@
             size="sm"
             icon="i-heroicons-link"
           >
-            Visit Website
+            {{ $t('dashboard.stats.visitWebsite') }}
           </UButton>
         </div>
       </div>
@@ -123,15 +148,17 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 const poolStore = usePoolStore()
 
 // Scroll to analytics section
 const scrollToAnalytics = () => {
   const analyticsSection = document.getElementById('analytics-section')
   if (analyticsSection) {
-    analyticsSection.scrollIntoView({ 
+    analyticsSection.scrollIntoView({
       behavior: 'smooth',
-      block: 'start'
+      block: 'start',
     })
   }
 }
@@ -170,27 +197,27 @@ const formatOpeningHours = (hours: string): string => {
 // Get pool status text
 const getPoolStatusText = (): string => {
   if (poolStore.isPoolOpen) {
-    return 'Pool is open and ready'
+    return t('dashboard.stats.poolOpenReady')
   } else {
-    return 'Pool is currently closed'
+    return t('dashboard.stats.poolClosed')
   }
 }
 
 // Get occupancy status text
 const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {
-    return 'Pool is currently closed'
+    return t('dashboard.stats.poolClosed')
   } else if (currentOccupancy.value !== null) {
-    return 'People currently in pool'
+    return t('dashboard.stats.peopleInPool')
   } else {
-    return 'No data for today'
+    return t('dashboard.stats.noDataToday')
   }
 }
 
 // Get pool website URL
 const poolWebsiteUrl = computed((): string | null => {
   if (!poolStore.selectedPool) return null
-  
+
   if (
     poolStore.selectedPoolType === 'inside' &&
     poolStore.selectedPool.insidePool
@@ -202,7 +229,7 @@ const poolWebsiteUrl = computed((): string | null => {
   ) {
     return poolStore.selectedPool.outsidePool.url
   }
-  
+
   return null
 })
 </script>

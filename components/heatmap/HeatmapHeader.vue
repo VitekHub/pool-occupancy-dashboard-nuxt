@@ -10,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 
 interface Props {
@@ -25,11 +27,11 @@ const props = withDefaults(defineProps<Props>(), {
 const headerTitle = computed(() => {
   switch (props.viewMode) {
     case 'weekly-average':
-      return `Weekly Pool Occupancy Heatmap (Average)`
+      return t('heatmap.weeklyAverage.title')
     case 'weekly-raw':
-      return `Weekly Pool Occupancy Heatmap (Min/Max)`
+      return t('heatmap.weeklyRaw.title')
     default:
-      return `Overall Pool Occupancy Heatmap`
+      return t('heatmap.overall.title')
   }
 })
 
@@ -37,14 +39,18 @@ const headerDescription = computed(() => {
   switch (props.viewMode) {
     case 'weekly-average':
       return props.selectedWeekId
-        ? `Average occupancy rates for week starting ${formatWeekId(props.selectedWeekId)}`
-        : 'Select a week to view average occupancy rates'
+        ? t('heatmap.weeklyAverage.description', {
+            date: formatWeekId(props.selectedWeekId),
+          })
+        : t('heatmap.weeklyAverage.selectWeek')
     case 'weekly-raw':
       return props.selectedWeekId
-        ? `Min/Max occupancy values for week starting ${formatWeekId(props.selectedWeekId)}`
-        : 'Select a week to view min/max occupancy values'
+        ? t('heatmap.weeklyRaw.description', {
+            date: formatWeekId(props.selectedWeekId),
+          })
+        : t('heatmap.weeklyRaw.selectWeek')
     default:
-      return 'Average occupancy rates across all recorded weeks'
+      return t('heatmap.overall.description')
   }
 })
 

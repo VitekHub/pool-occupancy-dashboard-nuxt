@@ -6,7 +6,7 @@
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
-          View Mode
+          {{ $t('dashboard.viewControls.viewMode') }}
         </label>
         <div class="flex flex-wrap gap-1 p-1">
           <UButton
@@ -28,7 +28,7 @@
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
-          Select Week
+          {{ $t('dashboard.viewControls.selectWeek') }}
         </label>
         <div class="flex items-center gap-2">
           <!-- Previous Week Button -->
@@ -50,7 +50,7 @@
             :options="weekOptions"
             option-attribute="label"
             value-attribute="value"
-            placeholder="Select a week"
+            :placeholder="$t('dashboard.viewControls.selectWeekPlaceholder')"
             :disabled="availableWeeks.length === 0"
             color="sky"
             class="flex-1"
@@ -74,6 +74,8 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 
 const poolStore = usePoolStore()
@@ -105,9 +107,18 @@ const canGoNextWeek = computed(() => {
 
 // View mode options
 const viewModeOptions = [
-  { value: 'overall', label: 'Overall Average' },
-  { value: 'weekly-average', label: 'Weekly Average' },
-  { value: 'weekly-raw', label: 'Weekly Min/Max' },
+  {
+    value: 'overall',
+    label: computed(() => t('dashboard.viewControls.overallAverage')),
+  },
+  {
+    value: 'weekly-average',
+    label: computed(() => t('dashboard.viewControls.weeklyAverage')),
+  },
+  {
+    value: 'weekly-raw',
+    label: computed(() => t('dashboard.viewControls.weeklyMinMax')),
+  },
 ]
 
 // Week options for the select dropdown
@@ -122,7 +133,7 @@ const weekOptions = computed(() => {
 const formatWeekLabel = (weekId: string): string => {
   try {
     const date = new Date(weekId)
-    return `Week of ${date.toLocaleDateString('en-US', {
+    return `${t('heatmap.weekOfLabel')} ${date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
