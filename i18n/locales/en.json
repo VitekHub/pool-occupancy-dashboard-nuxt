@@ -40,7 +40,7 @@
       "currentOccupancy": "Current Occupancy",
       "capacityUsage": "% of capacity",
       "poolStatus": "Pool Status",
-      "poolOpenReady": "Pool is open and ready",
+      "poolOpen": "Pool is open",
       "poolClosed": "Pool is currently closed",
       "peopleInPool": "Current visitors / Max capacity",
       "noDataToday": "No data for today",

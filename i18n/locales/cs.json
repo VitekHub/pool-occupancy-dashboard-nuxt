@@ -40,7 +40,7 @@
       "currentOccupancy": "Aktuální obsazenost",
       "capacityUsage": "% kapacity",
       "poolStatus": "Stav bazénu",
-      "poolOpenReady": "Bazén je otevřen a připraven",
+      "poolOpen": "Bazén je otevřen",
       "poolClosed": "Bazén je momentálně zavřen",
       "peopleInPool": "Aktuálně lidí / Max. kapacita",
       "noDataToday": "Žádná data pro dnešek",

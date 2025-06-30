@@ -97,11 +97,7 @@
             {{ $t('dashboard.stats.poolStatus') }}
           </h3>
           <UIcon
-            :name="
-              poolStore.isPoolOpen
-                ? 'i-heroicons-check-circle'
-                : 'i-heroicons-x-circle'
-            "
+            name="i-heroicons-sun"
             :class="[
               'h-5 w-5',
               poolStore.isPoolOpen ? 'text-green-600' : 'text-red-600',
@@ -186,11 +182,9 @@ const formatOpeningHours = (hours: string): string => {
   return `${open}:00 - ${close}:00`
 }
 const getPoolStatusText = (): string => {
-  if (poolStore.isPoolOpen) {
-    return t('dashboard.stats.poolOpenReady')
-  } else {
-    return t('dashboard.stats.poolClosed')
-  }
+  return t(
+    `dashboard.stats.${poolStore.isPoolOpen ? 'poolOpen' : 'poolClosed'}`
+  )
 }
 const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {

@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
 
@@ -57,7 +57,7 @@ const headerDescription = computed(() => {
 const formatWeekId = (weekId: string): string => {
   try {
     const date = new Date(weekId)
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(locale.value === 'en' ? 'en-US' : 'cs-CZ', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

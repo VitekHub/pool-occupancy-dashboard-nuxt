@@ -40,7 +40,7 @@
             :disabled="!canGoPreviousWeek"
             :class="{ 'opacity-40 cursor-not-allowed': !canGoPreviousWeek }"
             @click="goToPreviousWeek"
-            class="flex-shrink-0 text-white"
+            class="flex-shrink-0 text-white mt-1"
           />
 
           <!-- Week Selector -->
@@ -52,8 +52,7 @@
             value-attribute="value"
             :placeholder="$t('dashboard.viewControls.selectWeekPlaceholder')"
             :disabled="availableWeeks.length === 0"
-            color="sky"
-            class="flex-1"
+            class="flex-1 mt-1 week-selector"
           />
 
           <!-- Next Week Button -->
@@ -65,7 +64,7 @@
             :disabled="!canGoNextWeek"
             :class="{ 'opacity-40 cursor-not-allowed': !canGoNextWeek }"
             @click="goToNextWeek"
-            class="flex-shrink-0 text-white"
+            class="flex-shrink-0 text-white mt-1"
           />
         </div>
       </div>
@@ -184,3 +183,8 @@ onMounted(() => {
   emitViewStateChanged()
 })
 </script>
+<style scoped>
+:deep(.week-selector select:focus) {
+  --tw-ring-color: transparent !important;
+}
+</style>
