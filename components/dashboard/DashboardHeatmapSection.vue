@@ -4,16 +4,12 @@
     :style="poolStore.forceMobileView ? 'width: 500px; margin: 0 auto;' : ''"
   >
     <DashboardViewControls @view-state-changed="handleViewStateChanged" />
-
-    <!-- Occupancy Heatmap -->
-    <div>
-      <Heatmap
-        :overall-occupancy-map="overallOccupancyMap"
-        :weekly-occupancy-map="weeklyOccupancyMap"
-        :view-mode="currentViewMode"
-        :selected-week-id="currentSelectedWeekId"
-      />
-    </div>
+    <Heatmap
+      :overall-occupancy-map="overallOccupancyMap"
+      :weekly-occupancy-map="weeklyOccupancyMap"
+      :view-mode="currentViewMode"
+      :selected-week-id="currentSelectedWeekId"
+    />
   </div>
 </template>
 
@@ -21,21 +17,15 @@
 import type { OverallOccupancyMap, WeeklyOccupancyMap } from '~/types'
 
 const poolStore = usePoolStore()
-
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
-
 interface Props {
   overallOccupancyMap: OverallOccupancyMap
   weeklyOccupancyMap: WeeklyOccupancyMap
 }
-
 defineProps<Props>()
 
-// Local state to track current view settings
 const currentViewMode = ref<ViewMode>('overall')
 const currentSelectedWeekId = ref<string | null>(null)
-
-// Handle view state changes from DashboardViewControls
 const handleViewStateChanged = ({
   viewMode,
   selectedWeekId,

@@ -54,8 +54,6 @@
 <script setup lang="ts">
 const { toggleMobileMenu } = useSidebar()
 const poolStore = usePoolStore()
-
-// Computed property for mobile view toggle
 const forceMobileView = computed({
   get: () => poolStore.forceMobileView,
   set: (value: boolean) => poolStore.setForceMobileView(value),

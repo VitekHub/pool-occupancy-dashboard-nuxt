@@ -4,7 +4,7 @@ import type {
   PoolType,
   WeeklyOccupancyMap,
   OverallOccupancyMap,
-  HourlyOccupancySummaryWithLanes,
+  HourlyOccupancySummary,
 } from '~/types'
 import { isInsidePool } from '~/types'
 import { getWeekId } from './dateUtils'
@@ -93,7 +93,7 @@ class OccupancyDataProcessor {
         date,
         day,
         hour,
-      } as HourlyOccupancySummaryWithLanes
+      } as HourlyOccupancySummary
     }
   }
 
@@ -177,7 +177,7 @@ class OccupancyDataProcessor {
       utilizationRate,
       remainingCapacity,
       maximumCapacity: hourlyMaxCapacity,
-    } as HourlyOccupancySummaryWithLanes
+    } as HourlyOccupancySummary
 
     this.updateWeeklyMaxDayValues(weekId, day, utilizationRate, maxOccupancy)
   }

@@ -41,11 +41,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-// Get pool store for uniform bar height setting
 const poolStore = usePoolStore()
-
-// Computed values for the bar height calculation
 const colorFillRatio = computed(() => props.cellData?.colorFillRatio || 0)
 const uniformHeatmapBarHeight = computed(
   () => poolStore.uniformHeatmapBarHeight

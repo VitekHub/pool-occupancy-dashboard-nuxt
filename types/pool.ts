@@ -66,15 +66,6 @@ export interface HourlyOccupancySummary {
   date: Date
 }
 
-export interface HourlyOccupancySummaryWithLanes
-  extends HourlyOccupancySummary {
-  lanes?: {
-    current: number
-    total: number
-    colorFillRatio: number
-  }
-}
-
 export interface WeeklyOccupancyMap {
   [weekId: string]: {
     [day: string]: {

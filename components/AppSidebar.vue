@@ -96,25 +96,8 @@ const poolStore = usePoolStore()
 // Track if component is mounted to avoid hydration mismatches
 const isMounted = ref(false)
 
-// Desktop hover state
 const isDesktopExpanded = ref(false)
 
-// Computed to determine when to show text
-const showText = computed(() => {
-  // Don't check window size until mounted to avoid hydration mismatch
-  if (!isMounted.value) {
-    return false
-  }
-
-  // Always show text on mobile
-  if (process.client && window.innerWidth < 1024) {
-    return true
-  }
-  // On desktop, show text when expanded via hover
-  return isDesktopExpanded.value
-})
-
-// Computed for overall expanded state
 const isExpanded = computed(() => {
   // Don't check window size until mounted to avoid hydration mismatch
   if (!isMounted.value) {
@@ -128,19 +111,18 @@ const isExpanded = computed(() => {
   // Desktop: expanded on hover
   return isDesktopExpanded.value
 })
+const showText = computed(() => isExpanded.value)
 
 // Set mounted flag after component is mounted
 onMounted(() => {
   isMounted.value = true
 })
 
-// Mouse events for desktop hover
 const onMouseEnter = () => {
   if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = true
   }
 }
-
 const onMouseLeave = () => {
   if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = false
@@ -156,21 +138,15 @@ const icons = [
   'i-heroicons-bolt',
   'i-heroicons-square-3-stack-3d',
 ]
-
-// Filter pools that have outside pool configuration
 const filteredPools = computed(() => {
   return poolStore.pools.filter((pool) => pool.outsidePool)
 })
-
-// Get icon for a pool based on its index
 const getPoolIcon = (pool: any, index: number) => {
   return pool.icon || icons[index] || 'i-heroicons-building-office-2'
 }
-
-// Handle pool selection
 const selectPool = (pool: any) => {
   poolStore.setSelectedPool(pool, POOL_TYPES.OUTSIDE)
-  closeMobileMenu() // Close mobile menu after selection
+  closeMobileMenu()
 }
 </script>
 

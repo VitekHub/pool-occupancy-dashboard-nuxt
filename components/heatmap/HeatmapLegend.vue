@@ -110,19 +110,14 @@ interface Props {
 
 defineProps<Props>()
 
-// Computed property for threshold value with getter/setter
 const thresholdValue = computed({
   get: () => poolStore.heatmapHighThreshold,
   set: (value: number) => poolStore.setHeatmapHighThreshold(value),
 })
-
-// Computed property for uniform bar height with getter/setter
 const uniformBarHeight = computed({
   get: () => poolStore.uniformHeatmapBarHeight,
   set: (value: boolean) => poolStore.setUniformHeatmapBarHeight(value),
 })
-
-// Explanation data to eliminate duplication
 const explanations = [
   {
     icon: '🎨',

@@ -40,11 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
   viewMode: 'overall',
   selectedWeekId: null,
 })
-
-// Get pool store for heatmap threshold
 const poolStore = usePoolStore()
-
-// Construct tooltip translation key based on view mode
 const tooltipTranslationKey = computed(() => {
   switch (props.viewMode) {
     case 'weekly-average':
@@ -55,15 +51,11 @@ const tooltipTranslationKey = computed(() => {
       return 'heatmap.overall.tooltip'
   }
 })
-
-// Override isDesktop when mobile view is forced
 const isDesktop = computed(() => {
   if (poolStore.forceMobileView) return false
   return useMediaQuery('(min-width: 1024px)').value
 })
-
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
-
 const dataProcessor = computed(() => {
   // For overall view, check if overallOccupancyMap has data
   if (props.viewMode === 'overall') {
@@ -120,6 +112,9 @@ const sortDaysByWeekOrder = (days: string[]): string[] => {
   ]
   return days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
 }
+const getTranslatedDayName = (englishDayName: string): string => {
+  return t(`common.days.${englishDayName.toLowerCase()}`) || englishDayName
+}
 
 // Function to get cell data for a specific day and hour
 const getCellData = (day: string, hour: number): BaseCellData | undefined => {
@@ -141,10 +136,14 @@ const legendItems = computed(() => {
 })
 
 const getDayLabel = (day: string): string => {
+  const translatedDay = getTranslatedDayName(day)
+
   if (!isDesktop.value) {
-    // Return first 3 letters for mobile
-    return day.substring(0, 3)
+    const { locale } = useI18n()
+    return locale.value === 'cs'
+      ? translatedDay.substring(0, 2)
+      : translatedDay.substring(0, 3)
   }
-  return day
+  return translatedDay
 }
 </script>

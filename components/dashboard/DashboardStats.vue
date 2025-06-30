@@ -153,10 +153,8 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-
 const poolStore = usePoolStore()
 
-// Scroll to statistics section
 const scrollToStatistics = () => {
   const statisticsSection = document.getElementById('statistics-section')
   if (statisticsSection) {
@@ -167,7 +165,6 @@ const scrollToStatistics = () => {
   }
 }
 
-// Export data functionality
 const exportData = () => {
   const csvUrl = poolStore.csvUrl
   if (csvUrl) {
@@ -175,30 +172,19 @@ const exportData = () => {
   }
 }
 
-// Check if we're on desktop
 const isDesktop = useMediaQuery('(min-width: 1024px)')
-
-// Computed property for mobile view toggle
 const forceMobileView = computed({
   get: () => poolStore.forceMobileView,
   set: (value: boolean) => poolStore.setForceMobileView(value),
 })
-
-// Get current occupancy from store
 const currentOccupancy = computed(() => poolStore.currentOccupancy)
-
-// Computed property to determine if we should show occupancy data
 const shouldShowOccupancy = computed(() => {
   return poolStore.isPoolOpen && currentOccupancy.value !== null
 })
-
-// Format opening hours for display
 const formatOpeningHours = (hours: string): string => {
   const [open, close] = hours.split('-')
   return `${open}:00 - ${close}:00`
 }
-
-// Get pool status text
 const getPoolStatusText = (): string => {
   if (poolStore.isPoolOpen) {
     return t('dashboard.stats.poolOpenReady')
@@ -206,8 +192,6 @@ const getPoolStatusText = (): string => {
     return t('dashboard.stats.poolClosed')
   }
 }
-
-// Get occupancy status text
 const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {
     return t('dashboard.stats.poolClosed')
@@ -217,8 +201,6 @@ const getOccupancyStatusText = (): string => {
     return t('dashboard.stats.noDataToday')
   }
 }
-
-// Get pool website URL
 const poolWebsiteUrl = computed((): string | null => {
   if (!poolStore.selectedPool) return null
 

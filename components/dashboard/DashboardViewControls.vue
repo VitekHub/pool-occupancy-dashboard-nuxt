@@ -75,37 +75,25 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-
 type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
-
 const poolStore = usePoolStore()
-
-// Emits - only emit the current state when it changes
 defineEmits<{
   'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
 }>()
 
-// Local state
 const viewMode = ref<ViewMode>('overall')
 const selectedWeekId = ref<string | null>(null)
-
-// Available weeks from the store
 const availableWeeks = computed(() => poolStore.availableWeekIds)
-
-// Navigation state
 const canGoPreviousWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value)
   return currentIndex > 0
 })
-
 const canGoNextWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value)
   return currentIndex < availableWeeks.value.length - 1
 })
-
-// View mode options
 const viewModeOptions = [
   {
     value: 'overall',
@@ -120,16 +108,12 @@ const viewModeOptions = [
     label: computed(() => t('dashboard.viewControls.weeklyMinMax')),
   },
 ]
-
-// Week options for the select dropdown
 const weekOptions = computed(() => {
   return availableWeeks.value.map((weekId) => ({
     value: weekId,
     label: formatWeekLabel(weekId),
   }))
 })
-
-// Format week ID for display
 const formatWeekLabel = (weekId: string): string => {
   try {
     const date = new Date(weekId)
@@ -142,8 +126,6 @@ const formatWeekLabel = (weekId: string): string => {
     return `Week ${weekId}`
   }
 }
-
-// Navigation functions
 const goToPreviousWeek = () => {
   if (!canGoPreviousWeek.value) return
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value!)
@@ -151,7 +133,6 @@ const goToPreviousWeek = () => {
     updateSelectedWeekId(availableWeeks.value[currentIndex - 1])
   }
 }
-
 const goToNextWeek = () => {
   if (!canGoNextWeek.value) return
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value!)
@@ -159,27 +140,20 @@ const goToNextWeek = () => {
     updateSelectedWeekId(availableWeeks.value[currentIndex + 1])
   }
 }
-
-// Update functions that emit changes
 const updateViewMode = (newViewMode: ViewMode) => {
   viewMode.value = newViewMode
   emitViewStateChanged()
 }
-
 const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
   emitViewStateChanged()
 }
-
-// Emit function
 const emitViewStateChanged = () => {
   emit('view-state-changed', {
     viewMode: viewMode.value,
     selectedWeekId: selectedWeekId.value,
   })
 }
-
-// Get emit function
 const emit = getCurrentInstance()?.emit
 
 // Auto-select first week when switching to weekly view
@@ -206,7 +180,6 @@ watch(viewMode, (newViewMode) => {
   }
 })
 
-// Emit initial state
 onMounted(() => {
   emitViewStateChanged()
 })
