@@ -3,7 +3,7 @@
     :class="[
       'relative dark:border-gray-600 cursor-pointer transition-opacity duration-200 hover:opacity-80 flex items-center justify-center',
       isDesktop
-        ? 'border border-gray-200 w-12 h-10 rounded p-1'
+        ? 'border border-gray-200 w-12 h-12 rounded p-1'
         : 'flex-1 min-w-2 h-16',
     ]"
     :title="cellData?.title || ''"

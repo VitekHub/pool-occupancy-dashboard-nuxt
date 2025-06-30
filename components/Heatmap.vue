@@ -9,7 +9,7 @@
         :hours="hours"
         :is-desktop="isDesktop"
         :get-cell-data="getCellData"
-        :get-day-label="getDayLabel"
+        :selected-week-id="selectedWeekId"
       />
       <HeatmapLegend :legend-items="legendItems" />
     </div>
@@ -112,9 +112,6 @@ const sortDaysByWeekOrder = (days: string[]): string[] => {
   ]
   return days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
 }
-const getTranslatedDayName = (englishDayName: string): string => {
-  return t(`common.days.${englishDayName.toLowerCase()}`) || englishDayName
-}
 
 // Function to get cell data for a specific day and hour
 const getCellData = (day: string, hour: number): BaseCellData | undefined => {
@@ -134,16 +131,4 @@ const legendItems = computed(() => {
   if (!dataProcessor.value) return []
   return dataProcessor.value.getLegendItems()
 })
-
-const getDayLabel = (day: string): string => {
-  const translatedDay = getTranslatedDayName(day)
-
-  if (!isDesktop.value) {
-    const { locale } = useI18n()
-    return locale.value === 'cs'
-      ? translatedDay.substring(0, 2)
-      : translatedDay.substring(0, 3)
-  }
-  return translatedDay
-}
 </script>
