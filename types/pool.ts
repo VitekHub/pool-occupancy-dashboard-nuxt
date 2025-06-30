@@ -69,7 +69,7 @@ export interface HourlyOccupancySummary {
 export interface WeeklyOccupancyMap {
   [weekId: string]: {
     [day: string]: {
-      [hour: number]: HourlyOccupancySummaryWithLanes
+      [hour: number]: HourlyOccupancySummary
       maxDayValues: {
         utilizationRate: number
         maxOccupancy: number

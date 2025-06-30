@@ -7,7 +7,7 @@ import type {
   HourlyOccupancySummary,
 } from '~/types'
 import { isInsidePool } from '~/types'
-import { getWeekId } from './dateUtils'
+import { getWeekId, createPragueDate } from './dateUtils'
 
 interface OccupancyAccumulator {
   sum: number
