@@ -19,7 +19,8 @@
     "css-select": "^4.3.0",
     "nuxt": "^3.13.0",
     "date-fns": "^3.6.0",
-    "date-fns-tz": "^3.0.0"
+    "date-fns-tz": "^3.0.0",
+    "@nuxtjs/i18n": "^8.0.0"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.5.7",

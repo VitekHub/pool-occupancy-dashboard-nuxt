@@ -6,10 +6,12 @@
     <!-- Main Content Area -->
     <div class="flex flex-col min-h-screen lg:ml-16">
       <!-- Header -->
-      <AppHeader />
+      <div class="sticky top-0 z-40">
+        <AppHeader />
+      </div>
 
       <!-- Main Content -->
-      <main class="flex-1 p-6 overflow-auto">
+      <main class="flex-1 p-6 overflow-auto pt-6">
         <slot />
       </main>
 

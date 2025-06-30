@@ -39,8 +39,8 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pool-occupancy-dashboard.git
-   cd pool-occupancy-dashboard
+   git clone https://github.com/VitekHub/pool-occupancy-dashboard-nuxt.git
+   cd pool-occupancy-dashboard-nuxt
    ```
 
 2. **Install dependencies**

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <DashboardHeader />
     <div class="max-w-fit mx-auto mb-6">
       <DashboardStats />
     </div>

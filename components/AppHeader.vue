@@ -1,6 +1,6 @@
 <template>
   <header
-    class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4"
+    class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-2"
   >
     <div class="flex items-center justify-between">
       <!-- Left Side -->
@@ -14,10 +14,10 @@
         />
         <div>
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-            Pool Occupancy Dashboard
+            {{ poolStore.selectedPool?.name || 'Pool Occupancy Dashboard' }}
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Real-time monitoring and analytics
+            Real-time analytics
           </p>
         </div>
       </div>
