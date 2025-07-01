@@ -48,7 +48,7 @@
         </div>
       </template>
 
-      <div class="text-center py-2">
+      <div class="text-center">
         <div
           :class="[
             'text-3xl font-bold mb-2',
@@ -102,7 +102,7 @@
         </div>
       </template>
 
-      <div class="text-center py-4">
+      <div class="text-center">
         <div
           :class="[
             'text-xl font-semibold mb-2',

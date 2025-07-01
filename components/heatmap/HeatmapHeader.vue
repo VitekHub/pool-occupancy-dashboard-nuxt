@@ -14,6 +14,7 @@ const { t, locale } = useI18n()
 
 import type { ViewMode } from '~/types'
 import { VIEW_MODES } from '~/types'
+import { formatWeekId } from '~/utils/dateUtils'
 
 interface Props {
   viewMode?: ViewMode
@@ -29,20 +30,7 @@ const headerTitle = computed(() => t(`heatmap.${props.viewMode}.title`))
 
 const headerDescription = computed(() =>
   t(`heatmap.${props.viewMode}.description`, {
-    date: formatWeekId(props.selectedWeekId),
+    date: formatWeekId(props.selectedWeekId, locale.value),
   })
 )
-
-const formatWeekId = (weekId: string): string => {
-  try {
-    const date = new Date(weekId)
-    return date.toLocaleDateString(locale.value === 'en' ? 'en-US' : 'cs-CZ', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  } catch {
-    return weekId
-  }
-}
 </script>

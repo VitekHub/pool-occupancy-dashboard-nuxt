@@ -73,9 +73,11 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, locale } = useI18n()
 import type { ViewMode } from '~/types'
 import { VIEW_MODES } from '~/types'
+import { formatWeekId } from '~/utils/dateUtils'
+
 const poolStore = usePoolStore()
 defineEmits<{
   'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
@@ -110,16 +112,7 @@ const weekOptions = computed(() => {
   }))
 })
 const formatWeekLabel = (weekId: string): string => {
-  try {
-    const date = new Date(weekId)
-    return `${t('heatmap.weekOfLabel')} ${date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })}`
-  } catch {
-    return `Week ${weekId}`
-  }
+  return `${t('heatmap.weekOfLabel')} ${formatWeekId(weekId, locale.value)}`
 }
 const goToPreviousWeek = () => {
   if (!canGoPreviousWeek.value) return

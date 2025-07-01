@@ -30,6 +30,19 @@ export const getWeekId = (date: Date): string => {
   return format(weekStart, 'yyyy-MM-dd')
 }
 
+export const formatWeekId = (weekId: string, locale: string): string => {
+  try {
+    const date = new Date(weekId)
+    return date.toLocaleDateString(locale === 'en' ? 'en-US' : 'cs-CZ', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  } catch {
+    return weekId
+  }
+}
+
 export const getHourFromTime = (timeStr: string): number => {
   const hourStr = timeStr.split(':')[0]
   return parseInt(hourStr, 10)
