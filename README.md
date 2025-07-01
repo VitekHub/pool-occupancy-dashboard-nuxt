@@ -212,4 +212,4 @@ For questions or issues:
 
 ---
 
-**Live Demo**: [Your GitHub Pages URL](https://vitekhub.github.io/pool-occupancy-dashboard-nuxt/)
+**Live Demo**: [Pool Occupancy Dashboard](https://vitekhub.github.io/pool-occupancy-dashboard-nuxt/)

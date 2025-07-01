@@ -4,7 +4,7 @@
     variant="ghost"
     size="sm"
     :icon="'i-heroicons-language'"
-    class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+    class="text-white dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
     :title="nextLanguageName"
   >
     {{ currentLanguageCode }}

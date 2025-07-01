@@ -1,7 +1,9 @@
 <template>
   <div
     :class="
-      poolStore.forceMobileView ? 'w-[500px] mx-auto' : 'max-w-fit mx-auto'
+      !isMobile && poolStore.forceMobileView
+        ? 'w-[500px] mx-auto'
+        : 'max-w-fit mx-auto'
     "
   >
     <DashboardViewControls @view-state-changed="handleViewStateChanged" />
@@ -19,6 +21,9 @@ import type { OverallOccupancyMap, WeeklyOccupancyMap, ViewMode } from '~/types'
 import { VIEW_MODES } from '~/types'
 
 const poolStore = usePoolStore()
+const isMobile = computed(() => {
+  return !useMediaQuery('(min-width: 1024px)').value
+})
 interface Props {
   overallOccupancyMap: OverallOccupancyMap
   weeklyOccupancyMap: WeeklyOccupancyMap

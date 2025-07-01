@@ -7,6 +7,7 @@
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             {{ $t('dashboard.stats.quickActions') }}
           </h3>
+          <UIcon name="i-heroicons-bolt" class="h-5 w-5 text-yellow-500" />
         </div>
       </template>
 

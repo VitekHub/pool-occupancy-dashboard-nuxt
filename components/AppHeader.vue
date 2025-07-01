@@ -1,6 +1,6 @@
 <template>
   <header
-    class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-2"
+    class="bg-blue-600 text-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-2"
   >
     <div class="flex items-center justify-between">
       <!-- Left Side -->
@@ -8,15 +8,15 @@
         <!-- Mobile menu toggle -->
         <UButton
           @click="toggleMobileMenu"
-          variant="ghost"
+          variant="white"
           icon="i-heroicons-bars-3"
           class="lg:hidden"
         />
         <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <h2 class="text-xl font-semibold">
             {{ poolStore.selectedPool?.name || $t('header.title') }}
           </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
+          <p class="text-sm dark:text-gray-400">
             {{ $t('header.subtitle') }}
           </p>
         </div>
@@ -33,7 +33,7 @@
               size="sm"
               class="shrink-0"
             />
-            <span class="text-sm text-gray-700 dark:text-gray-300">
+            <span class="text-sm dark:text-gray-300">
               {{ $t('header.mobileView') }}
             </span>
           </label>

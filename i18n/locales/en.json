@@ -72,6 +72,8 @@
       "description": "Raw occupancy values for week starting {date}",
       "tooltip": "{day} at {hour}:00 - {min} to {max} people"
     },
+    "average": "(average)",
+    "avg": "(avg)",
     "loading": "Loading heatmap data...",
     "legend": {
       "title": "Occupancy Rate Legend",

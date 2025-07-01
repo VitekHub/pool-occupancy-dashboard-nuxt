@@ -68,10 +68,12 @@
       "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno"
     },
     "weeklyRaw": {
-      "title": "Týdenní skutečná (min-max) mapa obsazenosti bazénu",
+      "title": "Týdenní (min-max) mapa obsazenosti bazénu",
       "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
       "tooltip": "{day} v {hour}:00 - {min} až {max} lidí"
     },
+    "average": "(průměr)",
+    "avg": "(avg)",
     "loading": "Načítání dat mapy...",
     "legend": {
       "title": "Legenda míry obsazenosti",

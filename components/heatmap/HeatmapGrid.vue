@@ -9,7 +9,7 @@
       <div
         :class="[
           'flex-shrink-0 text-sm font-medium text-gray-700 dark:text-gray-300 flex flex-col items-end',
-          isDesktop ? 'w-20 text-right pr-3' : 'w-8 text-xs',
+          isDesktop ? 'w-20 text-right pr-3' : 'w-8 text-xs pr-1',
         ]"
       >
         <span>{{ getDayLabel(day) }}</span>
@@ -55,7 +55,7 @@ const getTranslatedDayName = (englishDayName: string): string => {
 const getDayLabel = (day: string): string => {
   const translatedDay = getTranslatedDayName(day)
 
-  if (!props.isDesktop) {
+  if (!isDesktop.value) {
     return locale.value === 'cs'
       ? translatedDay.substring(0, 2)
       : translatedDay.substring(0, 3)
@@ -68,7 +68,9 @@ const getDayLabel = (day: string): string => {
  * where selectedWeekId is the date for Monday (ISO format).
  */
 const getDateForDay = (dayIndex: number) => {
-  if (!props.selectedWeekId) return ''
+  if (!props.selectedWeekId) {
+    return isDesktop.value ? t('heatmap.average') : t('heatmap.avg')
+  }
   const monday = parseISO(props.selectedWeekId)
   if (!isValid(monday)) return ''
   const date = addDays(monday, dayIndex)
