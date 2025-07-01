@@ -5,6 +5,7 @@ import {
   UTILIZATION_COLORS,
   UTILIZATION_THRESHOLDS,
 } from '~/types'
+import { getWeekId, getDayName } from '~/utils/dateUtils'
 
 type TranslationFunction = (
   key: string,
@@ -87,6 +88,13 @@ export default class HeatmapDataProcessor {
       : 0
   }
 
+  private isCurrentHour(day: string, hour: number) {
+    return (
+      day.toLowerCase() === getDayName(new Date()).toLowerCase() &&
+      hour === new Date().getHours()
+    )
+  }
+
   private getDayMaxUtilizationByWeek(
     selectedWeekId: string,
     day: string
@@ -133,6 +141,7 @@ export default class HeatmapDataProcessor {
         hour,
         utilization: utilizationRate,
       }),
+      isCurrentHour: this.isCurrentHour(day, hour),
     }
   }
 
@@ -182,6 +191,7 @@ export default class HeatmapDataProcessor {
         colorFillRatio: 0,
         displayText: '',
         title: '',
+        isCurrentHour: false,
       }
     }
 
@@ -210,6 +220,7 @@ export default class HeatmapDataProcessor {
         min: hourlyData.minOccupancy,
         max: hourlyData.maxOccupancy,
       }),
+      isCurrentHour: this.isCurrentHour(day, hour),
     }
   }
 }

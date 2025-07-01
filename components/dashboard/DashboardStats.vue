@@ -54,7 +54,7 @@
           :class="[
             'text-3xl font-bold mb-2',
             shouldShowOccupancy
-              ? 'text-blue-600 dark:text-blue-400'
+              ? 'text-blue-600 dark:text-blue-600'
               : 'text-gray-400 dark:text-gray-500',
           ]"
         >
@@ -76,9 +76,20 @@
           </div>
           <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
-              class="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
+              class="bg-blue-600 dark:bg-blue-600 h-2 rounded-full transition-all duration-300"
               :style="{
-                width: `${Math.min((currentOccupancy?.occupancy / poolStore.currentMaxCapacity) * 100, 100)}%`,
+                width: `${Math.min(currentOccupancy!.currentUtilizationRate, 100)}%`,
+              }"
+            ></div>
+          </div>
+          <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            {{ usualCapacityUsageText }}
+          </div>
+          <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              class="bg-blue-400 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
+              :style="{
+                width: `${Math.min(currentOccupancy!.averageUtilizationRate, 100)}%`,
               }"
             ></div>
           </div>
@@ -187,7 +198,7 @@ const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {
     return t('dashboard.stats.poolClosed')
   } else if (currentOccupancy.value !== null) {
-    return t('dashboard.stats.peopleInPool')
+    return ''
   } else {
     return t('dashboard.stats.noDataToday')
   }
@@ -209,17 +220,15 @@ const poolWebsiteUrl = computed((): string | null => {
 
   return null
 })
-const capacityUsageText = computed(() => {
-  if (
-    shouldShowOccupancy.value &&
-    poolStore.currentMaxCapacity > 0 &&
-    currentOccupancy.value
-  ) {
-    const percent = Math.round(
-      (currentOccupancy.value.occupancy / poolStore.currentMaxCapacity) * 100
-    )
-    return `${percent}${t('dashboard.stats.capacityUsage')} (${t('dashboard.stats.capacityTime')} ${currentOccupancy.value.time})`
-  }
-  return ''
-})
+const capacityUsageText = computed(() =>
+  shouldShowOccupancy.value
+    ? `${currentOccupancy.value!.currentUtilizationRate}${t('dashboard.stats.capacityUsage')} (${t('dashboard.stats.capacityTime')} ${currentOccupancy.value!.time})`
+    : ''
+)
+
+const usualCapacityUsageText = computed(() =>
+  shouldShowOccupancy.value
+    ? `${currentOccupancy.value!.averageUtilizationRate}${t('dashboard.stats.usualCapacityUsage')}`
+    : ''
+)
 </script>

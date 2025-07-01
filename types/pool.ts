@@ -102,4 +102,12 @@ export interface BaseCellData {
   colorFillRatio: number
   displayText: string
   title: string
+  isCurrentHour: boolean
+}
+
+export interface CurrentOccupancy {
+  occupancy: number
+  time: string
+  averageUtilizationRate: number
+  currentUtilizationRate: number
 }

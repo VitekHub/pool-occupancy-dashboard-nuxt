@@ -47,3 +47,7 @@ export const getHourFromTime = (timeStr: string): number => {
   const hourStr = timeStr.split(':')[0]
   return parseInt(hourStr, 10)
 }
+
+export const getDayName = (date: Date): string => {
+  return date.toLocaleDateString('en-US', { weekday: 'long' })
+}

@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import poolsConfig from '~/config/pools.json'
 import { parseOccupancyCSV } from '~/utils/csv'
-import { nowInPrague } from '~/utils/dateUtils'
+import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
   WeeklyOccupancyMap,
   OverallOccupancyMap,
   OccupancyRecord,
+  CurrentOccupancy,
 } from '~/types'
 import { POOL_TYPES } from '~/types'
 import { processAllOccupancyData } from '~/utils/poolDataProcessor'
@@ -83,7 +84,7 @@ export const usePoolStore = defineStore('pool', {
     },
 
     // Get current occupancy (last record for today)
-    currentOccupancy: (state): OccupancyRecord | null => {
+    currentOccupancy: (state): CurrentOccupancy | null => {
       if (state.rawOccupancyData.length === 0) return null
 
       const today = nowInPrague()
@@ -99,8 +100,21 @@ export const usePoolStore = defineStore('pool', {
 
       if (todayRecords.length === 0) return null
 
-      // Get the most recent record (last one in the array since they should be chronologically ordered)
-      return todayRecords[todayRecords.length - 1]
+      const lastRecord = todayRecords[todayRecords.length - 1]
+      const averageUtilizationRate =
+        state.overallOccupancyMap[lastRecord.day][
+          getHourFromTime(lastRecord.time)
+        ]?.averageUtilizationRate
+      const currentUtilizationRate = Math.round(
+        (lastRecord.occupancy / state.currentMaxCapacity) * 100
+      )
+
+      return {
+        occupancy: lastRecord.occupancy,
+        time: lastRecord.time,
+        averageUtilizationRate,
+        currentUtilizationRate,
+      }
     },
 
     // Get maximum capacity for current pool

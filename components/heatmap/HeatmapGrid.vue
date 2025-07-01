@@ -31,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { format, addDays, parseISO, isValid } from 'date-fns'
 import type { BaseCellData } from '~/types'
 

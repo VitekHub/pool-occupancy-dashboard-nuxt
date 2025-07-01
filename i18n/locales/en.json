@@ -39,6 +39,7 @@
       "mobileView": "Mobile View",
       "currentOccupancy": "Current Occupancy",
       "capacityUsage": "% of capacity",
+      "usualCapacityUsage": "% usually at this hour",
       "capacityTime": "at time",
       "poolStatus": "Pool Status",
       "poolOpen": "Pool is open",

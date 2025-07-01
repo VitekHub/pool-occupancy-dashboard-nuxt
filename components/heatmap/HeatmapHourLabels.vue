@@ -9,12 +9,22 @@
           v-for="hour in hours"
           :key="hour"
           :class="[
-            'text-center text-xs font-medium text-gray-600 dark:text-gray-400',
+            'font-medium flex items-end justify-center',
             isDesktop ? 'min-w-12' : 'flex-1 min-w-2',
+            hour === new Date().getHours()
+              ? 'text-sm text-red-600 dark:text-red-400'
+              : 'text-xs text-gray-600 dark:text-gray-400',
           ]"
         >
-          <span v-if="isDesktop">{{ hour }}:00</span>
-          <span v-else-if="hour % 3 === 0">{{ hour }}</span>
+          <div>
+            <UIcon
+              v-if="!isDesktop && hour === new Date().getHours()"
+              name="i-heroicons-arrow-long-down"
+              class="h-6 w-6 text-red-600"
+            />
+            <div v-if="isDesktop">{{ hour }}:00</div>
+            <div v-else>{{ hour % 3 === 0 ? hour : '&nbsp;' }}</div>
+          </div>
         </div>
       </div>
     </div>

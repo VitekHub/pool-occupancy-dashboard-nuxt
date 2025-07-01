@@ -39,6 +39,7 @@
       "mobileView": "Mobilní zobrazení",
       "currentOccupancy": "Aktuální obsazenost",
       "capacityUsage": "% kapacity",
+      "usualCapacityUsage": "% obvykle v tuto hodinu",
       "capacityTime": "v čase",
       "poolStatus": "Stav bazénu",
       "poolOpen": "Bazén je otevřen",
