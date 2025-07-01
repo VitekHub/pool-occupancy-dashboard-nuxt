@@ -48,28 +48,28 @@
       "visitWebsite": "Visit Website"
     },
     "viewControls": {
-      "viewMode": "View Mode",
-      "overall": "Overall Average",
-      "weeklyAverage": "Weekly Average",
-      "weeklyRaw": "Weekly Min/Max",
+      "viewMode": "Occupancy View",
+      "overall": "Historical Average",
+      "weeklyAverage": "Weekly Percentage",
+      "weeklyRaw": "Weekly Raw",
       "selectWeek": "Select Week",
       "selectWeekPlaceholder": "Select a week"
     }
   },
   "heatmap": {
     "overall": {
-      "title": "Overall Pool Occupancy Heatmap",
+      "title": "Historical Average Occupancy Heatmap",
       "description": "Average occupancy rates across all recorded weeks",
       "tooltip": "{day} at {hour}:00 - average {utilization}% occupied"
     },
     "weeklyAverage": {
-      "title": "Weekly Pool Occupancy Heatmap (Average)",
-      "description": "Average occupancy rates for week starting {date}",
+      "title": "Weekly Percentage Occupancy Heatmap",
+      "description": "Percentage occupancy rates for week starting {date}",
       "tooltip": "{day} at {hour}:00 - {utilization}% occupied"
     },
     "weeklyRaw": {
-      "title": "Weekly Pool Occupancy Heatmap (Min/Max)",
-      "description": "Min/Max occupancy values for week starting {date}",
+      "title": "Weekly Raw (Min-Max) Occupancy Heatmap",
+      "description": "Raw occupancy values for week starting {date}",
       "tooltip": "{day} at {hour}:00 - {min} to {max} people"
     },
     "loading": "Loading heatmap data...",

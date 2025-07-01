@@ -18,7 +18,7 @@
       :style="{
         height: HeatmapDataProcessor.getBarHeight(
           colorFillRatio,
-          uniformHeatmapBarHeight
+          uniformHeatmapBarHeight && isDesktop
         ),
       }"
     ></div>
@@ -35,9 +35,10 @@
 import type { BaseCellData } from '~/types'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
+const { isDesktop } = useDesktopView()
+
 interface Props {
   cellData?: BaseCellData
-  isDesktop: boolean
 }
 
 const props = defineProps<Props>()

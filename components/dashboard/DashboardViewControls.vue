@@ -82,6 +82,7 @@ const poolStore = usePoolStore()
 defineEmits<{
   'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
 }>()
+const { isDesktop } = useDesktopView()
 
 const viewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
 const selectedWeekId = ref<string | null>(null)
@@ -96,14 +97,16 @@ const canGoNextWeek = computed(() => {
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value)
   return currentIndex < availableWeeks.value.length - 1
 })
-const viewModeOptions = [
-  VIEW_MODES.OVERALL,
-  VIEW_MODES.WEEKLY_AVERAGE,
-  VIEW_MODES.WEEKLY_RAW,
-].map((viewMode) => ({
-  value: viewMode,
-  label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
-}))
+const viewModeOptions = computed(() => {
+  return [
+    VIEW_MODES.OVERALL,
+    VIEW_MODES.WEEKLY_AVERAGE,
+    ...(isDesktop.value ? [VIEW_MODES.WEEKLY_RAW] : []),
+  ].map((viewMode) => ({
+    value: viewMode,
+    label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
+  }))
+})
 
 const weekOptions = computed(() => {
   return availableWeeks.value.map((weekId) => ({

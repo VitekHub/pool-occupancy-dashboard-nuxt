@@ -3,11 +3,10 @@
     <HeatmapHeader :view-mode="viewMode" :selected-week-id="selectedWeekId" />
     <HeatmapLoadingState v-if="!dataProcessor" />
     <div v-else class="overflow-x-auto">
-      <HeatmapHourLabels :hours="hours" :is-desktop="isDesktop" />
+      <HeatmapHourLabels :hours="hours" />
       <HeatmapGrid
         :sorted-days="sortedDays"
         :hours="hours"
-        :is-desktop="isDesktop"
         :get-cell-data="getCellData"
         :selected-week-id="selectedWeekId"
       />
@@ -45,10 +44,7 @@ const poolStore = usePoolStore()
 const tooltipTranslationKey = computed(
   () => `heatmap.${props.viewMode}.tooltip`
 )
-const isDesktop = computed(() => {
-  if (poolStore.forceMobileView) return false
-  return useMediaQuery('(min-width: 1024px)').value
-})
+const { isDesktop } = useDesktopView()
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 const dataProcessor = computed(() => {
   // For overall view, check if overallOccupancyMap has data

@@ -1,7 +1,8 @@
 <template>
   <div
-    :class="poolStore.forceMobileView ? '' : 'max-w-fit mx-auto'"
-    :style="poolStore.forceMobileView ? 'width: 500px; margin: 0 auto;' : ''"
+    :class="
+      poolStore.forceMobileView ? 'w-[500px] mx-auto' : 'max-w-fit mx-auto'
+    "
   >
     <DashboardViewControls @view-state-changed="handleViewStateChanged" />
     <Heatmap

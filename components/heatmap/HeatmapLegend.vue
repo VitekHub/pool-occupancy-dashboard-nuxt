@@ -26,7 +26,7 @@
         </div>
 
         <!-- Uniform Bar Height Toggle -->
-        <div class="flex items-center gap-2 flex-shrink-0">
+        <div v-if="isDesktop" class="flex items-center gap-2 flex-shrink-0">
           <UToggle
             v-model="uniformBarHeight"
             color="blue"
@@ -98,6 +98,7 @@
 const { t } = useI18n()
 
 const poolStore = usePoolStore()
+const { isDesktop } = useDesktopView()
 
 interface LegendItem {
   color: string

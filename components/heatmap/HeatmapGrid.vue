@@ -19,12 +19,11 @@
       </div>
 
       <!-- Hour cells -->
-      <div :class="['flex flex-1', isDesktop ? 'gap-1' : 'gap-1']">
+      <div class="flex flex-1 gap-1 mb-2">
         <HeatmapCell
           v-for="hour in hours"
           :key="`${day}-${hour}`"
           :cell-data="getCellData(day, hour)"
-          :is-desktop="isDesktop"
         />
       </div>
     </div>
@@ -36,10 +35,11 @@ import { computed } from 'vue'
 import { format, addDays, parseISO, isValid } from 'date-fns'
 import type { BaseCellData } from '~/types'
 
+const { isDesktop } = useDesktopView()
+
 interface Props {
   sortedDays: string[]
   hours: number[]
-  isDesktop: boolean
   getCellData: (day: string, hour: number) => BaseCellData | undefined
   selectedWeekId: string | null
 }
