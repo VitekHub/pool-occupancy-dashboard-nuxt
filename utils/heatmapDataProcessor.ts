@@ -61,7 +61,7 @@ export default class HeatmapDataProcessor {
     ]
   }
 
-  public getColorForUtilization(rate: number): string {
+  private getColor(rate: number): string {
     const veryLowThreshold = this.adjustHeatmapThreshold(
       UTILIZATION_THRESHOLDS.VERY_LOW
     )
@@ -78,6 +78,38 @@ export default class HeatmapDataProcessor {
     return UTILIZATION_COLORS.VERY_HIGH
   }
 
+  private getColorFillRatio(
+    utilizationRate: number,
+    maxDayUtilizationRate: number
+  ): number {
+    return maxDayUtilizationRate > 0
+      ? utilizationRate / maxDayUtilizationRate
+      : 0
+  }
+
+  private getDayMaxUtilizationByWeek(
+    selectedWeekId: string,
+    day: string
+  ): number {
+    const maxValueInWeek =
+      this.weeklyOccupancyMap[selectedWeekId]?.[day]?.maxDayValues
+        .utilizationRate || 0
+    const maxValueOverall =
+      this.overallOccupancyMap[day]?.maxDayValues.averageUtilizationRate || 0
+
+    const today = new Date()
+    const todayName = today.toLocaleDateString('en-US', { weekday: 'long' })
+    const currentWeekId = getWeekId(today)
+    const isToday =
+      selectedWeekId === currentWeekId &&
+      day.toLowerCase() === todayName.toLowerCase()
+    if (isToday) {
+      return Math.max(maxValueInWeek, maxValueOverall)
+    } else {
+      return maxValueInWeek
+    }
+  }
+
   private getBaseCellData({
     utilizationRate,
     maxDayUtilizationRate,
@@ -90,12 +122,14 @@ export default class HeatmapDataProcessor {
     hour: number
   }): BaseCellData {
     return {
-      color: this.getColorForUtilization(utilizationRate),
-      colorFillRatio:
-        maxDayUtilizationRate > 0 ? utilizationRate / maxDayUtilizationRate : 0,
+      color: this.getColor(utilizationRate),
+      colorFillRatio: this.getColorFillRatio(
+        utilizationRate,
+        maxDayUtilizationRate
+      ),
       displayText: utilizationRate > 0 ? `${utilizationRate}%` : '',
       title: this.t(this.tooltipTranslationKey, {
-        day: this.t(`common:days.${day.toLowerCase()}`),
+        day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
         utilization: utilizationRate,
       }),
@@ -110,13 +144,13 @@ export default class HeatmapDataProcessor {
     const utilizationRate =
       this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]?.utilizationRate ||
       0
-    const maxDayUtilizationRate =
-      this.weeklyOccupancyMap[selectedWeekId]?.[day]?.maxDayValues
-        .utilizationRate || 0
 
     return this.getBaseCellData({
       utilizationRate,
-      maxDayUtilizationRate,
+      maxDayUtilizationRate: this.getDayMaxUtilizationByWeek(
+        selectedWeekId,
+        day
+      ),
       day,
       hour,
     })
@@ -157,21 +191,21 @@ export default class HeatmapDataProcessor {
           ? `${hourlyData.minOccupancy}`
           : ''
         : `${hourlyData.minOccupancy}-${hourlyData.maxOccupancy}`
-    const maxDayOccupancy =
-      this.weeklyOccupancyMap[selectedWeekId]?.[day]?.maxDayValues
-        .maxOccupancy || 0
+
+    const maxDayUtilizationRate = this.getDayMaxUtilizationByWeek(
+      selectedWeekId,
+      day
+    )
 
     return {
-      color: this.getColorForUtilization(hourlyData.utilizationRate),
-      colorFillRatio:
-        hourlyData.maxOccupancy === maxDayOccupancy
-          ? 1
-          : maxDayOccupancy > 0
-            ? hourlyData.averageOccupancy / maxDayOccupancy
-            : 0, // Fill ratio based on max occupancy of the day
+      color: this.getColor(hourlyData.utilizationRate),
+      colorFillRatio: this.getColorFillRatio(
+        hourlyData.utilizationRate,
+        maxDayUtilizationRate
+      ),
       displayText,
       title: this.t(this.tooltipTranslationKey, {
-        day: this.t(`common:days.${day.toLowerCase()}`),
+        day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
         min: hourlyData.minOccupancy,
         max: hourlyData.maxOccupancy,

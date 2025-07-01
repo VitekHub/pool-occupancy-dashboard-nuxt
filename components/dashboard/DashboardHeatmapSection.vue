@@ -1,42 +1,37 @@
 <template>
   <div
-    :class="poolStore.forceMobileView ? '' : 'max-w-fit mx-auto'"
-    :style="poolStore.forceMobileView ? 'width: 500px; margin: 0 auto;' : ''"
+    :class="
+      !isMobile && poolStore.forceMobileView
+        ? 'w-[500px] mx-auto'
+        : 'max-w-fit mx-auto'
+    "
   >
     <DashboardViewControls @view-state-changed="handleViewStateChanged" />
-
-    <!-- Occupancy Heatmap -->
-    <div>
-      <Heatmap
-        :overall-occupancy-map="overallOccupancyMap"
-        :weekly-occupancy-map="weeklyOccupancyMap"
-        :view-mode="currentViewMode"
-        :selected-week-id="currentSelectedWeekId"
-        tooltip-translation-key="heatmap:overallTooltip"
-      />
-    </div>
+    <Heatmap
+      :overall-occupancy-map="overallOccupancyMap"
+      :weekly-occupancy-map="weeklyOccupancyMap"
+      :view-mode="currentViewMode"
+      :selected-week-id="currentSelectedWeekId"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { OverallOccupancyMap, WeeklyOccupancyMap } from '~/types'
+import type { OverallOccupancyMap, WeeklyOccupancyMap, ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
 
 const poolStore = usePoolStore()
-
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
-
+const isMobile = computed(() => {
+  return !useMediaQuery('(min-width: 1024px)').value
+})
 interface Props {
   overallOccupancyMap: OverallOccupancyMap
   weeklyOccupancyMap: WeeklyOccupancyMap
 }
-
 defineProps<Props>()
 
-// Local state to track current view settings
-const currentViewMode = ref<ViewMode>('overall')
+const currentViewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
 const currentSelectedWeekId = ref<string | null>(null)
-
-// Handle view state changes from DashboardViewControls
 const handleViewStateChanged = ({
   viewMode,
   selectedWeekId,

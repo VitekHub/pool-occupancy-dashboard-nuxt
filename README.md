@@ -10,12 +10,14 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 ## 🏊‍♂️ Features
 
 ### 📊 Real-time Pool Monitoring
+
 - **Current Occupancy**: Live tracking of people currently in each pool
 - **Pool Status**: Real-time open/closed status with opening hours
 - **Capacity Visualization**: Visual progress bars showing occupancy percentages
 - **Multi-pool Support**: Monitor multiple pools across different facilities
 
 ### 📈 Advanced Analytics
+
 - **Interactive Heatmaps**: Visualize occupancy patterns by day and hour
 - **Multiple View Modes**:
   - Overall average across all weeks
@@ -25,36 +27,42 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 - **Historical Data**: Access weeks of historical occupancy data
 
 ### 🎨 Modern User Experience
+
 - **Responsive Design**: Optimized for mobile, tablet, and desktop
 - **Dark/Light Mode**: Full theme support with system preference detection
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Git
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
-   git clone https://github.com/yourusername/pool-occupancy-dashboard.git
-   cd pool-occupancy-dashboard
+   git clone https://github.com/VitekHub/pool-occupancy-dashboard-nuxt.git
+   cd pool-occupancy-dashboard-nuxt
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables** (optional)
+
    ```bash
    cp .env.example .env
    # Edit .env if you need to customize the CSV data source
    ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -108,6 +116,7 @@ npm run format:check # Check formatting
 The project includes automated deployment to GitHub Pages:
 
 1. **Configure repository name** in `nuxt.config.ts`:
+
    ```typescript
    app: {
      baseURL: '/pool-occupancy-dashboard-nuxt/', // Update this
@@ -141,6 +150,7 @@ npm run generate
 ### Environment Variables
 
 Create `.env` file (optional):
+
 ```bash
 # CSV data source URL
 VITE_CSV_BASE_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/
@@ -169,6 +179,7 @@ Edit `config/pools.json` to add/modify pools:
 ## 📊 Data Sources
 
 Pool occupancy data is sourced from:
+
 - Official pool websites with real-time occupancy
 - CSV files updated regularly via automated scraping
 - Historical data spanning multiple weeks/months
@@ -187,7 +198,6 @@ Data format: Date, Day, Time, Occupancy count
 - **Data Processing**: Custom CSV parsing and analytics
 - **Icons**: Heroicons via Nuxt Icon
 
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -195,10 +205,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For questions or issues:
+
 - Open an issue on GitHub
 - Check existing documentation
 - Review configuration examples
 
 ---
 
-**Live Demo**: [Your GitHub Pages URL](https://yourusername.github.io/pool-occupancy-dashboard-nuxt/)
+**Live Demo**: [Pool Occupancy Dashboard](https://vitekhub.github.io/pool-occupancy-dashboard-nuxt/)

@@ -6,7 +6,7 @@
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
-          View Mode
+          {{ $t('dashboard.viewControls.viewMode') }}
         </label>
         <div class="flex flex-wrap gap-1 p-1">
           <UButton
@@ -24,11 +24,11 @@
       </div>
 
       <!-- Week Selection (only for weekly views) -->
-      <div v-if="viewMode !== 'overall'">
+      <div v-if="viewMode !== VIEW_MODES.OVERALL">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
-          Select Week
+          {{ $t('dashboard.viewControls.selectWeek') }}
         </label>
         <div class="flex items-center gap-2">
           <!-- Previous Week Button -->
@@ -40,7 +40,7 @@
             :disabled="!canGoPreviousWeek"
             :class="{ 'opacity-40 cursor-not-allowed': !canGoPreviousWeek }"
             @click="goToPreviousWeek"
-            class="flex-shrink-0 text-white"
+            class="flex-shrink-0 text-white mt-1"
           />
 
           <!-- Week Selector -->
@@ -50,10 +50,9 @@
             :options="weekOptions"
             option-attribute="label"
             value-attribute="value"
-            placeholder="Select a week"
+            :placeholder="$t('dashboard.viewControls.selectWeekPlaceholder')"
             :disabled="availableWeeks.length === 0"
-            color="sky"
-            class="flex-1"
+            class="flex-1 mt-1 week-selector"
           />
 
           <!-- Next Week Button -->
@@ -65,7 +64,7 @@
             :disabled="!canGoNextWeek"
             :class="{ 'opacity-40 cursor-not-allowed': !canGoNextWeek }"
             @click="goToNextWeek"
-            class="flex-shrink-0 text-white"
+            class="flex-shrink-0 text-white mt-1"
           />
         </div>
       </div>
@@ -74,65 +73,50 @@
 </template>
 
 <script setup lang="ts">
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
+const { t, locale } = useI18n()
+import type { ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
+import { formatWeekId } from '~/utils/dateUtils'
 
 const poolStore = usePoolStore()
-
-// Emits - only emit the current state when it changes
 defineEmits<{
   'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
 }>()
+const { isDesktop } = useDesktopView()
 
-// Local state
-const viewMode = ref<ViewMode>('overall')
+const viewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
 const selectedWeekId = ref<string | null>(null)
-
-// Available weeks from the store
 const availableWeeks = computed(() => poolStore.availableWeekIds)
-
-// Navigation state
 const canGoPreviousWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value)
   return currentIndex > 0
 })
-
 const canGoNextWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value)
   return currentIndex < availableWeeks.value.length - 1
 })
+const viewModeOptions = computed(() => {
+  return [
+    VIEW_MODES.OVERALL,
+    VIEW_MODES.WEEKLY_AVERAGE,
+    ...(isDesktop.value ? [VIEW_MODES.WEEKLY_RAW] : []),
+  ].map((viewMode) => ({
+    value: viewMode,
+    label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
+  }))
+})
 
-// View mode options
-const viewModeOptions = [
-  { value: 'overall', label: 'Overall Average' },
-  { value: 'weekly-average', label: 'Weekly Average' },
-  { value: 'weekly-raw', label: 'Weekly Min/Max' },
-]
-
-// Week options for the select dropdown
 const weekOptions = computed(() => {
   return availableWeeks.value.map((weekId) => ({
     value: weekId,
     label: formatWeekLabel(weekId),
   }))
 })
-
-// Format week ID for display
 const formatWeekLabel = (weekId: string): string => {
-  try {
-    const date = new Date(weekId)
-    return `Week of ${date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })}`
-  } catch {
-    return `Week ${weekId}`
-  }
+  return `${t('heatmap.weekOfLabel')} ${formatWeekId(weekId, locale.value)}`
 }
-
-// Navigation functions
 const goToPreviousWeek = () => {
   if (!canGoPreviousWeek.value) return
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value!)
@@ -140,7 +124,6 @@ const goToPreviousWeek = () => {
     updateSelectedWeekId(availableWeeks.value[currentIndex - 1])
   }
 }
-
 const goToNextWeek = () => {
   if (!canGoNextWeek.value) return
   const currentIndex = availableWeeks.value.indexOf(selectedWeekId.value!)
@@ -148,39 +131,34 @@ const goToNextWeek = () => {
     updateSelectedWeekId(availableWeeks.value[currentIndex + 1])
   }
 }
-
-// Update functions that emit changes
 const updateViewMode = (newViewMode: ViewMode) => {
   viewMode.value = newViewMode
   emitViewStateChanged()
 }
-
 const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
   emitViewStateChanged()
 }
-
-// Emit function
 const emitViewStateChanged = () => {
   emit('view-state-changed', {
     viewMode: viewMode.value,
     selectedWeekId: selectedWeekId.value,
   })
 }
-
-// Get emit function
 const emit = getCurrentInstance()?.emit
 
 // Auto-select first week when switching to weekly view
 watch(
   [viewMode, availableWeeks],
   ([newViewMode, newAvailableWeeks]) => {
-    if (
-      newViewMode !== 'overall' &&
-      newAvailableWeeks.length > 0 &&
-      !selectedWeekId.value
-    ) {
-      updateSelectedWeekId(newAvailableWeeks[newAvailableWeeks.length - 1]) // Select most recent week
+    if (newViewMode !== VIEW_MODES.OVERALL && newAvailableWeeks.length > 0) {
+      // If no week is selected or selected week is not available, select the most recent week
+      if (
+        !selectedWeekId.value ||
+        !newAvailableWeeks.includes(selectedWeekId.value)
+      ) {
+        updateSelectedWeekId(newAvailableWeeks[newAvailableWeeks.length - 1])
+      }
     }
   },
   { immediate: true }
@@ -188,13 +166,17 @@ watch(
 
 // Reset week selection when switching back to overall
 watch(viewMode, (newViewMode) => {
-  if (newViewMode === 'overall') {
+  if (newViewMode === VIEW_MODES.OVERALL) {
     updateSelectedWeekId(null)
   }
 })
 
-// Emit initial state
 onMounted(() => {
   emitViewStateChanged()
 })
 </script>
+<style scoped>
+:deep(.week-selector select:focus) {
+  --tw-ring-color: transparent !important;
+}
+</style>

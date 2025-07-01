@@ -9,6 +9,14 @@ export const isInsidePool = (poolType: PoolType): boolean => {
   return poolType === POOL_TYPES.INSIDE
 }
 
+export const VIEW_MODES = {
+  OVERALL: 'overall',
+  WEEKLY_AVERAGE: 'weeklyAverage',
+  WEEKLY_RAW: 'weeklyRaw',
+} as const
+
+export type ViewMode = (typeof VIEW_MODES)[keyof typeof VIEW_MODES]
+
 export const UTILIZATION_THRESHOLDS = {
   VERY_LOW: 25,
   LOW: 50,
@@ -66,19 +74,10 @@ export interface HourlyOccupancySummary {
   date: Date
 }
 
-export interface HourlyOccupancySummaryWithLanes
-  extends HourlyOccupancySummary {
-  lanes?: {
-    current: number
-    total: number
-    colorFillRatio: number
-  }
-}
-
 export interface WeeklyOccupancyMap {
   [weekId: string]: {
     [day: string]: {
-      [hour: number]: HourlyOccupancySummaryWithLanes
+      [hour: number]: HourlyOccupancySummary
       maxDayValues: {
         utilizationRate: number
         maxOccupancy: number

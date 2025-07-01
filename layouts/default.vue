@@ -1,19 +1,18 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Sidebar -->
+  <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <AppSidebar />
 
     <!-- Main Content Area -->
     <div class="flex flex-col min-h-screen lg:ml-16">
-      <!-- Header -->
-      <AppHeader />
+      <div class="sticky top-0 z-40">
+        <AppHeader />
+      </div>
 
       <!-- Main Content -->
-      <main class="flex-1 p-6 overflow-auto">
+      <main class="flex-1 p-6 overflow-auto pt-6">
         <slot />
       </main>
 
-      <!-- Footer -->
       <AppFooter />
     </div>
   </div>
@@ -22,16 +21,11 @@
 <script setup lang="ts">
 const poolStore = usePoolStore()
 
-// Initialize the store with pool configurations and occupancy data
 onMounted(async () => {
   try {
-    // First load the pool configurations
     await poolStore.loadPoolsConfig()
-
-    // Then load and process the occupancy data for the selected pool
-    await poolStore.loadAndProcessOccupancyData()
   } catch (error) {
-    console.error('Error initializing pool data:', error)
+    console.error('Error initializing pool config:', error)
   }
 })
 </script>

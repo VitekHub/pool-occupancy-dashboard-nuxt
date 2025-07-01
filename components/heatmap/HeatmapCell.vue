@@ -3,7 +3,7 @@
     :class="[
       'relative dark:border-gray-600 cursor-pointer transition-opacity duration-200 hover:opacity-80 flex items-center justify-center',
       isDesktop
-        ? 'border border-gray-200 w-12 h-10 rounded p-1'
+        ? 'border border-gray-200 w-12 h-12 rounded p-1'
         : 'flex-1 min-w-2 h-16',
     ]"
     :title="cellData?.title || ''"
@@ -18,7 +18,7 @@
       :style="{
         height: HeatmapDataProcessor.getBarHeight(
           colorFillRatio,
-          uniformHeatmapBarHeight
+          uniformHeatmapBarHeight && isDesktop
         ),
       }"
     ></div>
@@ -35,17 +35,14 @@
 import type { BaseCellData } from '~/types'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
+const { isDesktop } = useDesktopView()
+
 interface Props {
   cellData?: BaseCellData
-  isDesktop: boolean
 }
 
 const props = defineProps<Props>()
-
-// Get pool store for uniform bar height setting
 const poolStore = usePoolStore()
-
-// Computed values for the bar height calculation
 const colorFillRatio = computed(() => props.cellData?.colorFillRatio || 0)
 const uniformHeatmapBarHeight = computed(
   () => poolStore.uniformHeatmapBarHeight

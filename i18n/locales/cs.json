@@ -1,0 +1,94 @@
+{
+  "common": {
+    "days": {
+      "monday": "Pondělí",
+      "tuesday": "Úterý",
+      "wednesday": "Středa",
+      "thursday": "Čtvrtek",
+      "friday": "Pátek",
+      "saturday": "Sobota",
+      "sunday": "Neděle"
+    },
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "na": "N/A",
+    "version": "Verze",
+    "today": "Dnes",
+    "open": "Otevřeno",
+    "closed": "Zavřeno"
+  },
+  "header": {
+    "title": "Dashboard obsazenosti bazénů",
+    "subtitle": "Obsazenost",
+    "mobileView": "Mobilní zobrazení",
+    "notifications": "Oznámení"
+  },
+  "sidebar": {
+    "title": "Obsazenost bazénů",
+    "version": "Pool Occupancy Dashboard v1.0.0"
+  },
+  "footer": {
+    "copyright": "© 2025 Pool Occupancy Dashboard. Všechna práva vyhrazena.",
+    "version": "Verze 1.0.0"
+  },
+  "dashboard": {
+    "stats": {
+      "quickActions": "Rychlé akce",
+      "viewStatistics": "Zobrazit statistiku",
+      "exportData": "Exportovat data",
+      "mobileView": "Mobilní zobrazení",
+      "currentOccupancy": "Aktuální obsazenost",
+      "capacityUsage": "% kapacity",
+      "capacityTime": "v čase",
+      "poolStatus": "Stav bazénu",
+      "poolOpen": "Bazén je otevřen",
+      "poolClosed": "Bazén je momentálně zavřen",
+      "peopleInPool": "Aktuálně lidí / Max. kapacita",
+      "noDataToday": "Žádná data pro dnešek",
+      "visitWebsite": "Navštívit web"
+    },
+    "viewControls": {
+      "viewMode": "Zobrazení obsazenosti",
+      "overall": "Historická průměrná",
+      "weeklyAverage": "Týdenní procentuální",
+      "weeklyRaw": "Týdenní skutečná",
+      "selectWeek": "Vybrat týden",
+      "selectWeekPlaceholder": "Vyberte týden"
+    }
+  },
+  "heatmap": {
+    "overall": {
+      "title": "Historická průměrná mapa obsazenosti bazénu",
+      "description": "Průměrné míry obsazenosti napříč všemi zaznamenanými týdny",
+      "tooltip": "{day} v {hour}:00 - průměrně {utilization}% obsazeno"
+    },
+    "weeklyAverage": {
+      "title": "Týdenní procentuální mapa obsazenosti bazénu",
+      "description": "Procentuální míry obsazenosti pro týden začínající {date}",
+      "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno"
+    },
+    "weeklyRaw": {
+      "title": "Týdenní (min-max) mapa obsazenosti bazénu",
+      "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
+      "tooltip": "{day} v {hour}:00 - {min} až {max} lidí"
+    },
+    "average": "(průměr)",
+    "avg": "(avg)",
+    "loading": "Načítání dat mapy...",
+    "legend": {
+      "title": "Legenda míry obsazenosti",
+      "uniformBarHeight": "Zobrazit jednotnou výšku sloupců",
+      "threshold": "Práh",
+      "explanations": {
+        "color": "Barva představuje absolutní míru obsazenosti ve srovnání s maximální kapacitou bazénu - tmavší barvy označují vyšší obsazenost.",
+        "height": "Výška barevného sloupce představuje relativní obsazenost v rámci daného dne - vyšší sloupec označuje vyšší obsazenost ve srovnání s ostatními hodinami téhož dne."
+      }
+    },
+    "overallTooltip": "{day} v {hour}:00 - {utilization}% obsazenost",
+    "weekOfLabel": "Týden od"
+  },
+  "meta": {
+    "title": "Dashboard obsazenosti bazénů",
+    "description": "Sledování obsazenosti bazénů a analytiky v reálném čase"
+  }
+}

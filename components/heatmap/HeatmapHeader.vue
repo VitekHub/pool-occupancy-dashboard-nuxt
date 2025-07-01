@@ -10,7 +10,11 @@
 </template>
 
 <script setup lang="ts">
-type ViewMode = 'overall' | 'weekly-average' | 'weekly-raw'
+const { t, locale } = useI18n()
+
+import type { ViewMode } from '~/types'
+import { VIEW_MODES } from '~/types'
+import { formatWeekId } from '~/utils/dateUtils'
 
 interface Props {
   viewMode?: ViewMode
@@ -18,46 +22,15 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  viewMode: 'overall',
+  viewMode: VIEW_MODES.OVERALL,
   selectedWeekId: null,
 })
 
-const headerTitle = computed(() => {
-  switch (props.viewMode) {
-    case 'weekly-average':
-      return `Weekly Pool Occupancy Heatmap (Average)`
-    case 'weekly-raw':
-      return `Weekly Pool Occupancy Heatmap (Min/Max)`
-    default:
-      return `Overall Pool Occupancy Heatmap`
-  }
-})
+const headerTitle = computed(() => t(`heatmap.${props.viewMode}.title`))
 
-const headerDescription = computed(() => {
-  switch (props.viewMode) {
-    case 'weekly-average':
-      return props.selectedWeekId
-        ? `Average occupancy rates for week starting ${formatWeekId(props.selectedWeekId)}`
-        : 'Select a week to view average occupancy rates'
-    case 'weekly-raw':
-      return props.selectedWeekId
-        ? `Min/Max occupancy values for week starting ${formatWeekId(props.selectedWeekId)}`
-        : 'Select a week to view min/max occupancy values'
-    default:
-      return 'Average occupancy rates across all recorded weeks'
-  }
-})
-
-const formatWeekId = (weekId: string): string => {
-  try {
-    const date = new Date(weekId)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  } catch {
-    return weekId
-  }
-}
+const headerDescription = computed(() =>
+  t(`heatmap.${props.viewMode}.description`, {
+    date: formatWeekId(props.selectedWeekId, locale.value),
+  })
+)
 </script>

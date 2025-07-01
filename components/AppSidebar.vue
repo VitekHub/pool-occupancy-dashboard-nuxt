@@ -9,7 +9,7 @@
   <!-- Sidebar -->
   <div
     :class="[
-      'fixed left-0 top-0 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg transition-all duration-300 z-50',
+      'fixed left-0 top-0 h-full bg-blue-600 text-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg transition-all duration-300 z-50',
       // Mobile: slide in/out, Desktop: always visible with hover expansion
       'lg:translate-x-0',
       isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
@@ -26,16 +26,13 @@
             <div
               class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0"
             >
-              <UIcon
-                name="i-heroicons-building-office-2"
-                class="h-5 w-5 text-white"
-              />
+              <UIcon name="i-heroicons-lifebuoy" class="h-5 w-5" />
             </div>
             <h1
               v-if="showText"
-              class="ml-3 text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis text-gray-900 dark:text-white"
+              class="ml-3 text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis"
             >
-              Pool Dashboard
+              {{ $t('sidebar.title') }}
             </h1>
           </div>
 
@@ -46,7 +43,7 @@
           >
             <UIcon
               name="i-heroicons-x-mark"
-              class="h-5 w-5 text-gray-600 dark:text-gray-300"
+              class="h-5 w-5 dark:text-gray-300"
             />
           </button>
         </div>
@@ -59,7 +56,7 @@
           :key="pool.name"
           class="sidebar-menu-item"
           :class="{
-            'bg-blue-100 dark:bg-blue-600 hover:bg-blue-200 dark:hover:bg-blue-700 text-blue-900 dark:text-white':
+            'bg-blue-100 dark:bg-blue-600 hover:bg-blue-200 dark:hover:bg-blue-700 text-gray-900 dark:text-white':
               poolStore.selectedPool?.name === pool.name,
           }"
           :title="!showText ? pool.name : undefined"
@@ -78,9 +75,9 @@
       >
         <p
           v-if="showText"
-          class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis"
+          class="text-xs dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis"
         >
-          Pool Occupancy Dashboard v1.0.0
+          {{ $t('sidebar.version') }}
         </p>
       </div>
     </div>
@@ -96,25 +93,8 @@ const poolStore = usePoolStore()
 // Track if component is mounted to avoid hydration mismatches
 const isMounted = ref(false)
 
-// Desktop hover state
 const isDesktopExpanded = ref(false)
 
-// Computed to determine when to show text
-const showText = computed(() => {
-  // Don't check window size until mounted to avoid hydration mismatch
-  if (!isMounted.value) {
-    return false
-  }
-
-  // Always show text on mobile
-  if (process.client && window.innerWidth < 1024) {
-    return true
-  }
-  // On desktop, show text when expanded via hover
-  return isDesktopExpanded.value
-})
-
-// Computed for overall expanded state
 const isExpanded = computed(() => {
   // Don't check window size until mounted to avoid hydration mismatch
   if (!isMounted.value) {
@@ -128,19 +108,18 @@ const isExpanded = computed(() => {
   // Desktop: expanded on hover
   return isDesktopExpanded.value
 })
+const showText = computed(() => isExpanded.value)
 
 // Set mounted flag after component is mounted
 onMounted(() => {
   isMounted.value = true
 })
 
-// Mouse events for desktop hover
 const onMouseEnter = () => {
   if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = true
   }
 }
-
 const onMouseLeave = () => {
   if (isMounted.value && process.client && window.innerWidth >= 1024) {
     isDesktopExpanded.value = false
@@ -156,27 +135,21 @@ const icons = [
   'i-heroicons-bolt',
   'i-heroicons-square-3-stack-3d',
 ]
-
-// Filter pools that have outside pool configuration
 const filteredPools = computed(() => {
-  return poolStore.pools.filter(pool => pool.outsidePool)
+  return poolStore.pools.filter((pool) => pool.outsidePool)
 })
-
-// Get icon for a pool based on its index
 const getPoolIcon = (pool: any, index: number) => {
   return pool.icon || icons[index] || 'i-heroicons-building-office-2'
 }
-
-// Handle pool selection
 const selectPool = (pool: any) => {
   poolStore.setSelectedPool(pool, POOL_TYPES.OUTSIDE)
-  closeMobileMenu() // Close mobile menu after selection
+  closeMobileMenu()
 }
 </script>
 
 <style scoped>
 .sidebar-menu-item {
-  @apply w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700;
+  @apply w-full flex items-center px-4 py-3 text-left hover:text-gray-900 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700;
 }
 
 .sidebar-icon {

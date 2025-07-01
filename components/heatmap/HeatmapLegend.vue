@@ -3,7 +3,7 @@
     <!-- Legend Items, Toggle and Slider on one line -->
     <div class="mb-4">
       <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-        Occupancy Rate Legend
+        {{ $t('heatmap.legend.title') }}
       </h3>
       <div
         :class="[
@@ -26,7 +26,7 @@
         </div>
 
         <!-- Uniform Bar Height Toggle -->
-        <div class="flex items-center gap-2 flex-shrink-0">
+        <div v-if="isDesktop" class="flex items-center gap-2 flex-shrink-0">
           <UToggle
             v-model="uniformBarHeight"
             color="blue"
@@ -34,7 +34,7 @@
             class="shrink-0"
           />
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Show Uniform Bar Height
+            {{ $t('heatmap.legend.uniformBarHeight') }}
           </label>
         </div>
 
@@ -42,7 +42,7 @@
         <div class="flex items-center gap-3 min-w-0 flex-1">
           <div class="flex-shrink-0">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Threshold
+              {{ $t('heatmap.legend.threshold') }}
             </label>
           </div>
           <div class="flex items-center gap-2 flex-1">
@@ -95,7 +95,10 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 const poolStore = usePoolStore()
+const { isDesktop } = useDesktopView()
 
 interface LegendItem {
   color: string
@@ -108,27 +111,22 @@ interface Props {
 
 defineProps<Props>()
 
-// Computed property for threshold value with getter/setter
 const thresholdValue = computed({
   get: () => poolStore.heatmapHighThreshold,
   set: (value: number) => poolStore.setHeatmapHighThreshold(value),
 })
-
-// Computed property for uniform bar height with getter/setter
 const uniformBarHeight = computed({
   get: () => poolStore.uniformHeatmapBarHeight,
   set: (value: boolean) => poolStore.setUniformHeatmapBarHeight(value),
 })
-
-// Explanation data to eliminate duplication
 const explanations = [
   {
     icon: '🎨',
-    text: 'The color represents absolute occupancy rate compared to maximum pool capacity - darker colors indicate higher occupancy.',
+    text: computed(() => t('heatmap.legend.explanations.color')),
   },
   {
     icon: '📏',
-    text: 'The height of the colored bar represents relative occupancy within that day - a taller bar indicates higher occupancy compared to other hours of the same day.',
+    text: computed(() => t('heatmap.legend.explanations.height')),
   },
 ]
 </script>

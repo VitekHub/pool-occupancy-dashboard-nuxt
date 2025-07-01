@@ -6,10 +6,10 @@
       class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400"
     >
       <div>
-        <p>&copy; 2025 Pool Occupancy Dashboard. All rights reserved.</p>
+        <p>{{ $t('footer.copyright') }}</p>
       </div>
       <div class="flex items-center space-x-4">
-        <span>Version 1.0.0</span>
+        <span>{{ $t('footer.version') }}</span>
       </div>
     </div>
   </footer>
