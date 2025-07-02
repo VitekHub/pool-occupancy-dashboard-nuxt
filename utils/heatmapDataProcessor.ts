@@ -164,14 +164,33 @@ export default class HeatmapDataProcessor {
     })
   }
 
+  private getWeeklyOccupancyByHour(
+    selectedWeekId: string,
+    day: string,
+    hour: number
+  ) {
+    const today = new Date()
+    const currentWeekId = getWeekId(today)
+    const isNow =
+      selectedWeekId === currentWeekId &&
+      isDayToday(day) &&
+      today.getHours() === hour
+    const hourlyData = this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]
+    if (isNow && !hourlyData) {
+      // return previous hour data in case current hour is not available yet
+      return this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour - 1]
+    }
+    return hourlyData
+  }
+
   public getWeeklyPercentageCellData(
     selectedWeekId: string,
     day: string,
     hour: number
   ): BaseCellData {
     const utilizationRate =
-      this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]?.utilizationRate ||
-      0
+      this.getWeeklyOccupancyByHour(selectedWeekId, day, hour)
+        ?.utilizationRate || 0
 
     return this.getCellDataWithUtilization({
       utilizationRate,
@@ -227,7 +246,7 @@ export default class HeatmapDataProcessor {
     day: string,
     hour: number
   ): BaseCellData {
-    const hourlyData = this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]
+    const hourlyData = this.getWeeklyOccupancyByHour(selectedWeekId, day, hour)
     if (!hourlyData) {
       return this.getEmptyBaseCellData()
     }
@@ -264,7 +283,7 @@ export default class HeatmapDataProcessor {
     day: string,
     hour: number
   ): BaseCellData {
-    const hourlyData = this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]
+    const hourlyData = this.getWeeklyOccupancyByHour(selectedWeekId, day, hour)
     if (!hourlyData) {
       return this.getEmptyBaseCellData()
     }

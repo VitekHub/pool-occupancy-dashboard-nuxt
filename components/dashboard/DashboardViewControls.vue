@@ -115,7 +115,7 @@ const canGoNextWeek = computed(() => {
 const viewModeOptions = computed(() => {
   return [VIEW_MODES.OVERALL, VIEW_MODES.WEEKLY].map((mode) => ({
     value: mode,
-    label: computed(() => t(`dashboard.viewControls.${mode}`)),
+    label: t(`dashboard.viewControls.${mode}`),
   }))
 })
 
@@ -170,7 +170,7 @@ const metricItems = computed(() => {
       : weeklyViewMetrics
   return metrics.map((metric) => ({
     value: metric,
-    label: computed(() => t(`dashboard.viewControls.${metric}`)),
+    label: t(`dashboard.viewControls.${metric}`),
   }))
 })
 
