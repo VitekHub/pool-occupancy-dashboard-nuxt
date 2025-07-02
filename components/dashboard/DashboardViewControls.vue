@@ -79,13 +79,15 @@ import { VIEW_MODES } from '~/types'
 import { formatWeekId } from '~/utils/dateUtils'
 
 const poolStore = usePoolStore()
-defineEmits<{
-  'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
-}>()
 const { isDesktop } = useDesktopView()
-
-const viewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
-const selectedWeekId = ref<string | null>(null)
+const viewMode = computed({
+  get: () => poolStore.viewMode,
+  set: (value: ViewMode) => poolStore.setViewMode(value),
+})
+const selectedWeekId = computed({
+  get: () => poolStore.selectedWeekId,
+  set: (value: string | null) => poolStore.setSelectedWeekId(value),
+})
 const availableWeeks = computed(() => poolStore.availableWeekIds)
 const canGoPreviousWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
@@ -102,9 +104,9 @@ const viewModeOptions = computed(() => {
     VIEW_MODES.OVERALL,
     VIEW_MODES.WEEKLY_AVERAGE,
     ...(isDesktop.value ? [VIEW_MODES.WEEKLY_RAW] : []),
-  ].map((viewMode) => ({
-    value: viewMode,
-    label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
+  ].map((mode) => ({
+    value: mode,
+    label: computed(() => t(`dashboard.viewControls.${mode}`)),
   }))
 })
 
@@ -133,19 +135,10 @@ const goToNextWeek = () => {
 }
 const updateViewMode = (newViewMode: ViewMode) => {
   viewMode.value = newViewMode
-  emitViewStateChanged()
 }
 const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
-  emitViewStateChanged()
 }
-const emitViewStateChanged = () => {
-  emit('view-state-changed', {
-    viewMode: viewMode.value,
-    selectedWeekId: selectedWeekId.value,
-  })
-}
-const emit = getCurrentInstance()?.emit
 
 // Auto-select first week when switching to weekly view
 watch(
@@ -169,10 +162,6 @@ watch(viewMode, (newViewMode) => {
   if (newViewMode === VIEW_MODES.OVERALL) {
     updateSelectedWeekId(null)
   }
-})
-
-onMounted(() => {
-  emitViewStateChanged()
 })
 </script>
 <style scoped>

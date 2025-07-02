@@ -43,12 +43,12 @@ interface Props {
   sortedDays: string[]
   hours: number[]
   getCellData: (day: string, hour: number) => BaseCellData | undefined
-  selectedWeekId: string | null
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 const { t, locale } = useI18n()
+const poolStore = usePoolStore()
 
 const getTranslatedDayName = (englishDayName: string): string => {
   return t(`common.days.${englishDayName.toLowerCase()}`) || englishDayName
@@ -70,10 +70,10 @@ const getDayLabel = (day: string): string => {
  * where selectedWeekId is the date for Monday (ISO format).
  */
 const getDateForDay = (dayIndex: number) => {
-  if (!props.selectedWeekId) {
+  if (!poolStore.selectedWeekId) {
     return isDesktop.value ? t('heatmap.average') : t('heatmap.avg')
   }
-  const monday = parseISO(props.selectedWeekId)
+  const monday = parseISO(poolStore.selectedWeekId)
   if (!isValid(monday)) return ''
   const date = addDays(monday, dayIndex)
   return format(date, 'd.M.')

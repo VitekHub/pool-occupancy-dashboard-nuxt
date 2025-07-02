@@ -12,30 +12,18 @@
 <script setup lang="ts">
 const { t, locale } = useI18n()
 
-import type { ViewMode } from '~/types'
-import { VIEW_MODES } from '~/types'
 import { formatWeekId } from '~/utils/dateUtils'
-
-interface Props {
-  viewMode?: ViewMode
-  selectedWeekId?: string | null
-}
 
 const poolStore = usePoolStore()
 
-const props = withDefaults(defineProps<Props>(), {
-  viewMode: VIEW_MODES.OVERALL,
-  selectedWeekId: null,
-})
-
 const headerTitle = computed(
   () =>
-    `${t(`heatmap.${props.viewMode}.title`)}: ${poolStore.selectedPool?.name || ''}`
+    `${t(`heatmap.${poolStore.viewMode}.title`)}: ${poolStore.selectedPool?.name || ''}`
 )
 
 const headerDescription = computed(() =>
-  t(`heatmap.${props.viewMode}.description`, {
-    date: formatWeekId(props.selectedWeekId || '', locale.value),
+  t(`heatmap.${poolStore.viewMode}.description`, {
+    date: formatWeekId(poolStore.selectedWeekId || '', locale.value),
   })
 )
 </script>
