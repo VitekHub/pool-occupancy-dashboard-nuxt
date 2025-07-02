@@ -129,10 +129,12 @@
               : 'text-red-600 dark:text-red-400',
           ]"
         >
-          <div class="mb-2">
-            {{ poolStore.selectedPool?.name }}
-          </div>
-          <div>
+          <PoolNavigator>
+            <div class="min-w-[220px]">
+              {{ poolStore.selectedPool?.name }}
+            </div>
+          </PoolNavigator>
+          <div class="mt-2">
             {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
           </div>
         </div>
