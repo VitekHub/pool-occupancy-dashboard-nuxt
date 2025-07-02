@@ -21,7 +21,7 @@
             <UIcon
               v-if="!isDesktop && hour === currentHour"
               name="i-heroicons-arrow-long-down"
-              class="h-6 w-6 text-red-600"
+              class="h-6 w-6 text-red-600 dark:text-red-400"
             />
             <div v-if="isDesktop">{{ hour }}:00</div>
             <div v-else>{{ hour % 3 === 0 ? hour : '&nbsp;' }}</div>
@@ -46,8 +46,7 @@ const refreshIntervalId = ref<NodeJS.Timeout>()
 
 onMounted(() => {
   refreshIntervalId.value = setInterval(() => {
-    currentHour.value =
-      new Date().getHours() + Math.floor(Math.random() * 5) + 1
+    currentHour.value = new Date().getHours()
   }, 120_000)
 })
 
