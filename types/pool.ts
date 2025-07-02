@@ -11,11 +11,17 @@ export const isInsidePool = (poolType: PoolType): boolean => {
 
 export const VIEW_MODES = {
   OVERALL: 'overall',
-  WEEKLY_AVERAGE: 'weeklyAverage',
-  WEEKLY_RAW: 'weeklyRaw',
+  WEEKLY: 'weekly',
 } as const
-
 export type ViewMode = (typeof VIEW_MODES)[keyof typeof VIEW_MODES]
+
+export const METRIC_TYPES = {
+  MEDIAN: 'median',
+  AVERAGE: 'average',
+  PERCENTAGE: 'percentage',
+  MIN_MAX: 'minMax',
+} as const
+export type MetricType = (typeof METRIC_TYPES)[keyof typeof METRIC_TYPES]
 
 export const UTILIZATION_THRESHOLDS = {
   VERY_LOW: 25,
@@ -90,9 +96,11 @@ export interface OverallOccupancyMap {
   [day: string]: {
     [hour: number]: {
       averageUtilizationRate: number
+      medianUtilizationRate: number
     }
     maxDayValues: {
       averageUtilizationRate: number
+      medianUtilizationRate: number
     }
   }
 }

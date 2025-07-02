@@ -115,11 +115,15 @@ export default class HeatmapDataProcessor {
   private getBaseCellData({
     utilizationRate,
     maxDayUtilizationRate,
+    displayText,
+    title,
     day,
     hour,
   }: {
     utilizationRate: number
     maxDayUtilizationRate: number
+    displayText: string
+    title: string
     day: string
     hour: number
   }): BaseCellData {
@@ -129,17 +133,38 @@ export default class HeatmapDataProcessor {
         utilizationRate,
         maxDayUtilizationRate
       ),
+      displayText,
+      title,
+      isCurrentHour: this.isCurrentHour(day, hour),
+    }
+  }
+
+  private getCellDataWithUtilization({
+    utilizationRate,
+    maxDayUtilizationRate,
+    day,
+    hour,
+  }: {
+    utilizationRate: number
+    maxDayUtilizationRate: number
+    day: string
+    hour: number
+  }): BaseCellData {
+    return this.getBaseCellData({
+      utilizationRate,
+      maxDayUtilizationRate,
       displayText: utilizationRate > 0 ? `${utilizationRate}%` : '',
       title: this.t(this.tooltipTranslationKey, {
         day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
         utilization: utilizationRate,
       }),
-      isCurrentHour: this.isCurrentHour(day, hour),
-    }
+      day,
+      hour,
+    })
   }
 
-  public getCellData(
+  public getWeeklyPercentageCellData(
     selectedWeekId: string,
     day: string,
     hour: number
@@ -148,7 +173,7 @@ export default class HeatmapDataProcessor {
       this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]?.utilizationRate ||
       0
 
-    return this.getBaseCellData({
+    return this.getCellDataWithUtilization({
       utilizationRate,
       maxDayUtilizationRate: this.getDayMaxUtilizationByWeek(
         selectedWeekId,
@@ -159,13 +184,27 @@ export default class HeatmapDataProcessor {
     })
   }
 
-  public getOverallCellData(day: string, hour: number): BaseCellData {
+  public getOverallMedianCellData(day: string, hour: number): BaseCellData {
+    const medianUtilizationRate =
+      this.overallOccupancyMap[day]?.[hour]?.medianUtilizationRate || 0
+    const maxDayMedianUtilizationRate =
+      this.overallOccupancyMap[day]?.maxDayValues.medianUtilizationRate || 0
+
+    return this.getCellDataWithUtilization({
+      utilizationRate: medianUtilizationRate,
+      maxDayUtilizationRate: maxDayMedianUtilizationRate,
+      day,
+      hour,
+    })
+  }
+
+  public getOverallAverageCellData(day: string, hour: number): BaseCellData {
     const averageUtilizationRate =
       this.overallOccupancyMap[day]?.[hour]?.averageUtilizationRate || 0
     const maxDayAverageUtilizationRate =
       this.overallOccupancyMap[day]?.maxDayValues.averageUtilizationRate || 0
 
-    return this.getBaseCellData({
+    return this.getCellDataWithUtilization({
       utilizationRate: averageUtilizationRate,
       maxDayUtilizationRate: maxDayAverageUtilizationRate,
       day,
@@ -173,20 +212,24 @@ export default class HeatmapDataProcessor {
     })
   }
 
-  public getRawCellData(
+  private getEmptyBaseCellData() {
+    return {
+      color: UTILIZATION_COLORS.EMPTY,
+      colorFillRatio: 0,
+      displayText: '',
+      title: '',
+      isCurrentHour: false,
+    }
+  }
+
+  public getWeeklyRawMinMaxCellData(
     selectedWeekId: string,
     day: string,
     hour: number
   ): BaseCellData {
     const hourlyData = this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]
     if (!hourlyData) {
-      return {
-        color: UTILIZATION_COLORS.EMPTY,
-        colorFillRatio: 0,
-        displayText: '',
-        title: '',
-        isCurrentHour: false,
-      }
+      return this.getEmptyBaseCellData()
     }
 
     const displayText =
@@ -201,12 +244,9 @@ export default class HeatmapDataProcessor {
       day
     )
 
-    return {
-      color: this.getColor(hourlyData.utilizationRate),
-      colorFillRatio: this.getColorFillRatio(
-        hourlyData.utilizationRate,
-        maxDayUtilizationRate
-      ),
+    return this.getBaseCellData({
+      utilizationRate: hourlyData.utilizationRate,
+      maxDayUtilizationRate,
       displayText,
       title: this.t(this.tooltipTranslationKey, {
         day: this.t(`common.days.${day.toLowerCase()}`),
@@ -214,7 +254,37 @@ export default class HeatmapDataProcessor {
         min: hourlyData.minOccupancy,
         max: hourlyData.maxOccupancy,
       }),
-      isCurrentHour: this.isCurrentHour(day, hour),
+      day,
+      hour,
+    })
+  }
+
+  public getWeeklyRawAverageCellData(
+    selectedWeekId: string,
+    day: string,
+    hour: number
+  ): BaseCellData {
+    const hourlyData = this.weeklyOccupancyMap[selectedWeekId]?.[day]?.[hour]
+    if (!hourlyData) {
+      return this.getEmptyBaseCellData()
     }
+
+    const maxDayUtilizationRate = this.getDayMaxUtilizationByWeek(
+      selectedWeekId,
+      day
+    )
+
+    return this.getBaseCellData({
+      utilizationRate: hourlyData.utilizationRate,
+      maxDayUtilizationRate,
+      displayText: `${hourlyData.averageOccupancy || ''}`,
+      title: this.t(this.tooltipTranslationKey, {
+        day: this.t(`common.days.${day.toLowerCase()}`),
+        hour,
+        average: hourlyData.averageOccupancy,
+      }),
+      day,
+      hour,
+    })
   }
 }

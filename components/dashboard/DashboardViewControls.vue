@@ -1,6 +1,6 @@
 <template>
   <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div :class="['grid  gap-4', isDesktop ? 'grid-cols-3' : 'grid-cols-1']">
       <!-- View Mode Selection -->
       <div>
         <label
@@ -22,9 +22,22 @@
           </UButton>
         </div>
       </div>
+      <div
+        v-if="viewMode === VIEW_MODES.OVERALL || isDesktop"
+        class="flex items-end"
+      >
+        <URadioGroup
+          v-model="metricType"
+          :options="metricItems"
+          class="metric-types"
+        />
+      </div>
 
+      <div v-if="viewMode === VIEW_MODES.OVERALL">
+        <!-- empty column -->
+      </div>
       <!-- Week Selection (only for weekly views) -->
-      <div v-if="viewMode !== VIEW_MODES.OVERALL">
+      <div v-if="viewMode === VIEW_MODES.WEEKLY">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -74,8 +87,8 @@
 
 <script setup lang="ts">
 const { t, locale } = useI18n()
-import type { ViewMode } from '~/types'
-import { VIEW_MODES } from '~/types'
+import type { MetricType, ViewMode } from '~/types'
+import { METRIC_TYPES, VIEW_MODES } from '~/types'
 import { formatWeekId } from '~/utils/dateUtils'
 
 const poolStore = usePoolStore()
@@ -100,11 +113,7 @@ const canGoNextWeek = computed(() => {
   return currentIndex < availableWeeks.value.length - 1
 })
 const viewModeOptions = computed(() => {
-  return [
-    VIEW_MODES.OVERALL,
-    VIEW_MODES.WEEKLY_AVERAGE,
-    ...(isDesktop.value ? [VIEW_MODES.WEEKLY_RAW] : []),
-  ].map((mode) => ({
+  return [VIEW_MODES.OVERALL, VIEW_MODES.WEEKLY].map((mode) => ({
     value: mode,
     label: computed(() => t(`dashboard.viewControls.${mode}`)),
   }))
@@ -134,11 +143,36 @@ const goToNextWeek = () => {
   }
 }
 const updateViewMode = (newViewMode: ViewMode) => {
+  metricType.value =
+    newViewMode === VIEW_MODES.OVERALL
+      ? METRIC_TYPES.AVERAGE
+      : METRIC_TYPES.PERCENTAGE
   viewMode.value = newViewMode
 }
 const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
 }
+const metricType = computed({
+  get: () => poolStore.metricType,
+  set: (value: MetricType) => poolStore.setMetricType(value),
+})
+
+const metricItems = computed(() => {
+  const overalViewMetrics = [METRIC_TYPES.AVERAGE, METRIC_TYPES.MEDIAN]
+  const weeklyViewMetrics = [
+    METRIC_TYPES.PERCENTAGE,
+    METRIC_TYPES.MIN_MAX,
+    METRIC_TYPES.AVERAGE,
+  ]
+  const metrics =
+    viewMode.value === VIEW_MODES.OVERALL
+      ? overalViewMetrics
+      : weeklyViewMetrics
+  return metrics.map((metric) => ({
+    value: metric,
+    label: computed(() => t(`dashboard.viewControls.${metric}`)),
+  }))
+})
 
 // Auto-select first week when switching to weekly view
 watch(
@@ -164,8 +198,14 @@ watch(viewMode, (newViewMode) => {
   }
 })
 </script>
+
 <style scoped>
 :deep(.week-selector select:focus) {
   --tw-ring-color: transparent !important;
+}
+.metric-types,
+:deep(.metric-types input),
+:deep(.metric-types label) {
+  cursor: pointer;
 }
 </style>

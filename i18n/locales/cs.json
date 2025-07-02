@@ -51,27 +51,44 @@
     "viewControls": {
       "viewMode": "Zobrazení obsazenosti",
       "overall": "Historická průměrná",
-      "weeklyAverage": "Týdenní procentuální",
-      "weeklyRaw": "Týdenní skutečná",
+      "weekly": "Týdenní",
+      "average": "Průměr",
+      "median": "Medián",
+      "percentage": "Procentuální",
+      "minMax": "Min-Max",
       "selectWeek": "Vybrat týden",
       "selectWeekPlaceholder": "Vyberte týden"
     }
   },
   "heatmap": {
     "overall": {
-      "title": "Historická průměrná mapa obsazenosti bazénu",
-      "description": "Průměrné míry obsazenosti napříč všemi zaznamenanými týdny",
-      "tooltip": "{day} v {hour}:00 - průměrně {utilization}% obsazeno"
+      "average": {
+        "title": "Historická průměrná mapa obsazenosti bazénu",
+        "description": "Průměrné míry obsazenosti napříč všemi zaznamenanými týdny",
+        "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (průměr ze všech týdnů)"
+      },
+      "median": {
+        "title": "Historická průměrná mapa obsazenosti bazénu",
+        "description": "Mediánové míry obsazenosti napříč všemi zaznamenanými týdny",
+        "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (medián ze všech týdnů)"
+      }
     },
-    "weeklyAverage": {
-      "title": "Týdenní procentuální mapa obsazenosti bazénu",
-      "description": "Procentuální míry obsazenosti pro týden začínající {date}",
-      "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno"
-    },
-    "weeklyRaw": {
-      "title": "Týdenní (min-max) mapa obsazenosti bazénu",
-      "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
-      "tooltip": "{day} v {hour}:00 - {min} až {max} lidí"
+    "weekly": {
+      "percentage": {
+        "title": "Týdenní mapa procentuální obsazenosti bazénu",
+        "description": "Procentuální míry obsazenosti pro týden začínající {date}",
+        "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno"
+      },
+      "minMax": {
+        "title": "Týdenní mapa min-max obsazenosti bazénu",
+        "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
+        "tooltip": "{day} v {hour}:00 - {min} až {max} lidí"
+      },
+      "average": {
+        "title": "Týdenní mapa průměrné obsazenosti bazénu",
+        "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
+        "tooltip": "{day} v {hour}:00 - průměrně {average} lidí"
+      }
     },
     "average": "(průměr)",
     "avg": "(avg)",

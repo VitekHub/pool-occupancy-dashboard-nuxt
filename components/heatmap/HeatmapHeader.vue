@@ -20,11 +20,11 @@ import { formatWeekId } from '~/utils/dateUtils'
 const poolStore = usePoolStore()
 
 const headerTitle = computed(
-  () => `${t(`heatmap.${poolStore.viewMode}.title`)}`
+  () => `${t(`heatmap.${poolStore.viewMode}.${poolStore.metricType}.title`)}`
 )
 
 const headerDescription = computed(() =>
-  t(`heatmap.${poolStore.viewMode}.description`, {
+  t(`heatmap.${poolStore.viewMode}.${poolStore.metricType}.description`, {
     date: formatWeekId(poolStore.selectedWeekId || '', locale.value),
   })
 )

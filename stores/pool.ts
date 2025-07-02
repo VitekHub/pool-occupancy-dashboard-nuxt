@@ -10,8 +10,9 @@ import type {
   OccupancyRecord,
   CurrentOccupancy,
   ViewMode,
+  MetricType,
 } from '~/types'
-import { POOL_TYPES, VIEW_MODES } from '~/types'
+import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
 import { processAllOccupancyData } from '~/utils/poolDataProcessor'
 
 interface PoolState {
@@ -23,6 +24,7 @@ interface PoolState {
   uniformHeatmapBarHeight: boolean
   forceMobileView: boolean
   viewMode: ViewMode
+  metricType: MetricType
   selectedWeekId: string | null
 
   // Processed data
@@ -44,6 +46,7 @@ export const usePoolStore = defineStore('pool', {
     uniformHeatmapBarHeight: false,
     forceMobileView: false,
     viewMode: VIEW_MODES.OVERALL,
+    metricType: METRIC_TYPES.AVERAGE,
     selectedWeekId: null,
     weeklyOccupancyMap: {},
     overallOccupancyMap: {},
@@ -275,6 +278,10 @@ export const usePoolStore = defineStore('pool', {
 
     setViewMode(viewMode: ViewMode) {
       this.viewMode = viewMode
+    },
+
+    setMetricType(metricType: MetricType) {
+      this.metricType = metricType
     },
 
     setSelectedWeekId(selectedWeekId: string | null) {

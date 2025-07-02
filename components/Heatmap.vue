@@ -18,13 +18,13 @@
 const { t } = useI18n()
 
 import type { BaseCellData } from '~/types'
-import { VIEW_MODES } from '~/types'
+import { METRIC_TYPES, VIEW_MODES } from '~/types'
 import { getWeekId } from '~/utils/dateUtils'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
 const poolStore = usePoolStore()
 const tooltipTranslationKey = computed(
-  () => `heatmap.${poolStore.viewMode}.tooltip`
+  () => `heatmap.${poolStore.viewMode}.${poolStore.metricType}.tooltip`
 )
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 const dataProcessor = computed(() => {
@@ -87,21 +87,33 @@ const getCellData = (day: string, hour: number): BaseCellData | undefined => {
   if (!dataProcessor.value) return undefined
 
   if (poolStore.viewMode === VIEW_MODES.OVERALL) {
-    return dataProcessor.value.getOverallCellData(day, hour)
+    if (poolStore.metricType === METRIC_TYPES.AVERAGE)
+      return dataProcessor.value.getOverallAverageCellData(day, hour)
+    else if (poolStore.metricType === METRIC_TYPES.MEDIAN)
+      return dataProcessor.value.getOverallMedianCellData(day, hour)
   } else if (
-    poolStore.viewMode === VIEW_MODES.WEEKLY_AVERAGE &&
+    poolStore.viewMode === VIEW_MODES.WEEKLY &&
     poolStore.selectedWeekId
   ) {
-    return dataProcessor.value.getCellData(poolStore.selectedWeekId, day, hour)
-  } else if (
-    poolStore.viewMode === VIEW_MODES.WEEKLY_RAW &&
-    poolStore.selectedWeekId
-  ) {
-    return dataProcessor.value.getRawCellData(
-      poolStore.selectedWeekId,
-      day,
-      hour
-    )
+    if (poolStore.metricType === METRIC_TYPES.PERCENTAGE)
+      return dataProcessor.value.getWeeklyPercentageCellData(
+        poolStore.selectedWeekId,
+        day,
+        hour
+      )
+    else if (poolStore.metricType === METRIC_TYPES.MIN_MAX)
+      return dataProcessor.value.getWeeklyRawMinMaxCellData(
+        poolStore.selectedWeekId,
+        day,
+        hour
+      )
+    else if (poolStore.metricType === METRIC_TYPES.AVERAGE)
+      return dataProcessor.value.getWeeklyRawAverageCellData(
+        poolStore.selectedWeekId,
+        day,
+        hour
+      )
+    return
   }
   return undefined
 }
