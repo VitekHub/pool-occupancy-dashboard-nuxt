@@ -21,16 +21,21 @@ interface Props {
   selectedWeekId?: string | null
 }
 
+const poolStore = usePoolStore()
+
 const props = withDefaults(defineProps<Props>(), {
   viewMode: VIEW_MODES.OVERALL,
   selectedWeekId: null,
 })
 
-const headerTitle = computed(() => t(`heatmap.${props.viewMode}.title`))
+const headerTitle = computed(
+  () =>
+    `${t(`heatmap.${props.viewMode}.title`)}: ${poolStore.selectedPool?.name || ''}`
+)
 
 const headerDescription = computed(() =>
   t(`heatmap.${props.viewMode}.description`, {
-    date: formatWeekId(props.selectedWeekId, locale.value),
+    date: formatWeekId(props.selectedWeekId || '', locale.value),
   })
 )
 </script>

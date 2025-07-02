@@ -5,7 +5,7 @@ import {
   UTILIZATION_COLORS,
   UTILIZATION_THRESHOLDS,
 } from '~/types'
-import { getWeekId, getDayName } from '~/utils/dateUtils'
+import { getWeekId, isDayToday } from '~/utils/dateUtils'
 
 type TranslationFunction = (
   key: string,
@@ -89,10 +89,7 @@ export default class HeatmapDataProcessor {
   }
 
   private isCurrentHour(day: string, hour: number) {
-    return (
-      day.toLowerCase() === getDayName(new Date()).toLowerCase() &&
-      hour === new Date().getHours()
-    )
+    return isDayToday(day) && hour === new Date().getHours()
   }
 
   private getDayMaxUtilizationByWeek(
@@ -106,11 +103,8 @@ export default class HeatmapDataProcessor {
       this.overallOccupancyMap[day]?.maxDayValues.averageUtilizationRate || 0
 
     const today = new Date()
-    const todayName = today.toLocaleDateString('en-US', { weekday: 'long' })
     const currentWeekId = getWeekId(today)
-    const isToday =
-      selectedWeekId === currentWeekId &&
-      day.toLowerCase() === todayName.toLowerCase()
+    const isToday = selectedWeekId === currentWeekId && isDayToday(day)
     if (isToday) {
       return Math.max(maxValueInWeek, maxValueOverall)
     } else {

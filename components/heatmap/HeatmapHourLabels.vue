@@ -11,14 +11,15 @@
           :class="[
             'font-medium flex items-end justify-center',
             isDesktop ? 'min-w-12' : 'flex-1 min-w-2',
-            hour === new Date().getHours()
-              ? 'text-sm text-red-600 dark:text-red-400'
-              : 'text-xs text-gray-600 dark:text-gray-400',
+            hour === currentHour
+              ? 'text-red-600 dark:text-red-400'
+              : 'text-gray-600 dark:text-gray-400',
+            hour === currentHour && isDesktop ? 'text-sm' : 'text-xs',
           ]"
         >
-          <div>
+          <div class="text-center">
             <UIcon
-              v-if="!isDesktop && hour === new Date().getHours()"
+              v-if="!isDesktop && hour === currentHour"
               name="i-heroicons-arrow-long-down"
               class="h-6 w-6 text-red-600"
             />
@@ -32,11 +33,27 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 const { isDesktop } = useDesktopView()
 
 interface Props {
   hours: number[]
 }
-
 defineProps<Props>()
+
+const currentHour = ref(new Date().getHours())
+const refreshIntervalId = ref<NodeJS.Timeout>()
+
+onMounted(() => {
+  refreshIntervalId.value = setInterval(() => {
+    currentHour.value =
+      new Date().getHours() + Math.floor(Math.random() * 5) + 1
+  }, 120_000)
+})
+
+onUnmounted(() => {
+  if (refreshIntervalId.value) {
+    clearInterval(refreshIntervalId.value)
+  }
+})
 </script>

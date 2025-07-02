@@ -44,7 +44,6 @@ const poolStore = usePoolStore()
 const tooltipTranslationKey = computed(
   () => `heatmap.${props.viewMode}.tooltip`
 )
-const { isDesktop } = useDesktopView()
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 const dataProcessor = computed(() => {
   // For overall view, check if overallOccupancyMap has data

@@ -59,7 +59,7 @@ onMounted(() => {
 
   refreshIntervalId.value = setInterval(() => {
     refresh()
-  }, 120000)
+  }, 120_000)
 })
 
 onUnmounted(() => {

@@ -12,7 +12,13 @@
       </template>
 
       <div class="space-y-3">
-        <UButton block variant="soft" color="blue" @click="scrollToStatistics">
+        <UButton
+          block
+          variant="soft"
+          class="h-10"
+          color="blue"
+          @click="scrollToStatistics"
+        >
           {{ $t('dashboard.stats.viewStatistics') }}
         </UButton>
         <UButton block variant="soft" color="green" @click="exportData">
@@ -123,11 +129,19 @@
               : 'text-red-600 dark:text-red-400',
           ]"
         >
-          {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
+          <div class="mb-2">
+            {{ poolStore.selectedPool?.name }}
+          </div>
+          <div>
+            {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
+          </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400">
-          {{ getPoolStatusText() }}
-        </p>
+        <div
+          v-if="!poolStore.isPoolOpen"
+          class="text-gray-600 dark:text-gray-400"
+        >
+          {{ t('dashboard.stats.poolClosed') }}
+        </div>
         <div
           v-if="poolStore.isPoolOpen && poolStore.todayOpeningHours"
           class="mt-2 text-sm text-gray-500 dark:text-gray-400"
@@ -188,11 +202,6 @@ const shouldShowOccupancy = computed(() => {
 const formatOpeningHours = (hours: string): string => {
   const [open, close] = hours.split('-')
   return `${open}:00 - ${close}:00`
-}
-const getPoolStatusText = (): string => {
-  return t(
-    `dashboard.stats.${poolStore.isPoolOpen ? 'poolOpen' : 'poolClosed'}`
-  )
 }
 const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {

@@ -12,7 +12,9 @@
           isDesktop ? 'w-20 text-right pr-3' : 'w-8 text-xs pr-1',
         ]"
       >
-        <span>{{ getDayLabel(day) }}</span>
+        <span :class="isDayToday(day) ? 'text-red-600 dark:text-red-400' : ''">
+          {{ getDayLabel(day) }}
+        </span>
         <span class="text-xs text-gray-400 dark:text-gray-400">
           {{ getDateForDay(dayIndex) }}
         </span>
@@ -33,6 +35,7 @@
 <script setup lang="ts">
 import { format, addDays, parseISO, isValid } from 'date-fns'
 import type { BaseCellData } from '~/types'
+import { isDayToday } from '~/utils/dateUtils'
 
 const { isDesktop } = useDesktopView()
 

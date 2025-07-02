@@ -51,3 +51,7 @@ export const getHourFromTime = (timeStr: string): number => {
 export const getDayName = (date: Date): string => {
   return date.toLocaleDateString('en-US', { weekday: 'long' })
 }
+
+export const isDayToday = (day: string): boolean => {
+  return day.toLowerCase() === getDayName(new Date()).toLowerCase()
+}
