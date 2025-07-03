@@ -9,9 +9,11 @@
       class="flex-shrink-0 text-white mt-2"
     />
     <slot>
-      <div class="text-center min-w-[230px]">
-        {{ poolStore.selectedPool?.name }}
-      </div>
+      <SpinnerOverlay>
+        <div class="text-center min-w-[230px]">
+          {{ poolStore.selectedPool?.name }}
+        </div>
+      </SpinnerOverlay>
     </slot>
     <UButton
       icon="i-heroicons-chevron-right"

@@ -31,6 +31,7 @@ interface PoolState {
   weeklyOccupancyMap: WeeklyOccupancyMap
   overallOccupancyMap: OverallOccupancyMap
   rawOccupancyData: OccupancyRecord[]
+  currentMaxCapacity: number
 
   // Loading states
   isLoading: boolean
@@ -51,6 +52,7 @@ export const usePoolStore = defineStore('pool', {
     weeklyOccupancyMap: {},
     overallOccupancyMap: {},
     rawOccupancyData: [],
+    currentMaxCapacity: 0,
     isLoading: false,
     error: null,
   }),
@@ -126,7 +128,7 @@ export const usePoolStore = defineStore('pool', {
     },
 
     // Get maximum capacity for current pool
-    currentMaxCapacity: (state): number => {
+    getCurrentMaxCapacity: (state): number => {
       if (!state.selectedPool) return 0
 
       if (
@@ -250,6 +252,7 @@ export const usePoolStore = defineStore('pool', {
 
         this.weeklyOccupancyMap = processed.weeklyOccupancyMap
         this.overallOccupancyMap = processed.overallOccupancyMap
+        this.currentMaxCapacity = this.getCurrentMaxCapacity
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'

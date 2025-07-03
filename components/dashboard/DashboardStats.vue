@@ -55,7 +55,7 @@
         </div>
       </template>
 
-      <div class="text-center">
+      <SpinnerOverlay>
         <div
           :class="[
             'text-3xl font-bold mb-2',
@@ -100,7 +100,7 @@
             ></div>
           </div>
         </div>
-      </div>
+      </SpinnerOverlay>
     </UCard>
 
     <!-- Pool Status Card -->
