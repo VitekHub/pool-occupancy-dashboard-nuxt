@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import poolsConfig from '~/config/pools.json'
 import { parseOccupancyCSV } from '~/utils/csv'
 import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
 import type {
@@ -210,9 +209,13 @@ export const usePoolStore = defineStore('pool', {
     },
   },
   actions: {
-    loadPoolsConfig() {
+    async loadPoolsConfig() {
       try {
-        this.pools = poolsConfig
+        const response = await fetch(
+          import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
+        )
+        if (!response.ok) throw new Error('Failed to fetch pools config')
+        this.pools = await response.json()
 
         // Auto-select first pool that has outside pool configuration
         if (!this.selectedPool) {

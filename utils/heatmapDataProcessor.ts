@@ -253,9 +253,7 @@ export default class HeatmapDataProcessor {
 
     const displayText =
       hourlyData.minOccupancy === hourlyData.maxOccupancy
-        ? hourlyData.minOccupancy > 0
-          ? `${hourlyData.minOccupancy}`
-          : ''
+        ? `${hourlyData.minOccupancy}`
         : `${hourlyData.minOccupancy}-${hourlyData.maxOccupancy}`
 
     const maxDayUtilizationRate = this.getDayMaxUtilizationByWeek(
@@ -296,7 +294,7 @@ export default class HeatmapDataProcessor {
     return this.getBaseCellData({
       utilizationRate: hourlyData.utilizationRate,
       maxDayUtilizationRate,
-      displayText: `${hourlyData.averageOccupancy || ''}`,
+      displayText: `${hourlyData.averageOccupancy}`,
       title: this.t(this.tooltipTranslationKey, {
         day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
