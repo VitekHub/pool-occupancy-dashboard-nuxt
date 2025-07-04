@@ -1,15 +1,17 @@
 import { defineStore } from 'pinia'
-import poolsConfig from '~/config/pools.json'
 import { parseOccupancyCSV } from '~/utils/csv'
-import { nowInPrague } from '~/utils/dateUtils'
+import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
   WeeklyOccupancyMap,
   OverallOccupancyMap,
   OccupancyRecord,
+  CurrentOccupancy,
+  ViewMode,
+  MetricType,
 } from '~/types'
-import { POOL_TYPES } from '~/types'
+import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
 import { processAllOccupancyData } from '~/utils/poolDataProcessor'
 
 interface PoolState {
@@ -20,11 +22,15 @@ interface PoolState {
   heatmapHighThreshold: number
   uniformHeatmapBarHeight: boolean
   forceMobileView: boolean
+  viewMode: ViewMode
+  metricType: MetricType
+  selectedWeekId: string | null
 
   // Processed data
   weeklyOccupancyMap: WeeklyOccupancyMap
   overallOccupancyMap: OverallOccupancyMap
   rawOccupancyData: OccupancyRecord[]
+  currentMaxCapacity: number
 
   // Loading states
   isLoading: boolean
@@ -39,9 +45,13 @@ export const usePoolStore = defineStore('pool', {
     heatmapHighThreshold: 60,
     uniformHeatmapBarHeight: false,
     forceMobileView: false,
+    viewMode: VIEW_MODES.OVERALL,
+    metricType: METRIC_TYPES.AVERAGE,
+    selectedWeekId: null,
     weeklyOccupancyMap: {},
     overallOccupancyMap: {},
     rawOccupancyData: [],
+    currentMaxCapacity: 0,
     isLoading: false,
     error: null,
   }),
@@ -83,7 +93,7 @@ export const usePoolStore = defineStore('pool', {
     },
 
     // Get current occupancy (last record for today)
-    currentOccupancy: (state): OccupancyRecord | null => {
+    currentOccupancy: (state): CurrentOccupancy | null => {
       if (state.rawOccupancyData.length === 0) return null
 
       const today = nowInPrague()
@@ -99,12 +109,25 @@ export const usePoolStore = defineStore('pool', {
 
       if (todayRecords.length === 0) return null
 
-      // Get the most recent record (last one in the array since they should be chronologically ordered)
-      return todayRecords[todayRecords.length - 1]
+      const lastRecord = todayRecords[todayRecords.length - 1]
+      const averageUtilizationRate =
+        state.overallOccupancyMap[lastRecord.day][
+          getHourFromTime(lastRecord.time)
+        ]?.averageUtilizationRate
+      const currentUtilizationRate = Math.round(
+        (lastRecord.occupancy / state.currentMaxCapacity) * 100
+      )
+
+      return {
+        occupancy: lastRecord.occupancy,
+        time: lastRecord.time,
+        averageUtilizationRate,
+        currentUtilizationRate,
+      }
     },
 
     // Get maximum capacity for current pool
-    currentMaxCapacity: (state): number => {
+    getCurrentMaxCapacity: (state): number => {
       if (!state.selectedPool) return 0
 
       if (
@@ -186,9 +209,13 @@ export const usePoolStore = defineStore('pool', {
     },
   },
   actions: {
-    loadPoolsConfig() {
+    async loadPoolsConfig() {
       try {
-        this.pools = poolsConfig
+        const response = await fetch(
+          import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
+        )
+        if (!response.ok) throw new Error('Failed to fetch pools config')
+        this.pools = await response.json()
 
         // Auto-select first pool that has outside pool configuration
         if (!this.selectedPool) {
@@ -228,6 +255,7 @@ export const usePoolStore = defineStore('pool', {
 
         this.weeklyOccupancyMap = processed.weeklyOccupancyMap
         this.overallOccupancyMap = processed.overallOccupancyMap
+        this.currentMaxCapacity = this.getCurrentMaxCapacity
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'
@@ -252,6 +280,18 @@ export const usePoolStore = defineStore('pool', {
 
     setForceMobileView(force: boolean) {
       this.forceMobileView = force
+    },
+
+    setViewMode(viewMode: ViewMode) {
+      this.viewMode = viewMode
+    },
+
+    setMetricType(metricType: MetricType) {
+      this.metricType = metricType
+    },
+
+    setSelectedWeekId(selectedWeekId: string | null) {
+      this.selectedWeekId = selectedWeekId
     },
   },
 })

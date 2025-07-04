@@ -1,8 +1,8 @@
 <template>
   <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div :class="['grid gap-4', isDesktop ? 'grid-cols-5' : 'grid-cols-1']">
       <!-- View Mode Selection -->
-      <div>
+      <div class="col-span-2">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -22,9 +22,24 @@
           </UButton>
         </div>
       </div>
-
+      <div
+        v-if="viewMode === VIEW_MODES.OVERALL || isDesktop"
+        class="flex items-end col-span-1"
+      >
+        <URadioGroup
+          v-model="metricType"
+          :options="metricItems"
+          :uiRadio="{
+            inner: 'ms-1',
+            wrapper: 'mb-0.5',
+            base: 'cursor-pointer',
+            label: 'cursor-pointer',
+          }"
+          class="metric-types"
+        />
+      </div>
       <!-- Week Selection (only for weekly views) -->
-      <div v-if="viewMode !== VIEW_MODES.OVERALL">
+      <div v-if="viewMode === VIEW_MODES.WEEKLY" class="col-span-2">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -74,18 +89,20 @@
 
 <script setup lang="ts">
 const { t, locale } = useI18n()
-import type { ViewMode } from '~/types'
-import { VIEW_MODES } from '~/types'
+import type { MetricType, ViewMode } from '~/types'
+import { METRIC_TYPES, VIEW_MODES } from '~/types'
 import { formatWeekId } from '~/utils/dateUtils'
 
 const poolStore = usePoolStore()
-defineEmits<{
-  'view-state-changed': [{ viewMode: ViewMode; selectedWeekId: string | null }]
-}>()
 const { isDesktop } = useDesktopView()
-
-const viewMode = ref<ViewMode>(VIEW_MODES.OVERALL)
-const selectedWeekId = ref<string | null>(null)
+const viewMode = computed({
+  get: () => poolStore.viewMode,
+  set: (value: ViewMode) => poolStore.setViewMode(value),
+})
+const selectedWeekId = computed({
+  get: () => poolStore.selectedWeekId,
+  set: (value: string | null) => poolStore.setSelectedWeekId(value),
+})
 const availableWeeks = computed(() => poolStore.availableWeekIds)
 const canGoPreviousWeek = computed(() => {
   if (!selectedWeekId.value || availableWeeks.value.length === 0) return false
@@ -98,13 +115,9 @@ const canGoNextWeek = computed(() => {
   return currentIndex < availableWeeks.value.length - 1
 })
 const viewModeOptions = computed(() => {
-  return [
-    VIEW_MODES.OVERALL,
-    VIEW_MODES.WEEKLY_AVERAGE,
-    ...(isDesktop.value ? [VIEW_MODES.WEEKLY_RAW] : []),
-  ].map((viewMode) => ({
-    value: viewMode,
-    label: computed(() => t(`dashboard.viewControls.${viewMode}`)),
+  return [VIEW_MODES.OVERALL, VIEW_MODES.WEEKLY].map((mode) => ({
+    value: mode,
+    label: t(`dashboard.viewControls.${mode}`),
   }))
 })
 
@@ -132,20 +145,36 @@ const goToNextWeek = () => {
   }
 }
 const updateViewMode = (newViewMode: ViewMode) => {
+  metricType.value =
+    newViewMode === VIEW_MODES.OVERALL
+      ? METRIC_TYPES.AVERAGE
+      : METRIC_TYPES.PERCENTAGE
   viewMode.value = newViewMode
-  emitViewStateChanged()
 }
 const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
-  emitViewStateChanged()
 }
-const emitViewStateChanged = () => {
-  emit('view-state-changed', {
-    viewMode: viewMode.value,
-    selectedWeekId: selectedWeekId.value,
-  })
-}
-const emit = getCurrentInstance()?.emit
+const metricType = computed({
+  get: () => poolStore.metricType,
+  set: (value: MetricType) => poolStore.setMetricType(value),
+})
+
+const metricItems = computed(() => {
+  const overalViewMetrics = [METRIC_TYPES.AVERAGE, METRIC_TYPES.MEDIAN]
+  const weeklyViewMetrics = [
+    METRIC_TYPES.PERCENTAGE,
+    METRIC_TYPES.MIN_MAX,
+    METRIC_TYPES.AVERAGE,
+  ]
+  const metrics =
+    viewMode.value === VIEW_MODES.OVERALL
+      ? overalViewMetrics
+      : weeklyViewMetrics
+  return metrics.map((metric) => ({
+    value: metric,
+    label: t(`dashboard.viewControls.${metric}`),
+  }))
+})
 
 // Auto-select first week when switching to weekly view
 watch(
@@ -170,11 +199,8 @@ watch(viewMode, (newViewMode) => {
     updateSelectedWeekId(null)
   }
 })
-
-onMounted(() => {
-  emitViewStateChanged()
-})
 </script>
+
 <style scoped>
 :deep(.week-selector select:focus) {
   --tw-ring-color: transparent !important;

@@ -8,7 +8,7 @@
         <!-- Mobile menu toggle -->
         <UButton
           @click="toggleMobileMenu"
-          variant="white"
+          variant="soft"
           icon="i-heroicons-bars-3"
           class="lg:hidden"
         />

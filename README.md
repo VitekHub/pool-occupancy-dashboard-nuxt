@@ -99,8 +99,6 @@ npm run format:check # Check formatting
 │   ├── heatmap/          # Heatmap visualization components
 │   └── ...               # Other UI components
 ├── composables/          # Vue composables
-├── config/               # Configuration files
-│   └── pools.json        # Pool configurations
 ├── layouts/              # Nuxt layouts
 ├── pages/                # Nuxt pages
 ├── stores/               # Pinia stores
@@ -149,31 +147,36 @@ npm run generate
 
 ### Environment Variables
 
-Create `.env` file (optional):
+Create `.env` file:
 
 ```bash
+# Pool configuration URL
+VITE_POOL_OCCUPANCY_CONFIG_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/pool_occupancy_config.json
+
 # CSV data source URL
 VITE_CSV_BASE_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/
 ```
 
 ### Pool Configuration
 
-Edit `config/pools.json` to add/modify pools:
+Pool configuration is now loaded from an external URL. The configuration format is:
 
 ```json
-{
-  "name": "Pool Name",
-  "outsidePool": {
-    "url": "https://pool-website.com",
-    "pattern": "occupancy pattern regex",
-    "csvFile": "data-file.csv",
-    "maximumCapacity": 100,
-    "weekdaysOpeningHours": "6-22",
-    "weekendOpeningHours": "8-21",
-    "collectStats": true,
-    "viewStats": true
+[
+  {
+    "name": "Pool Name",
+    "outsidePool": {
+      "url": "https://pool-website.com",
+      "pattern": "occupancy pattern regex",
+      "csvFile": "data-file.csv",
+      "maximumCapacity": 100,
+      "weekdaysOpeningHours": "6-22",
+      "weekendOpeningHours": "8-21",
+      "collectStats": true,
+      "viewStats": true
+    }
   }
-}
+]
 ```
 
 ## 📊 Data Sources

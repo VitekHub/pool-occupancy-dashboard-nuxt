@@ -1,5 +1,3 @@
-import { computed } from 'vue'
-
 export const useDesktopView = () => {
   const poolStore = usePoolStore()
 

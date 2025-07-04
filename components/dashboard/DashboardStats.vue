@@ -12,7 +12,13 @@
       </template>
 
       <div class="space-y-3">
-        <UButton block variant="soft" color="blue" @click="scrollToStatistics">
+        <UButton
+          block
+          variant="soft"
+          class="h-10"
+          color="blue"
+          @click="scrollToStatistics"
+        >
           {{ $t('dashboard.stats.viewStatistics') }}
         </UButton>
         <UButton block variant="soft" color="green" @click="exportData">
@@ -49,12 +55,12 @@
         </div>
       </template>
 
-      <div class="text-center">
+      <SpinnerOverlay>
         <div
           :class="[
             'text-3xl font-bold mb-2',
             shouldShowOccupancy
-              ? 'text-blue-600 dark:text-blue-400'
+              ? 'text-blue-600 dark:text-blue-600'
               : 'text-gray-400 dark:text-gray-500',
           ]"
         >
@@ -76,14 +82,25 @@
           </div>
           <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
-              class="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
+              class="bg-blue-600 dark:bg-blue-600 h-2 rounded-full transition-all duration-300"
               :style="{
-                width: `${Math.min((currentOccupancy?.occupancy / poolStore.currentMaxCapacity) * 100, 100)}%`,
+                width: `${Math.min(currentOccupancy!.currentUtilizationRate, 100)}%`,
+              }"
+            ></div>
+          </div>
+          <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            {{ usualCapacityUsageText }}
+          </div>
+          <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              class="bg-blue-400 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
+              :style="{
+                width: `${Math.min(currentOccupancy!.averageUtilizationRate, 100)}%`,
               }"
             ></div>
           </div>
         </div>
-      </div>
+      </SpinnerOverlay>
     </UCard>
 
     <!-- Pool Status Card -->
@@ -112,11 +129,21 @@
               : 'text-red-600 dark:text-red-400',
           ]"
         >
-          {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
+          <PoolNavigator>
+            <div class="min-w-[220px]">
+              {{ poolStore.selectedPool?.name }}
+            </div>
+          </PoolNavigator>
+          <div class="mt-2">
+            {{ poolStore.isPoolOpen ? $t('common.open') : $t('common.closed') }}
+          </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400">
-          {{ getPoolStatusText() }}
-        </p>
+        <div
+          v-if="!poolStore.isPoolOpen"
+          class="text-gray-600 dark:text-gray-400"
+        >
+          {{ t('dashboard.stats.poolClosed') }}
+        </div>
         <div
           v-if="poolStore.isPoolOpen && poolStore.todayOpeningHours"
           class="mt-2 text-sm text-gray-500 dark:text-gray-400"
@@ -178,16 +205,11 @@ const formatOpeningHours = (hours: string): string => {
   const [open, close] = hours.split('-')
   return `${open}:00 - ${close}:00`
 }
-const getPoolStatusText = (): string => {
-  return t(
-    `dashboard.stats.${poolStore.isPoolOpen ? 'poolOpen' : 'poolClosed'}`
-  )
-}
 const getOccupancyStatusText = (): string => {
   if (!poolStore.isPoolOpen) {
     return t('dashboard.stats.poolClosed')
   } else if (currentOccupancy.value !== null) {
-    return t('dashboard.stats.peopleInPool')
+    return ''
   } else {
     return t('dashboard.stats.noDataToday')
   }
@@ -209,17 +231,15 @@ const poolWebsiteUrl = computed((): string | null => {
 
   return null
 })
-const capacityUsageText = computed(() => {
-  if (
-    shouldShowOccupancy.value &&
-    poolStore.currentMaxCapacity > 0 &&
-    currentOccupancy.value
-  ) {
-    const percent = Math.round(
-      (currentOccupancy.value.occupancy / poolStore.currentMaxCapacity) * 100
-    )
-    return `${percent}${t('dashboard.stats.capacityUsage')} (${t('dashboard.stats.capacityTime')} ${currentOccupancy.value.time})`
-  }
-  return ''
-})
+const capacityUsageText = computed(() =>
+  shouldShowOccupancy.value
+    ? `${currentOccupancy.value!.currentUtilizationRate}${t('dashboard.stats.capacityUsage')} (${t('dashboard.stats.capacityTime')} ${currentOccupancy.value!.time})`
+    : ''
+)
+
+const usualCapacityUsageText = computed(() =>
+  shouldShowOccupancy.value
+    ? `${currentOccupancy.value!.averageUtilizationRate}${t('dashboard.stats.usualCapacityUsage')}`
+    : ''
+)
 </script>

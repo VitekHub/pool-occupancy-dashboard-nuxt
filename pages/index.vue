@@ -4,11 +4,7 @@
       <DashboardStats />
     </div>
     <div class="mb-8">
-      <DashboardHeatmapSection
-        id="statistics-section"
-        :overall-occupancy-map="poolStore.overallOccupancyMap"
-        :weekly-occupancy-map="poolStore.weeklyOccupancyMap"
-      />
+      <DashboardHeatmapSection id="statistics-section" />
     </div>
   </div>
 </template>
@@ -59,7 +55,7 @@ onMounted(() => {
 
   refreshIntervalId.value = setInterval(() => {
     refresh()
-  }, 120000)
+  }, 120_000)
 })
 
 onUnmounted(() => {

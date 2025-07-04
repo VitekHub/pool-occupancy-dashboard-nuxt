@@ -9,12 +9,23 @@
           v-for="hour in hours"
           :key="hour"
           :class="[
-            'text-center text-xs font-medium text-gray-600 dark:text-gray-400',
+            'font-medium flex items-end justify-center',
             isDesktop ? 'min-w-12' : 'flex-1 min-w-2',
+            hour === currentHour
+              ? 'text-red-600 dark:text-red-400'
+              : 'text-gray-600 dark:text-gray-400',
+            hour === currentHour && isDesktop ? 'text-sm' : 'text-xs',
           ]"
         >
-          <span v-if="isDesktop">{{ hour }}:00</span>
-          <span v-else-if="hour % 3 === 0">{{ hour }}</span>
+          <div class="text-center">
+            <UIcon
+              v-if="!isDesktop && hour === currentHour"
+              name="i-heroicons-arrow-long-down"
+              class="h-6 w-6 text-red-600 dark:text-red-400"
+            />
+            <div v-if="isDesktop">{{ hour }}:00</div>
+            <div v-else>{{ hour % 3 === 0 ? hour : '&nbsp;' }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -22,11 +33,26 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 const { isDesktop } = useDesktopView()
 
 interface Props {
   hours: number[]
 }
-
 defineProps<Props>()
+
+const currentHour = ref(new Date().getHours())
+const refreshIntervalId = ref<NodeJS.Timeout>()
+
+onMounted(() => {
+  refreshIntervalId.value = setInterval(() => {
+    currentHour.value = new Date().getHours()
+  }, 120_000)
+})
+
+onUnmounted(() => {
+  if (refreshIntervalId.value) {
+    clearInterval(refreshIntervalId.value)
+  }
+})
 </script>

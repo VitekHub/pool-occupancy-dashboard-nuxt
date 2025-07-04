@@ -5,6 +5,7 @@
       isDesktop
         ? 'border border-gray-200 w-12 h-12 rounded p-1'
         : 'flex-1 min-w-2 h-16',
+      cellData?.isCurrentHour ? 'animate-pulse' : '',
     ]"
     :title="cellData?.title || ''"
   >
