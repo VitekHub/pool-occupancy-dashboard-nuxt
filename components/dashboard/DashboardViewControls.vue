@@ -1,8 +1,8 @@
 <template>
   <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-    <div :class="['grid  gap-4', isDesktop ? 'grid-cols-3' : 'grid-cols-1']">
+    <div :class="['grid gap-4', isDesktop ? 'grid-cols-5' : 'grid-cols-1']">
       <!-- View Mode Selection -->
-      <div>
+      <div class="col-span-2">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -24,20 +24,22 @@
       </div>
       <div
         v-if="viewMode === VIEW_MODES.OVERALL || isDesktop"
-        class="flex items-end"
+        class="flex items-end col-span-1"
       >
         <URadioGroup
           v-model="metricType"
           :options="metricItems"
+          :uiRadio="{
+            inner: 'ms-1',
+            wrapper: 'mb-0.5',
+            base: 'cursor-pointer',
+            label: 'cursor-pointer',
+          }"
           class="metric-types"
         />
       </div>
-
-      <div v-if="viewMode === VIEW_MODES.OVERALL">
-        <!-- empty column -->
-      </div>
       <!-- Week Selection (only for weekly views) -->
-      <div v-if="viewMode === VIEW_MODES.WEEKLY">
+      <div v-if="viewMode === VIEW_MODES.WEEKLY" class="col-span-2">
         <label
           class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
@@ -202,10 +204,5 @@ watch(viewMode, (newViewMode) => {
 <style scoped>
 :deep(.week-selector select:focus) {
   --tw-ring-color: transparent !important;
-}
-.metric-types,
-:deep(.metric-types input),
-:deep(.metric-types label) {
-  cursor: pointer;
 }
 </style>

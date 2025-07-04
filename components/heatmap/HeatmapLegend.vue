@@ -27,14 +27,16 @@
 
         <!-- Uniform Bar Height Toggle -->
         <div v-if="isDesktop" class="flex items-center gap-2 flex-shrink-0">
-          <UToggle
-            v-model="uniformBarHeight"
-            color="blue"
-            size="sm"
-            class="shrink-0"
-          />
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ $t('heatmap.legend.uniformBarHeight') }}
+          <label class="flex items-center space-x-2 cursor-pointer select-none">
+            <UToggle
+              v-model="uniformBarHeight"
+              color="blue"
+              size="sm"
+              class="shrink-0"
+            />
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ $t('heatmap.legend.uniformBarHeight') }}
+            </span>
           </label>
         </div>
 
@@ -77,7 +79,7 @@
     </div>
 
     <!-- Explanations -->
-    <div class="space-y-3">
+    <div class="space-y-3 max-w-[900px]">
       <div
         v-for="explanation in explanations"
         :key="explanation.icon"
