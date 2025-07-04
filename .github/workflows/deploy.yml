@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set environment variables
+        run: |
+          echo "VITE_POOL_OCCUPANCY_CONFIG_URL=${{ secrets.VITE_POOL_OCCUPANCY_CONFIG_URL }}" >> $GITHUB_ENV
+          echo "VITE_CSV_BASE_URL=${{ secrets.VITE_CSV_BASE_URL }}" >> $GITHUB_ENV
+
       - name: Generate static site
         run: npm run generate
 

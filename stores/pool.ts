@@ -85,11 +85,7 @@ export const usePoolStore = defineStore('pool', {
     csvUrl: (state): string => {
       const csvFileName = state.csvFileName
       if (!csvFileName) return ''
-
-      const baseUrl =
-        import.meta.env.VITE_CSV_BASE_URL ||
-        'https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/'
-      return `${baseUrl}${csvFileName}`
+      return `${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}`
     },
 
     // Get current occupancy (last record for today)
