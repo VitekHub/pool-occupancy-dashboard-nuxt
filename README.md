@@ -95,9 +95,9 @@ npm run format:check # Check formatting
 ```
 ├── assets/css/           # Global styles and Tailwind imports
 ├── components/           # Vue components
-│   ├── dashboard/        # Dashboard-specific components
-│   ├── heatmap/          # Heatmap visualization components
-│   └── ...               # Other UI components
+│   ├── card/             # Card components
+│   ├── heatmap/          # Heatmap selection and visualization components
+│   └── ui/               # UI components
 ├── composables/          # Vue composables
 ├── layouts/              # Nuxt layouts
 ├── pages/                # Nuxt pages

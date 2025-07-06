@@ -9,7 +9,7 @@
       </div>
     </template>
 
-    <SpinnerOverlay>
+    <UiSpinnerOverlay>
       <div
         :class="[
           'text-3xl font-bold mb-2',
@@ -54,7 +54,7 @@
           ></div>
         </div>
       </div>
-    </SpinnerOverlay>
+    </UiSpinnerOverlay>
   </UCard>
 </template>
 

@@ -9,11 +9,11 @@
       class="flex-shrink-0 text-white mt-2"
     />
     <slot>
-      <SpinnerOverlay>
+      <UiSpinnerOverlay>
         <div class="text-center min-w-[230px]">
           {{ poolStore.selectedPool?.name }}
         </div>
-      </SpinnerOverlay>
+      </UiSpinnerOverlay>
     </slot>
     <UButton
       icon="i-heroicons-chevron-right"
