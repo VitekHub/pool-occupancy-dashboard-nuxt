@@ -55,7 +55,6 @@ interface PoolTypeConfig {
 
 export interface PoolConfig {
   name: string
-  icon?: string // Icon name for UIcon component (e.g., 'i-heroicons-users')
   insidePool?: PoolTypeConfig
   outsidePool?: Omit<PoolTypeConfig, 'totalLanes'>
 }

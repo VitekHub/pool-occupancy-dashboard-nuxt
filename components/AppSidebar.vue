@@ -62,7 +62,7 @@
           :title="!showText ? pool.name : undefined"
           @click="selectPool(pool)"
         >
-          <UIcon :name="getPoolIcon(pool, index)" class="sidebar-icon" />
+          <UIcon :name="getPoolIcon(index)" class="sidebar-icon" />
           <span v-if="showText" class="sidebar-text">
             {{ pool.name }}
           </span>
@@ -138,8 +138,8 @@ const icons = [
 const filteredPools = computed(() => {
   return poolStore.pools.filter((pool) => pool.outsidePool)
 })
-const getPoolIcon = (pool: any, index: number) => {
-  return pool.icon || icons[index] || 'i-heroicons-building-office-2'
+const getPoolIcon = (index: number) => {
+  return icons[index] || 'i-heroicons-building-office-2'
 }
 const selectPool = (pool: any) => {
   poolStore.setSelectedPool(pool, POOL_TYPES.OUTSIDE)
