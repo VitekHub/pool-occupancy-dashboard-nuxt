@@ -9,7 +9,7 @@
       "saturday": "Saturday",
       "sunday": "Sunday"
     },
-    "loading": "Loading...",
+    "loading": "Loading data...",
     "error": "Error",
     "na": "N/A",
     "version": "Version",
@@ -91,7 +91,6 @@
 
     "average": "(average)",
     "avg": "(avg)",
-    "loading": "Loading heatmap data...",
     "legend": {
       "title": "Occupancy Rate Legend",
       "uniformBarHeight": "Show Uniform Bar Height",

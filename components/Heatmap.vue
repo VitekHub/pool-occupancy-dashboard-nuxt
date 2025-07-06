@@ -1,8 +1,8 @@
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
     <HeatmapHeader />
-    <HeatmapLoadingState v-if="!dataProcessor" />
-    <div v-else class="overflow-x-auto">
+    <UiSpinner v-if="!dataProcessor" />
+    <div v-else>
       <h2 class="mt-2 h2-title">
         <PoolNavigator />
       </h2>

@@ -9,7 +9,7 @@
       "saturday": "Sobota",
       "sunday": "Neděle"
     },
-    "loading": "Načítání...",
+    "loading": "Načítání dat...",
     "error": "Chyba",
     "na": "N/A",
     "version": "Verze",
@@ -90,7 +90,6 @@
     },
     "average": "(průměr)",
     "avg": "(avg)",
-    "loading": "Načítání dat mapy...",
     "legend": {
       "title": "Legenda míry obsazenosti",
       "uniformBarHeight": "Zobrazit jednotnou výšku sloupců",

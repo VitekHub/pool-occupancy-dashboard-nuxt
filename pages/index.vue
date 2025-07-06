@@ -1,12 +1,16 @@
 <template>
-  <div class="max-w-fit mx-auto mb-6">
+  <UiSpinner v-if="!poolStore.selectedPool" />
+  <div v-else class="max-w-fit mx-auto mb-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <CardQuickActions />
       <CardPoolStatus />
       <CardCurrentOccupancy />
     </div>
   </div>
-  <div :class="['mx-auto mb-8', isForceMobileView ? 'w-[500px]' : 'max-w-fit']">
+  <div
+    v-if="poolStore.selectedPool"
+    :class="['mx-auto mb-8', isForceMobileView ? 'w-[500px]' : 'max-w-fit']"
+  >
     <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
       <div :class="['grid gap-4', isDesktop ? 'grid-cols-5' : 'grid-cols-1']">
         <HeatmapSelectionViewMode class="col-span-2" />
