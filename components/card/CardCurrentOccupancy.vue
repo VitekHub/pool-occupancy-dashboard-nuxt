@@ -2,7 +2,7 @@
   <UCard class="col-span-1">
     <template #header>
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mr-6">
+        <h3 class="h3-title">
           {{ $t('card.currentOccupancy') }}
         </h3>
         <UIcon name="i-heroicons-users" class="h-5 w-5 text-blue-600" />

@@ -131,9 +131,3 @@ const legendItems = computed(() => {
   return dataProcessor.value.getLegendItems()
 })
 </script>
-
-<style scoped>
-.h2-title {
-  @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
-}
-</style>

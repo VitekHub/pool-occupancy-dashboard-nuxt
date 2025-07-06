@@ -2,7 +2,7 @@
   <UCard class="col-span-1">
     <template #header>
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 class="h3-title">
           {{ $t('card.poolStatus') }}
         </h3>
         <UIcon
