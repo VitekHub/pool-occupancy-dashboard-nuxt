@@ -3,12 +3,18 @@
     <HeatmapHeader />
     <HeatmapLoadingState v-if="!dataProcessor" />
     <div v-else class="overflow-x-auto">
+      <h2 class="mt-2 h2-title">
+        <PoolNavigator />
+      </h2>
       <HeatmapHourLabels :hours="hours" />
       <HeatmapGrid
         :sorted-days="sortedDays"
         :hours="hours"
         :get-cell-data="getCellData"
       />
+      <h2 v-if="!isDesktop" class="mt-4 h2-title">
+        <PoolNavigator />
+      </h2>
       <HeatmapLegend :legend-items="legendItems" />
     </div>
   </div>
@@ -16,6 +22,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
+const { isDesktop } = useDesktopView()
 
 import type { BaseCellData } from '~/types'
 import { METRIC_TYPES, VIEW_MODES } from '~/types'
@@ -124,3 +131,9 @@ const legendItems = computed(() => {
   return dataProcessor.value.getLegendItems()
 })
 </script>
+
+<style scoped>
+.h2-title {
+  @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+}
+</style>

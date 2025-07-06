@@ -31,24 +31,24 @@
     "copyright": "© 2025 Pool Occupancy Dashboard. Všechna práva vyhrazena.",
     "version": "Verze 1.0.0"
   },
-  "dashboard": {
-    "stats": {
-      "quickActions": "Rychlé akce",
-      "viewStatistics": "Zobrazit statistiku",
-      "exportData": "Exportovat data",
-      "mobileView": "Mobilní zobrazení",
-      "currentOccupancy": "Aktuální obsazenost",
-      "capacityUsage": "% kapacity",
-      "usualCapacityUsage": "% obvykle v tuto hodinu",
-      "capacityTime": "v čase",
-      "poolStatus": "Stav bazénu",
-      "poolOpen": "Bazén je otevřen",
-      "poolClosed": "Bazén je momentálně zavřen",
-      "peopleInPool": "Aktuálně lidí / Max. kapacita",
-      "noDataToday": "Žádná data pro dnešek",
-      "visitWebsite": "Navštívit web"
-    },
-    "viewControls": {
+  "card": {
+    "quickActions": "Rychlé akce",
+    "viewStatistics": "Zobrazit statistiku",
+    "exportData": "Exportovat data",
+    "mobileView": "Mobilní zobrazení",
+    "currentOccupancy": "Aktuální obsazenost",
+    "capacityUsage": "% kapacity",
+    "usualCapacityUsage": "% obvykle v tuto hodinu",
+    "capacityTime": "v čase",
+    "poolStatus": "Stav bazénu",
+    "poolOpen": "Bazén je otevřen",
+    "poolClosed": "Bazén je momentálně zavřen",
+    "peopleInPool": "Aktuálně lidí / Max. kapacita",
+    "noDataToday": "Žádná data pro dnešek",
+    "visitWebsite": "Navštívit web"
+  },
+  "heatmap": {
+    "selection": {
       "viewMode": "Zobrazení obsazenosti",
       "overall": "Historická průměrná",
       "weekly": "Týdenní",
@@ -58,9 +58,7 @@
       "minMax": "Min-Max",
       "selectWeek": "Vybrat týden",
       "selectWeekPlaceholder": "Vyberte týden"
-    }
-  },
-  "heatmap": {
+    },
     "overall": {
       "average": {
         "title": "Historická průměrná mapa obsazenosti bazénu",
