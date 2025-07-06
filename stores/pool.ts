@@ -62,23 +62,29 @@ export const usePoolStore = defineStore('pool', {
       return Object.keys(state.weeklyOccupancyMap).sort()
     },
 
-    // Get the CSV file name for the selected pool and type
-    csvFileName: (state): string => {
-      if (!state.selectedPool) return ''
-
+    // Get the current pool configuration (inside or outside) based on selected type
+    currentPoolConfig: (
+      state
+    ): PoolConfig['insidePool'] | PoolConfig['outsidePool'] | null => {
+      if (!state.selectedPool) return null
       if (
         state.selectedPoolType === POOL_TYPES.INSIDE &&
         state.selectedPool.insidePool
       ) {
-        return state.selectedPool.insidePool.csvFile
+        return state.selectedPool.insidePool
       } else if (
         state.selectedPoolType === POOL_TYPES.OUTSIDE &&
         state.selectedPool.outsidePool
       ) {
-        return state.selectedPool.outsidePool.csvFile
+        return state.selectedPool.outsidePool
       }
+      return null
+    },
 
-      return ''
+    // Get the CSV file name for the selected pool and type
+    csvFileName: (state): string => {
+      const poolConfig = state.currentPoolConfig
+      return poolConfig?.csvFile || ''
     },
 
     // Get the full CSV URL for the selected pool
@@ -124,50 +130,18 @@ export const usePoolStore = defineStore('pool', {
 
     // Get maximum capacity for current pool
     getCurrentMaxCapacity: (state): number => {
-      if (!state.selectedPool) return 0
-
-      if (
-        state.selectedPoolType === POOL_TYPES.INSIDE &&
-        state.selectedPool.insidePool
-      ) {
-        return state.selectedPool.insidePool.maximumCapacity
-      } else if (
-        state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-        state.selectedPool.outsidePool
-      ) {
-        return state.selectedPool.outsidePool.maximumCapacity
-      }
-
-      return 0
+      const poolConfig = state.currentPoolConfig
+      return poolConfig?.maximumCapacity || 0
     },
 
     // Check if pool is currently open
     isPoolOpen: (state): boolean => {
-      if (!state.selectedPool) return false
-
-      const now = nowInPrague()
-      const currentHour = now.getHours()
-      const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
-
-      let openingHours: string
-      if (
-        state.selectedPoolType === POOL_TYPES.INSIDE &&
-        state.selectedPool.insidePool
-      ) {
-        openingHours = isWeekend
-          ? state.selectedPool.insidePool.weekendOpeningHours
-          : state.selectedPool.insidePool.weekdaysOpeningHours
-      } else if (
-        state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-        state.selectedPool.outsidePool
-      ) {
-        openingHours = isWeekend
-          ? state.selectedPool.outsidePool.weekendOpeningHours
-          : state.selectedPool.outsidePool.weekdaysOpeningHours
-      } else {
+      const openingHours: string = state.todayOpeningHours
+      if (!openingHours) {
         return false
       }
 
+      const currentHour = nowInPrague().getHours()
       // Parse opening hours (format: "6-22" or "8-21")
       const [openHour, closeHour] = openingHours
         .split('-')
@@ -177,31 +151,15 @@ export const usePoolStore = defineStore('pool', {
 
     // Get today's opening hours
     todayOpeningHours: (state): string => {
-      if (!state.selectedPool) return ''
+      const poolConfig = state.currentPoolConfig
+      if (!poolConfig) return ''
 
       const now = nowInPrague()
       const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
 
-      let openingHours: string
-      if (
-        state.selectedPoolType === POOL_TYPES.INSIDE &&
-        state.selectedPool.insidePool
-      ) {
-        openingHours = isWeekend
-          ? state.selectedPool.insidePool.weekendOpeningHours
-          : state.selectedPool.insidePool.weekdaysOpeningHours
-      } else if (
-        state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-        state.selectedPool.outsidePool
-      ) {
-        openingHours = isWeekend
-          ? state.selectedPool.outsidePool.weekendOpeningHours
-          : state.selectedPool.outsidePool.weekdaysOpeningHours
-      } else {
-        return ''
-      }
-
-      return openingHours
+      return isWeekend
+        ? poolConfig.weekendOpeningHours
+        : poolConfig.weekdaysOpeningHours
     },
   },
   actions: {

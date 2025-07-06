@@ -74,9 +74,10 @@ const sortedDays = computed(() => {
     if (!poolStore.weeklyOccupancyMap || !poolStore.selectedWeekId) return []
     const today = new Date()
     const currentWeekId = getWeekId(today)
-    if (poolStore.selectedWeekId === currentWeekId) {
+    const dayIndex = today.getDay()
+    if (poolStore.selectedWeekId === currentWeekId && dayIndex > 0) {
       // for this week filter out future (empty) days
-      return days.slice(0, today.getDay())
+      return days.slice(0, dayIndex)
     }
     return days
   }
