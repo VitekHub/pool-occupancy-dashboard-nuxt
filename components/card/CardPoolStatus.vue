@@ -6,24 +6,14 @@
           {{ $t('card.poolStatus') }}
         </h3>
         <UIcon
-          name="i-heroicons-sun"
-          :class="[
-            'h-5 w-5',
-            poolStore.isPoolOpen ? 'text-green-600' : 'text-red-600',
-          ]"
+          name="i-heroicons-clock"
+          :class="['h-5 w-5', poolStatusCssClass]"
         />
       </div>
     </template>
 
     <div class="text-center">
-      <div
-        :class="[
-          'text-xl font-semibold mb-2',
-          poolStore.isPoolOpen
-            ? 'text-green-600 dark:text-green-400'
-            : 'text-red-600 dark:text-red-400',
-        ]"
-      >
+      <div :class="['text-xl font-semibold mb-2', poolStatusCssClass]">
         <PoolNavigator>
           <div class="min-w-[220px]">
             {{ poolStore.selectedPool?.name }}
@@ -63,8 +53,6 @@
         </UButton>
         <UButton
           v-if="!isDesktopMediaQuery"
-          external
-          target="_blank"
           variant="outline"
           color="blue"
           size="sm"
@@ -96,6 +84,12 @@ const formatOpeningHours = (hours: string): string => {
   const [open, close] = hours.split('-')
   return `${open}:00 - ${close}:00`
 }
+
+const poolStatusCssClass = computed(() => {
+  return poolStore.isPoolOpen
+    ? 'text-green-600 dark:text-green-400'
+    : 'text-red-600 dark:text-red-400'
+})
 
 const poolWebsiteUrl = computed((): string | null => {
   if (!poolStore.selectedPool) return null
