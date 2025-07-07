@@ -53,5 +53,5 @@ export const getDayName = (date: Date): string => {
 }
 
 export const isDayToday = (day: string): boolean => {
-  return day.toLowerCase() === getDayName(new Date()).toLowerCase()
+  return day.toLowerCase() === getDayName(nowInPrague()).toLowerCase()
 }

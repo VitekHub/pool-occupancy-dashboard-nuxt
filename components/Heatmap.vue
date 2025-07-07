@@ -26,7 +26,7 @@ const { isDesktop } = useDesktopView()
 
 import type { BaseCellData } from '~/types'
 import { METRIC_TYPES, VIEW_MODES } from '~/types'
-import { getWeekId } from '~/utils/dateUtils'
+import { getWeekId, nowInPrague } from '~/utils/dateUtils'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
 const poolStore = usePoolStore()
@@ -79,7 +79,7 @@ const sortedDays = computed(() => {
   } else {
     // For weekly views
     if (!poolStore.weeklyOccupancyMap || !poolStore.selectedWeekId) return []
-    const today = new Date()
+    const today = nowInPrague()
     const currentWeekId = getWeekId(today)
     const dayIndex = today.getDay()
     if (poolStore.selectedWeekId === currentWeekId && dayIndex > 0) {

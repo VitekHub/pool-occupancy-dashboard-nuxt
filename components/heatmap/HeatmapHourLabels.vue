@@ -35,18 +35,19 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 const { isDesktop } = useDesktopView()
+import { nowInPrague } from '~/utils/dateUtils'
 
 interface Props {
   hours: number[]
 }
 defineProps<Props>()
 
-const currentHour = ref(new Date().getHours())
+const currentHour = ref(nowInPrague().getHours())
 const refreshIntervalId = ref<NodeJS.Timeout>()
 
 onMounted(() => {
   refreshIntervalId.value = setInterval(() => {
-    currentHour.value = new Date().getHours()
+    currentHour.value = nowInPrague().getHours()
   }, 120_000)
 })
 
