@@ -48,6 +48,7 @@ interface PoolTypeConfig {
   totalLanes?: number
   weekdaysOpeningHours: string
   weekendOpeningHours: string
+  todayClosed: boolean
   collectStats: boolean
   viewStats: boolean
   temporarilyClosed?: string

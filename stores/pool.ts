@@ -136,10 +136,13 @@ export const usePoolStore = defineStore('pool', {
 
     // Check if pool is currently open
     isPoolOpen: (state): boolean => {
+      const poolConfig = state.currentPoolConfig
+      if (!poolConfig) return false
+
+      if (poolConfig.todayClosed) return false
+
       const openingHours: string = state.todayOpeningHours
-      if (!openingHours) {
-        return false
-      }
+      if (!openingHours) return false
 
       const currentHour = nowInPrague().getHours()
       // Parse opening hours (format: "6-22" or "8-21")
