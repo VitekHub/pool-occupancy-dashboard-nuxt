@@ -4,9 +4,7 @@
 
     <!-- Main Content Area -->
     <div class="flex flex-col min-h-screen lg:ml-16">
-      <div class="sticky top-0 z-40">
-        <AppHeader />
-      </div>
+      <AppHeader :class="isDesktopMediaQuery ? 'sticky top-0 z-40' : ''" />
 
       <!-- Main Content -->
       <main class="flex-1 p-6 overflow-auto pt-6">
@@ -20,6 +18,7 @@
 
 <script setup lang="ts">
 const poolStore = usePoolStore()
+const { isDesktopMediaQuery } = useDesktopView()
 
 const preFetchAllPools = async () => {
   await Promise.all(

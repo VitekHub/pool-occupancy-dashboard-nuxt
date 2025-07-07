@@ -1,14 +1,20 @@
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
     <HeatmapHeader />
-    <HeatmapLoadingState v-if="!dataProcessor" />
-    <div v-else class="overflow-x-auto">
+    <UiSpinner v-if="!dataProcessor" />
+    <div v-else>
+      <h2 class="mt-2 h2-title">
+        <PoolNavigator />
+      </h2>
       <HeatmapHourLabels :hours="hours" />
       <HeatmapGrid
         :sorted-days="sortedDays"
         :hours="hours"
         :get-cell-data="getCellData"
       />
+      <h2 v-if="!isDesktop" class="mt-4 h2-title">
+        <PoolNavigator />
+      </h2>
       <HeatmapLegend :legend-items="legendItems" />
     </div>
   </div>
@@ -16,10 +22,11 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
+const { isDesktop } = useDesktopView()
 
 import type { BaseCellData } from '~/types'
 import { METRIC_TYPES, VIEW_MODES } from '~/types'
-import { getWeekId } from '~/utils/dateUtils'
+import { getWeekId, nowInPrague } from '~/utils/dateUtils'
 import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
 
 const poolStore = usePoolStore()
@@ -72,7 +79,7 @@ const sortedDays = computed(() => {
   } else {
     // For weekly views
     if (!poolStore.weeklyOccupancyMap || !poolStore.selectedWeekId) return []
-    const today = new Date()
+    const today = nowInPrague()
     const currentWeekId = getWeekId(today)
     const dayIndex = today.getDay()
     if (poolStore.selectedWeekId === currentWeekId && dayIndex > 0) {

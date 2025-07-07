@@ -1,16 +1,34 @@
 <template>
-  <div>
-    <div class="max-w-fit mx-auto mb-6">
-      <DashboardStats />
+  <UiSpinner v-if="!poolStore.selectedPool" />
+  <div v-else class="max-w-fit mx-auto mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <CardQuickActions />
+      <CardPoolStatus />
+      <CardCurrentOccupancy />
     </div>
-    <div class="mb-8">
-      <DashboardHeatmapSection id="statistics-section" />
+  </div>
+  <div
+    v-if="poolStore.selectedPool"
+    :class="['mx-auto mb-8', isForceMobileView ? 'w-[500px]' : 'max-w-fit']"
+  >
+    <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+      <div :class="['grid gap-4', isDesktop ? 'grid-cols-5' : 'grid-cols-1']">
+        <HeatmapSelectionViewMode class="col-span-2" />
+        <HeatmapSelectionMetric class="col-span-1" />
+        <HeatmapSelectionWeek class="col-span-2" />
+      </div>
     </div>
+    <Heatmap id="statistics-section" />
   </div>
 </template>
 
 <script setup lang="ts">
 const poolStore = usePoolStore()
+const { isDesktopMediaQuery } = useDesktopView()
+const isForceMobileView = computed(
+  () => isDesktopMediaQuery.value && poolStore.forceMobileView
+)
+const { isDesktop } = useDesktopView()
 
 // Use useFetch to handle CSV data fetching with auto-refresh
 const {

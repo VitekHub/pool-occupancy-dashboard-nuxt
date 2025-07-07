@@ -9,7 +9,7 @@
       "saturday": "Saturday",
       "sunday": "Sunday"
     },
-    "loading": "Loading...",
+    "loading": "Loading data...",
     "error": "Error",
     "na": "N/A",
     "version": "Version",
@@ -31,24 +31,24 @@
     "copyright": "© 2025 Pool Occupancy Dashboard. All rights reserved.",
     "version": "Version 1.0.0"
   },
-  "dashboard": {
-    "stats": {
-      "quickActions": "Quick Actions",
-      "viewStatistics": "View Statistics",
-      "exportData": "Export Data",
-      "mobileView": "Mobile View",
-      "currentOccupancy": "Current Occupancy",
-      "capacityUsage": "% of capacity",
-      "usualCapacityUsage": "% usually at this hour",
-      "capacityTime": "at time",
-      "poolStatus": "Pool Status",
-      "poolOpen": "Pool is open",
-      "poolClosed": "Pool is currently closed",
-      "peopleInPool": "Current visitors / Max capacity",
-      "noDataToday": "No data for today",
-      "visitWebsite": "Visit Website"
-    },
-    "viewControls": {
+  "card": {
+    "quickActions": "Quick Actions",
+    "viewStatistics": "View Statistics",
+    "exportData": "Export Data",
+    "mobileView": "Mobile View",
+    "currentOccupancy": "Current Occupancy",
+    "capacityUsage": "% of capacity",
+    "usualCapacityUsage": "% usually at this hour",
+    "capacityTime": "at time",
+    "poolStatus": "Pool Status",
+    "poolOpen": "Pool is open",
+    "poolClosed": "Pool is currently closed",
+    "peopleInPool": "Current visitors / Max capacity",
+    "noDataToday": "No data for today",
+    "visitWebsite": "Visit Website"
+  },
+  "heatmap": {
+    "selection": {
       "viewMode": "Occupancy View",
       "overall": "Historical Average",
       "weekly": "Weekly",
@@ -58,9 +58,7 @@
       "minMax": "Min-Max",
       "selectWeek": "Select Week",
       "selectWeekPlaceholder": "Select a week"
-    }
-  },
-  "heatmap": {
+    },
     "overall": {
       "average": {
         "title": "Historical Average Pool Occupancy Heatmap",
@@ -93,7 +91,6 @@
 
     "average": "(average)",
     "avg": "(avg)",
-    "loading": "Loading heatmap data...",
     "legend": {
       "title": "Occupancy Rate Legend",
       "uniformBarHeight": "Show Uniform Bar Height",
