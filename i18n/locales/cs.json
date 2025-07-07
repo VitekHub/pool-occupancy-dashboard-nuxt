@@ -101,9 +101,5 @@
     },
     "overallTooltip": "{day} v {hour}:00 - {utilization}% obsazenost",
     "weekOfLabel": "Týden od"
-  },
-  "meta": {
-    "title": "Dashboard obsazenosti bazénů",
-    "description": "Sledování obsazenosti bazénů a analytiky v reálném čase"
   }
 }

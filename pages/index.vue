@@ -87,6 +87,6 @@ definePageMeta({
 })
 useSeoMeta({
   title: 'Pool Occupancy Dashboard',
-  description: 'Monitor real-time pool occupancy and analytics',
+  description: 'Monitor real-time pool occupancy and statistics',
 })
 </script>

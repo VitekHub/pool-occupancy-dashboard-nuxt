@@ -102,9 +102,5 @@
     },
     "overallTooltip": "{day} at {hour}:00 - {utilization}% occupancy",
     "weekOfLabel": "Week of"
-  },
-  "meta": {
-    "title": "Pool Occupancy Dashboard",
-    "description": "Monitor real-time pool occupancy and analytics"
   }
 }
