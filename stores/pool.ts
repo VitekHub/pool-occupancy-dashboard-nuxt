@@ -49,7 +49,14 @@ export const usePoolStore = defineStore('pool', {
     metricType: METRIC_TYPES.AVERAGE,
     selectedWeekId: null,
     weeklyOccupancyMap: {},
-    overallOccupancyMap: {},
+    overallOccupancyMap: {
+      maxOverallValues: {
+        averageUtilizationRate: 0,
+        weightedAverageUtilizationRate: 0,
+        medianUtilizationRate: 0,
+      },
+      days: {},
+    },
     rawOccupancyData: [],
     currentMaxCapacity: 0,
     isLoading: false,
@@ -123,7 +130,7 @@ export const usePoolStore = defineStore('pool', {
 
       const lastRecord = todayRecords[todayRecords.length - 1]
       const averageUtilizationRate =
-        state.overallOccupancyMap[lastRecord.day][
+        state.overallOccupancyMap.days[lastRecord.day][
           getHourFromTime(lastRecord.time)
         ]?.averageUtilizationRate
       const currentUtilizationRate = Math.round(

@@ -5,6 +5,7 @@ import type {
   WeeklyOccupancyMap,
   OverallOccupancyMap,
   HourlyOccupancySummary,
+  OverallUtilizationValues,
 } from '~/types'
 import { isInsidePool } from '~/types'
 import { getWeekId, createPragueDate } from './dateUtils'
@@ -61,7 +62,14 @@ export function processAllOccupancyData(
 
 class OccupancyDataProcessor {
   private weeklyOccupancyMap: WeeklyOccupancyMap = {}
-  private overallOccupancyMap: OverallOccupancyMap = {}
+  private overallOccupancyMap: OverallOccupancyMap = {
+    maxOverallValues: {
+      averageUtilizationRate: 0,
+      weightedAverageUtilizationRate: 0,
+      medianUtilizationRate: 0,
+    },
+    days: {},
+  }
   private overallOccupancyAccumulator: OverallOccupancyAccumulator = {}
   private occupancyAccumulator: OccupancyAccumulator = {
     sum: 0,
@@ -118,15 +126,18 @@ class OccupancyDataProcessor {
     date: Date
   ): void {
     if (!this.weeklyOccupancyMap[weekId]) {
-      this.weeklyOccupancyMap[weekId] = {}
-    }
-    if (!this.weeklyOccupancyMap[weekId][day]) {
-      this.weeklyOccupancyMap[weekId][day] = {
-        maxDayValues: { utilizationRate: 0, maxOccupancy: 0 },
+      this.weeklyOccupancyMap[weekId] = {
+        maxWeekValues: { utilizationRate: 0 },
+        days: {},
       }
     }
-    if (!this.weeklyOccupancyMap[weekId][day][hour]) {
-      this.weeklyOccupancyMap[weekId][day][hour] = {
+    if (!this.weeklyOccupancyMap[weekId].days[day]) {
+      this.weeklyOccupancyMap[weekId].days[day] = {
+        maxDayValues: { utilizationRate: 0 },
+      }
+    }
+    if (!this.weeklyOccupancyMap[weekId].days[day][hour]) {
+      this.weeklyOccupancyMap[weekId].days[day][hour] = {
         date,
         day,
         hour,
@@ -135,8 +146,8 @@ class OccupancyDataProcessor {
   }
 
   private initializeOverallOccupancyEntry(day: string, hour: number): void {
-    if (!this.overallOccupancyMap[day]) {
-      this.overallOccupancyMap[day] = {
+    if (!this.overallOccupancyMap.days[day]) {
+      this.overallOccupancyMap.days[day] = {
         maxDayValues: {
           averageUtilizationRate: 0,
           weightedAverageUtilizationRate: 0,
@@ -145,8 +156,8 @@ class OccupancyDataProcessor {
       }
       this.overallOccupancyAccumulator[day] = {}
     }
-    if (!this.overallOccupancyMap[day][hour]) {
-      this.overallOccupancyMap[day][hour] = {
+    if (!this.overallOccupancyMap.days[day][hour]) {
+      this.overallOccupancyMap.days[day][hour] = {
         averageUtilizationRate: 0,
         weightedAverageUtilizationRate: 0,
         medianUtilizationRate: 0,
@@ -210,7 +221,7 @@ class OccupancyDataProcessor {
     hourlyMaxCapacity: number
   ): void {
     const hourlyOccupancySummary =
-      this.weeklyOccupancyMap[weekId]?.[day]?.[hour]
+      this.weeklyOccupancyMap[weekId]?.days?.[day]?.[hour]
     if (!hourlyOccupancySummary) return
 
     const minOccupancy = this.occupancyAccumulator.min
@@ -226,7 +237,7 @@ class OccupancyDataProcessor {
     const remainingCapacity = hourlyMaxCapacity - averageOccupancy
 
     // Update the summary with finalized statistics
-    this.weeklyOccupancyMap[weekId][day][hour] = {
+    this.weeklyOccupancyMap[weekId].days[day][hour] = {
       ...hourlyOccupancySummary,
       minOccupancy,
       maxOccupancy,
@@ -236,23 +247,25 @@ class OccupancyDataProcessor {
       maximumCapacity: hourlyMaxCapacity,
     } as HourlyOccupancySummary
 
-    this.updateWeeklyMaxDayValues(weekId, day, utilizationRate, maxOccupancy)
+    this.updateWeeklyMaxDayValues(weekId, day, utilizationRate)
   }
 
   private updateWeeklyMaxDayValues(
     weekId: string,
     day: string,
-    utilizationRate: number,
-    maxOccupancy: number
+    utilizationRate: number
   ): void {
-    const weeklyMaxDayValues = this.weeklyOccupancyMap[weekId][day].maxDayValues
-    weeklyMaxDayValues.utilizationRate = Math.max(
-      weeklyMaxDayValues.utilizationRate,
+    const dialyMaxValues =
+      this.weeklyOccupancyMap[weekId].days[day].maxDayValues
+    dialyMaxValues.utilizationRate = Math.max(
+      dialyMaxValues.utilizationRate,
       utilizationRate
     )
-    weeklyMaxDayValues.maxOccupancy = Math.max(
-      weeklyMaxDayValues.maxOccupancy,
-      maxOccupancy
+
+    const weeklyMaxValues = this.weeklyOccupancyMap[weekId].maxWeekValues
+    weeklyMaxValues.utilizationRate = Math.max(
+      weeklyMaxValues.utilizationRate,
+      utilizationRate
     )
   }
 
@@ -262,7 +275,7 @@ class OccupancyDataProcessor {
     hour: number
   ): void {
     const hourlyUtilizationRate =
-      this.weeklyOccupancyMap[weekId][day][hour].utilizationRate
+      this.weeklyOccupancyMap[weekId].days[day][hour].utilizationRate
     if (hourlyUtilizationRate > 0) {
       const hourlyOverallAccumulator =
         this.overallOccupancyAccumulator[day][hour]
@@ -270,7 +283,7 @@ class OccupancyDataProcessor {
 
       hourlyOverallAccumulator.average.sum += hourlyUtilizationRate
       hourlyOverallAccumulator.average.count += 1
-      this.overallOccupancyMap[day][hour].averageUtilizationRate =
+      this.overallOccupancyMap.days[day][hour].averageUtilizationRate =
         this.formatNumber(
           hourlyOverallAccumulator.average.sum /
             hourlyOverallAccumulator.average.count
@@ -280,7 +293,7 @@ class OccupancyDataProcessor {
       hourlyOverallAccumulator.weightedAverage.sum +=
         hourlyUtilizationRate * weight
       hourlyOverallAccumulator.weightedAverage.count += weight
-      this.overallOccupancyMap[day][hour].weightedAverageUtilizationRate =
+      this.overallOccupancyMap.days[day][hour].weightedAverageUtilizationRate =
         this.formatNumber(
           hourlyOverallAccumulator.weightedAverage.sum /
             hourlyOverallAccumulator.weightedAverage.count
@@ -289,31 +302,36 @@ class OccupancyDataProcessor {
   }
 
   private updateOverallMaxDayValues() {
-    Object.keys(this.overallOccupancyMap).forEach((day) => {
-      const dayData = this.overallOccupancyMap[day]
-      const { maxDayValues } = dayData
+    const setMaxValues = (
+      maxValues: OverallUtilizationValues,
+      propertyName: keyof OverallUtilizationValues,
+      hourlyData: OverallUtilizationValues
+    ) => {
+      maxValues[propertyName] = Math.max(
+        maxValues[propertyName],
+        hourlyData[propertyName]
+      )
+    }
 
-      Object.keys(dayData).forEach((hour) => {
-        if (hour !== 'maxDayValues') {
-          const hourlyData = dayData[parseInt(hour)]
-          maxDayValues.averageUtilizationRate = Math.max(
-            maxDayValues.averageUtilizationRate,
-            hourlyData.averageUtilizationRate
-          )
-          maxDayValues.weightedAverageUtilizationRate = Math.max(
-            maxDayValues.weightedAverageUtilizationRate,
-            hourlyData.weightedAverageUtilizationRate
-          )
-          const { weeklyItems } =
-            this.overallOccupancyAccumulator[day][parseInt(hour)].median
-          hourlyData.medianUtilizationRate = this.findMedian(weeklyItems)
-          maxDayValues.medianUtilizationRate = Math.max(
-            maxDayValues.medianUtilizationRate,
-            hourlyData.medianUtilizationRate
-          )
+    const { maxOverallValues } = this.overallOccupancyMap
+    for (const day of Object.keys(this.overallOccupancyMap.days)) {
+      const dayData = this.overallOccupancyMap.days[day]
+      const { maxDayValues } = dayData
+      for (const hour of Object.keys(dayData)) {
+        if (hour === 'maxDayValues') {
+          continue
         }
-      })
-    })
+        const hourlyData = dayData[parseInt(hour)]
+        const { weeklyItems } =
+          this.overallOccupancyAccumulator[day][parseInt(hour)].median
+        hourlyData.medianUtilizationRate = this.findMedian(weeklyItems)
+        for (const maxValues of [maxDayValues, maxOverallValues]) {
+          setMaxValues(maxValues, 'averageUtilizationRate', hourlyData)
+          setMaxValues(maxValues, 'weightedAverageUtilizationRate', hourlyData)
+          setMaxValues(maxValues, 'medianUtilizationRate', hourlyData)
+        }
+      }
+    }
   }
 
   public processRecord(

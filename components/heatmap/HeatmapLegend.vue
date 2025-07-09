@@ -128,7 +128,9 @@ const explanations = [
   },
   {
     icon: '📏',
-    text: computed(() => t('heatmap.legend.explanations.height')),
+    text: computed(() =>
+      t(`heatmap.legend.explanations.height.${poolStore.viewMode}`)
+    ),
   },
 ]
 </script>
