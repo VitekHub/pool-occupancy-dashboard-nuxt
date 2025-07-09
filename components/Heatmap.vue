@@ -45,11 +45,7 @@ const dataProcessor = computed(() => {
     }
   } else {
     // For weekly views, check if weeklyOccupancyMap and selectedWeekId are valid
-    if (
-      !poolStore.weeklyOccupancyMap ||
-      !poolStore.selectedWeekId ||
-      !poolStore.weeklyOccupancyMap[poolStore.selectedWeekId]
-    ) {
+    if (!poolStore.weeklyOccupancyMap || !poolStore.selectedWeekId) {
       return null
     }
   }

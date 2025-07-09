@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { parseOccupancyCSV } from '~/utils/csv'
-import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
+import { nowInPrague, getHourFromTime, getWeekId } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
@@ -59,7 +59,17 @@ export const usePoolStore = defineStore('pool', {
   getters: {
     // Get available week IDs from the weekly occupancy map
     availableWeekIds: (state): string[] => {
-      return Object.keys(state.weeklyOccupancyMap).sort()
+      const weekIds = Object.keys(state.weeklyOccupancyMap).sort()
+      const currentWeekId = getWeekId(nowInPrague())
+      let week = weekIds[weekIds.length - 1]
+      // Add any missing weeks with no data up to the current date
+      while (week < currentWeekId) {
+        const date = new Date(week)
+        date.setDate(date.getDate() + 7)
+        week = getWeekId(date)
+        weekIds.push(week)
+      }
+      return weekIds
     },
 
     // Get the current pool configuration (inside or outside) based on selected type
