@@ -45,8 +45,15 @@ export default class OccupancyDataAccumulator {
     if (utilizationRateInPercentage === 0) {
       return 0
     }
-    if (utilizationRateInPercentage < 1) {
-      return 0.1
+    const thresholds = [
+      { limit: 1, weight: 0.1 },
+      { limit: 10, weight: 0.5 },
+      { limit: 100, weight: 1 },
+    ]
+    for (const threshold of thresholds) {
+      if (utilizationRateInPercentage < threshold.limit) {
+        return threshold.weight
+      }
     }
     return 1
   }
