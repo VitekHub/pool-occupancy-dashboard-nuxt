@@ -1,11 +1,13 @@
-import {
-  type BaseCellData,
-  type WeeklyOccupancyMap,
-  type OverallOccupancyMap,
-  UTILIZATION_COLORS,
-  UTILIZATION_THRESHOLDS,
+import type {
+  BaseCellData,
+  WeeklyOccupancyMap,
+  OverallOccupancyMap,
+  HourlyOccupancySummary,
+  OverallUtilizationValues,
 } from '~/types'
+import { UTILIZATION_COLORS } from '~/types'
 import { getWeekId, isDayToday, nowInPrague } from '~/utils/dateUtils'
+import HeatmapColorProcessor from './heatmapColorProcessor'
 
 type TranslationFunction = (
   key: string,
@@ -13,79 +15,21 @@ type TranslationFunction = (
 ) => string
 
 export default class HeatmapDataProcessor {
+  private heatmapColorProcessor: HeatmapColorProcessor
   constructor(
     private weeklyOccupancyMap: WeeklyOccupancyMap,
     private overallOccupancyMap: OverallOccupancyMap,
     private heatmapHighThreshold: number,
     private tooltipTranslationKey: string,
     private t: TranslationFunction
-  ) {}
-
-  public static getBarHeight(
-    colorFillRatio: number,
-    uniformHeatmapBarHeight: boolean
   ) {
-    return `${colorFillRatio > 0 ? (uniformHeatmapBarHeight ? 100 : colorFillRatio * 100) : 0}%`
-  }
-
-  private adjustHeatmapThreshold(threshold: number) {
-    return Math.round(this.heatmapHighThreshold * (threshold / 100))
-  }
-
-  private getLegendLabel(threshold: number) {
-    return `<${this.adjustHeatmapThreshold(threshold)}%`
+    this.heatmapColorProcessor = new HeatmapColorProcessor(
+      this.heatmapHighThreshold
+    )
   }
 
   public getLegendItems(): { color: string; label: string }[] {
-    return [
-      {
-        color: `${UTILIZATION_COLORS.EMPTY} border border-gray-300`,
-        label: '0%',
-      },
-      {
-        color: UTILIZATION_COLORS.VERY_LOW,
-        label: this.getLegendLabel(UTILIZATION_THRESHOLDS.VERY_LOW),
-      },
-      {
-        color: UTILIZATION_COLORS.LOW,
-        label: this.getLegendLabel(UTILIZATION_THRESHOLDS.LOW),
-      },
-      {
-        color: UTILIZATION_COLORS.MEDIUM,
-        label: this.getLegendLabel(UTILIZATION_THRESHOLDS.MEDIUM),
-      },
-      {
-        color: UTILIZATION_COLORS.HIGH,
-        label: `<${this.heatmapHighThreshold}%`,
-      },
-      { color: UTILIZATION_COLORS.VERY_HIGH, label: `<${100}%` },
-    ]
-  }
-
-  private getColor(rate: number): string {
-    const veryLowThreshold = this.adjustHeatmapThreshold(
-      UTILIZATION_THRESHOLDS.VERY_LOW
-    )
-    const lowThreshold = this.adjustHeatmapThreshold(UTILIZATION_THRESHOLDS.LOW)
-    const mediumThreshold = this.adjustHeatmapThreshold(
-      UTILIZATION_THRESHOLDS.MEDIUM
-    )
-
-    if (rate === 0) return UTILIZATION_COLORS.EMPTY
-    if (rate < veryLowThreshold) return UTILIZATION_COLORS.VERY_LOW
-    if (rate < lowThreshold) return UTILIZATION_COLORS.LOW
-    if (rate < mediumThreshold) return UTILIZATION_COLORS.MEDIUM
-    if (rate < this.heatmapHighThreshold) return UTILIZATION_COLORS.HIGH
-    return UTILIZATION_COLORS.VERY_HIGH
-  }
-
-  private getColorFillRatio(
-    utilizationRate: number,
-    maxDayUtilizationRate: number
-  ): number {
-    return maxDayUtilizationRate > 0
-      ? utilizationRate / maxDayUtilizationRate
-      : 0
+    return this.heatmapColorProcessor.getLegendItems()
   }
 
   private isCurrentHour(day: string, hour: number) {
@@ -123,8 +67,8 @@ export default class HeatmapDataProcessor {
     hour: number
   }): BaseCellData {
     return {
-      color: this.getColor(utilizationRate),
-      colorFillRatio: this.getColorFillRatio(
+      color: this.heatmapColorProcessor.getColor(utilizationRate),
+      colorFillRatio: this.heatmapColorProcessor.getColorFillRatio(
         utilizationRate,
         maxDayUtilizationRate
       ),
@@ -159,11 +103,44 @@ export default class HeatmapDataProcessor {
     })
   }
 
+  private getOverallCellData(
+    day: string,
+    hour: number,
+    type: keyof OverallUtilizationValues
+  ): BaseCellData {
+    const utilizationRate =
+      this.overallOccupancyMap?.days?.[day]?.[hour]?.[type] || 0
+    const maxDayUtilizationRate =
+      this.overallOccupancyMap?.maxOverallValues[type] || 0
+
+    return this.getCellDataWithUtilization({
+      utilizationRate,
+      maxDayUtilizationRate,
+      day,
+      hour,
+    })
+  }
+
+  public getOverallMedianCellData(day: string, hour: number): BaseCellData {
+    return this.getOverallCellData(day, hour, 'medianUtilizationRate')
+  }
+
+  public getOverallAverageCellData(day: string, hour: number): BaseCellData {
+    return this.getOverallCellData(day, hour, 'averageUtilizationRate')
+  }
+
+  public getOverallWeightedAverageCellData(
+    day: string,
+    hour: number
+  ): BaseCellData {
+    return this.getOverallCellData(day, hour, 'weightedAverageUtilizationRate')
+  }
+
   private getWeeklyOccupancyByHour(
     selectedWeekId: string,
     day: string,
     hour: number
-  ) {
+  ): HourlyOccupancySummary {
     const today = nowInPrague()
     const currentWeekId = getWeekId(today)
     const isNow =
@@ -191,53 +168,6 @@ export default class HeatmapDataProcessor {
     return this.getCellDataWithUtilization({
       utilizationRate,
       maxDayUtilizationRate: this.getDayMaxUtilizationByWeek(selectedWeekId),
-      day,
-      hour,
-    })
-  }
-
-  public getOverallMedianCellData(day: string, hour: number): BaseCellData {
-    const medianUtilizationRate =
-      this.overallOccupancyMap?.days?.[day]?.[hour]?.medianUtilizationRate || 0
-    const maxDayMedianUtilizationRate =
-      this.overallOccupancyMap?.maxOverallValues.medianUtilizationRate || 0
-
-    return this.getCellDataWithUtilization({
-      utilizationRate: medianUtilizationRate,
-      maxDayUtilizationRate: maxDayMedianUtilizationRate,
-      day,
-      hour,
-    })
-  }
-
-  public getOverallAverageCellData(day: string, hour: number): BaseCellData {
-    const averageUtilizationRate =
-      this.overallOccupancyMap?.days?.[day]?.[hour]?.averageUtilizationRate || 0
-    const maxDayAverageUtilizationRate =
-      this.overallOccupancyMap?.maxOverallValues.averageUtilizationRate || 0
-
-    return this.getCellDataWithUtilization({
-      utilizationRate: averageUtilizationRate,
-      maxDayUtilizationRate: maxDayAverageUtilizationRate,
-      day,
-      hour,
-    })
-  }
-
-  public getOverallWeightedAverageCellData(
-    day: string,
-    hour: number
-  ): BaseCellData {
-    const weightedAverageUtilizationRate =
-      this.overallOccupancyMap?.days?.[day]?.[hour]
-        ?.weightedAverageUtilizationRate || 0
-    const maxDayWeightedAverageUtilizationRate =
-      this.overallOccupancyMap?.maxOverallValues
-        .weightedAverageUtilizationRate || 0
-
-    return this.getCellDataWithUtilization({
-      utilizationRate: weightedAverageUtilizationRate,
-      maxDayUtilizationRate: maxDayWeightedAverageUtilizationRate,
       day,
       hour,
     })
