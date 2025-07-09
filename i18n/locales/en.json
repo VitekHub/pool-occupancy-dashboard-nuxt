@@ -53,6 +53,7 @@
       "overall": "Historical Average",
       "weekly": "Weekly",
       "average": "Average",
+      "weightedAverage": "Weighted Average",
       "median": "Median",
       "percentage": "Percentage",
       "minMax": "Min-Max",
@@ -61,12 +62,17 @@
     },
     "overall": {
       "average": {
-        "title": "Historical Average Pool Occupancy Heatmap",
+        "title": "Historical Average Pool Occupancy",
         "description": "Average occupancy rates across all recorded weeks",
         "tooltip": "{day} at {hour}:00 - {utilization}% occupied (average of all weeks)"
       },
+      "weightedAverage": {
+        "title": "Historical Weighted Average Pool Occupancy",
+        "description": "Weighted Average occupancy rates across all recorded weeks",
+        "tooltip": "{day} at {hour}:00 - {utilization}% occupied (weighted average of all weeks)"
+      },
       "median": {
-        "title": "Historical Median Pool Occupancy Heatmap",
+        "title": "Historical Median Pool Occupancy",
         "description": "Median occupancy rates across all recorded weeks",
         "tooltip": "{day} at {hour}:00 - {utilization}% occupied (median of all weeks)"
       }

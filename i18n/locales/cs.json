@@ -53,6 +53,7 @@
       "overall": "Historická průměrná",
       "weekly": "Týdenní",
       "average": "Průměr",
+      "weightedAverage": "Vážený průměr",
       "median": "Medián",
       "percentage": "Procentuální",
       "minMax": "Min-Max",
@@ -61,13 +62,18 @@
     },
     "overall": {
       "average": {
-        "title": "Historická průměrná mapa obsazenosti bazénu",
-        "description": "Průměrné míry obsazenosti napříč všemi zaznamenanými týdny",
+        "title": "Historická obsazenost bazénu (průměr)",
+        "description": "Míry (průměr) obsazenosti napříč všemi zaznamenanými týdny",
         "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (průměr ze všech týdnů)"
       },
+      "weightedAverage": {
+        "title": "Historická obsazenost bazénu (vážený průměr)",
+        "description": "Míry (vážený průměr) obsazenosti napříč všemi zaznamenanými týdny",
+        "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (vážený průměr ze všech týdnů)"
+      },
       "median": {
-        "title": "Historická průměrná mapa obsazenosti bazénu",
-        "description": "Mediánové míry obsazenosti napříč všemi zaznamenanými týdny",
+        "title": "Historická obsazenost bazénu (medián)",
+        "description": "Míry (medián) obsazenosti napříč všemi zaznamenanými týdny",
         "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (medián ze všech týdnů)"
       }
     },

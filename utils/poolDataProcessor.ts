@@ -19,9 +19,17 @@ interface OccupancyAccumulator {
 interface OverallOccupancyAccumulator {
   [day: string]: {
     [hour: number]: {
-      sum: number
-      count: number
-      weeklyItems: number[]
+      average: {
+        sum: number
+        count: number
+      }
+      weightedAverage: {
+        sum: number
+        count: number
+      }
+      median: {
+        weeklyItems: number[]
+      }
     }
   }
 }
@@ -67,6 +75,18 @@ class OccupancyDataProcessor {
     hour: number
     hourlyMaxCapacity: number
   } | null = null
+
+  private getWeightForWeightedAverage(
+    utilizationRateInPercentage: number
+  ): number {
+    if (utilizationRateInPercentage === 0) {
+      return 0
+    }
+    if (utilizationRateInPercentage < 1) {
+      return 0.1
+    }
+    return 1
+  }
 
   private formatNumber(value: number): number {
     if (value < 1) {
@@ -117,19 +137,32 @@ class OccupancyDataProcessor {
   private initializeOverallOccupancyEntry(day: string, hour: number): void {
     if (!this.overallOccupancyMap[day]) {
       this.overallOccupancyMap[day] = {
-        maxDayValues: { averageUtilizationRate: 0, medianUtilizationRate: 0 },
+        maxDayValues: {
+          averageUtilizationRate: 0,
+          weightedAverageUtilizationRate: 0,
+          medianUtilizationRate: 0,
+        },
       }
       this.overallOccupancyAccumulator[day] = {}
     }
     if (!this.overallOccupancyMap[day][hour]) {
       this.overallOccupancyMap[day][hour] = {
         averageUtilizationRate: 0,
+        weightedAverageUtilizationRate: 0,
         medianUtilizationRate: 0,
       }
       this.overallOccupancyAccumulator[day][hour] = {
-        sum: 0,
-        count: 0,
-        weeklyItems: [],
+        average: {
+          sum: 0,
+          count: 0,
+        },
+        weightedAverage: {
+          sum: 0,
+          count: 0,
+        },
+        median: {
+          weeklyItems: [],
+        },
       }
     }
   }
@@ -233,12 +266,24 @@ class OccupancyDataProcessor {
     if (hourlyUtilizationRate > 0) {
       const hourlyOverallAccumulator =
         this.overallOccupancyAccumulator[day][hour]
-      hourlyOverallAccumulator.weeklyItems.push(hourlyUtilizationRate)
-      hourlyOverallAccumulator.sum += hourlyUtilizationRate
-      hourlyOverallAccumulator.count += 1
+      hourlyOverallAccumulator.median.weeklyItems.push(hourlyUtilizationRate)
+
+      hourlyOverallAccumulator.average.sum += hourlyUtilizationRate
+      hourlyOverallAccumulator.average.count += 1
       this.overallOccupancyMap[day][hour].averageUtilizationRate =
         this.formatNumber(
-          hourlyOverallAccumulator.sum / hourlyOverallAccumulator.count
+          hourlyOverallAccumulator.average.sum /
+            hourlyOverallAccumulator.average.count
+        )
+
+      const weight = this.getWeightForWeightedAverage(hourlyUtilizationRate)
+      hourlyOverallAccumulator.weightedAverage.sum +=
+        hourlyUtilizationRate * weight
+      hourlyOverallAccumulator.weightedAverage.count += weight
+      this.overallOccupancyMap[day][hour].weightedAverageUtilizationRate =
+        this.formatNumber(
+          hourlyOverallAccumulator.weightedAverage.sum /
+            hourlyOverallAccumulator.weightedAverage.count
         )
     }
   }
@@ -255,8 +300,12 @@ class OccupancyDataProcessor {
             maxDayValues.averageUtilizationRate,
             hourlyData.averageUtilizationRate
           )
+          maxDayValues.weightedAverageUtilizationRate = Math.max(
+            maxDayValues.weightedAverageUtilizationRate,
+            hourlyData.weightedAverageUtilizationRate
+          )
           const { weeklyItems } =
-            this.overallOccupancyAccumulator[day][parseInt(hour)]
+            this.overallOccupancyAccumulator[day][parseInt(hour)].median
           hourlyData.medianUtilizationRate = this.findMedian(weeklyItems)
           maxDayValues.medianUtilizationRate = Math.max(
             maxDayValues.medianUtilizationRate,

@@ -231,6 +231,24 @@ export default class HeatmapDataProcessor {
     })
   }
 
+  public getOverallWeightedAverageCellData(
+    day: string,
+    hour: number
+  ): BaseCellData {
+    const weightedAverageUtilizationRate =
+      this.overallOccupancyMap[day]?.[hour]?.weightedAverageUtilizationRate || 0
+    const maxDayWeightedAverageUtilizationRate =
+      this.overallOccupancyMap[day]?.maxDayValues
+        .weightedAverageUtilizationRate || 0
+
+    return this.getCellDataWithUtilization({
+      utilizationRate: weightedAverageUtilizationRate,
+      maxDayUtilizationRate: maxDayWeightedAverageUtilizationRate,
+      day,
+      hour,
+    })
+  }
+
   private getEmptyBaseCellData() {
     return {
       color: UTILIZATION_COLORS.EMPTY,

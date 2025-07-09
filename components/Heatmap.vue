@@ -93,6 +93,8 @@ const getCellData = (day: string, hour: number): BaseCellData | undefined => {
   if (poolStore.viewMode === VIEW_MODES.OVERALL) {
     if (poolStore.metricType === METRIC_TYPES.AVERAGE)
       return dataProcessor.value.getOverallAverageCellData(day, hour)
+    else if (poolStore.metricType === METRIC_TYPES.WEIGHTED_AVERAGE)
+      return dataProcessor.value.getOverallWeightedAverageCellData(day, hour)
     else if (poolStore.metricType === METRIC_TYPES.MEDIAN)
       return dataProcessor.value.getOverallMedianCellData(day, hour)
   } else if (
