@@ -45,11 +45,7 @@ const dataProcessor = computed(() => {
     }
   } else {
     // For weekly views, check if weeklyOccupancyMap and selectedWeekId are valid
-    if (
-      !poolStore.weeklyOccupancyMap ||
-      !poolStore.selectedWeekId ||
-      !poolStore.weeklyOccupancyMap[poolStore.selectedWeekId]
-    ) {
+    if (!poolStore.weeklyOccupancyMap || !poolStore.selectedWeekId) {
       return null
     }
   }
@@ -97,6 +93,8 @@ const getCellData = (day: string, hour: number): BaseCellData | undefined => {
   if (poolStore.viewMode === VIEW_MODES.OVERALL) {
     if (poolStore.metricType === METRIC_TYPES.AVERAGE)
       return dataProcessor.value.getOverallAverageCellData(day, hour)
+    else if (poolStore.metricType === METRIC_TYPES.WEIGHTED_AVERAGE)
+      return dataProcessor.value.getOverallWeightedAverageCellData(day, hour)
     else if (poolStore.metricType === METRIC_TYPES.MEDIAN)
       return dataProcessor.value.getOverallMedianCellData(day, hour)
   } else if (

@@ -18,6 +18,7 @@ export type ViewMode = (typeof VIEW_MODES)[keyof typeof VIEW_MODES]
 export const METRIC_TYPES = {
   MEDIAN: 'median',
   AVERAGE: 'average',
+  WEIGHTED_AVERAGE: 'weightedAverage',
   PERCENTAGE: 'percentage',
   MIN_MAX: 'minMax',
 } as const
@@ -82,25 +83,32 @@ export interface HourlyOccupancySummary {
 
 export interface WeeklyOccupancyMap {
   [weekId: string]: {
-    [day: string]: {
-      [hour: number]: HourlyOccupancySummary
-      maxDayValues: {
-        utilizationRate: number
-        maxOccupancy: number
+    maxWeekValues: {
+      utilizationRate: number
+    }
+    days: {
+      [day: string]: {
+        [hour: number]: HourlyOccupancySummary
+        maxDayValues: {
+          utilizationRate: number
+        }
       }
     }
   }
 }
 
+export interface OverallUtilizationValues {
+  averageUtilizationRate: number
+  weightedAverageUtilizationRate: number
+  medianUtilizationRate: number
+}
+
 export interface OverallOccupancyMap {
-  [day: string]: {
-    [hour: number]: {
-      averageUtilizationRate: number
-      medianUtilizationRate: number
-    }
-    maxDayValues: {
-      averageUtilizationRate: number
-      medianUtilizationRate: number
+  maxOverallValues: OverallUtilizationValues
+  days: {
+    [day: string]: {
+      [hour: number]: OverallUtilizationValues
+      maxDayValues: OverallUtilizationValues
     }
   }
 }

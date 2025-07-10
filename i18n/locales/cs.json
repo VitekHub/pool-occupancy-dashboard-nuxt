@@ -53,6 +53,7 @@
       "overall": "Historická průměrná",
       "weekly": "Týdenní",
       "average": "Průměr",
+      "weightedAverage": "Vážený průměr",
       "median": "Medián",
       "percentage": "Procentuální",
       "minMax": "Min-Max",
@@ -61,13 +62,18 @@
     },
     "overall": {
       "average": {
-        "title": "Historická průměrná mapa obsazenosti bazénu",
-        "description": "Průměrné míry obsazenosti napříč všemi zaznamenanými týdny",
+        "title": "Historická obsazenost bazénu (průměr)",
+        "description": "Míry (průměr) obsazenosti napříč všemi zaznamenanými týdny",
         "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (průměr ze všech týdnů)"
       },
+      "weightedAverage": {
+        "title": "Historická obsazenost bazénu (vážený průměr)",
+        "description": "Míry (vážený průměr) obsazenosti napříč všemi zaznamenanými týdny",
+        "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (vážený průměr ze všech týdnů)"
+      },
       "median": {
-        "title": "Historická průměrná mapa obsazenosti bazénu",
-        "description": "Mediánové míry obsazenosti napříč všemi zaznamenanými týdny",
+        "title": "Historická obsazenost bazénu (medián)",
+        "description": "Míry (medián) obsazenosti napříč všemi zaznamenanými týdny",
         "tooltip": "{day} v {hour}:00 - {utilization}% obsazeno (medián ze všech týdnů)"
       }
     },
@@ -95,8 +101,11 @@
       "uniformBarHeight": "Zobrazit jednotnou výšku sloupců",
       "threshold": "Práh",
       "explanations": {
-        "color": "Barva představuje absolutní míru obsazenosti ve srovnání s maximální kapacitou bazénu - tmavší barvy označují vyšší obsazenost.",
-        "height": "Výška barevného sloupce představuje relativní obsazenost v rámci daného dne - vyšší sloupec označuje vyšší obsazenost ve srovnání s ostatními hodinami téhož dne."
+        "color": "Barva sloupce představuje míru obsazenosti ve srovnání s maximální kapacitou bazénu - tmavší barva označuje vyšší obsazenost.",
+        "height": {
+          "weekly": "Výška sloupce představuje míru obsazenosti ve srovnání s největší obsazeností za celý týden - vyšší sloupec označuje vyšší obsazenost.",
+          "overall": "Výška sloupce představuje míru obsazenosti ve srovnání s největší obsazeností za celou historii - vyšší sloupec označuje vyšší obsazenost."
+        }
       }
     },
     "overallTooltip": "{day} v {hour}:00 - {utilization}% obsazenost",

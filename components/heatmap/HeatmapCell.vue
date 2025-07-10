@@ -17,7 +17,7 @@
         isDesktop ? 'rounded-b' : 'rounded-lg',
       ]"
       :style="{
-        height: HeatmapDataProcessor.getBarHeight(
+        height: HeatmapColorProcessor.getBarHeight(
           colorFillRatio,
           uniformHeatmapBarHeight && isDesktop
         ),
@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import type { BaseCellData } from '~/types'
-import HeatmapDataProcessor from '~/utils/heatmapDataProcessor'
+import HeatmapColorProcessor from '~/utils/heatmapColorProcessor'
 
 const { isDesktop } = useDesktopView()
 

@@ -6,6 +6,13 @@
     <URadioGroup
       v-model="metricType"
       :options="metricItems"
+      :ui="
+        !isDesktop
+          ? {
+              fieldset: 'flex flex-row gap-4',
+            }
+          : {}
+      "
       :uiRadio="{
         inner: 'ms-1',
         wrapper: 'mb-0.5',
@@ -35,7 +42,11 @@ const metricType = computed({
 })
 
 const metricItems = computed(() => {
-  const overalViewMetrics = [METRIC_TYPES.AVERAGE, METRIC_TYPES.MEDIAN]
+  const overalViewMetrics = [
+    METRIC_TYPES.AVERAGE,
+    METRIC_TYPES.WEIGHTED_AVERAGE,
+    METRIC_TYPES.MEDIAN,
+  ]
   const weeklyViewMetrics = [
     METRIC_TYPES.PERCENTAGE,
     METRIC_TYPES.MIN_MAX,
