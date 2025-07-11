@@ -73,6 +73,8 @@ onMounted(() => {
 
   refreshIntervalId.value = setInterval(() => {
     refresh()
+    // reload pools config as mainly 'todayClosed' might changed
+    poolStore.loadPoolsConfig()
   }, 120_000)
 })
 

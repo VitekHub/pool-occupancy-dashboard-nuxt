@@ -200,6 +200,15 @@ export const usePoolStore = defineStore('pool', {
             this.selectedPool = firstPoolWithOutside
           }
           this.selectedPoolType = POOL_TYPES.OUTSIDE
+        } else {
+          // Update selected pool from updated pool configuration
+          const selectedName = this.selectedPool.name
+          const updatedPool = this.pools.find(
+            (pool) => pool.name === selectedName
+          )
+          if (updatedPool) {
+            this.selectedPool = updatedPool
+          }
         }
       } catch (error) {
         this.error = 'Failed to load pools configuration'
