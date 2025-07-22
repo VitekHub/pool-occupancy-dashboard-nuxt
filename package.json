@@ -11,26 +11,31 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "lint:check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@nuxt/ui": "^2.18.4",
+    "@nuxtjs/i18n": "^9.3.0",
     "@pinia/nuxt": "^0.5.1",
     "css-select": "^4.3.0",
-    "nuxt": "^3.16.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.0.0",
-    "@nuxtjs/i18n": "^9.3.0"
+    "nuxt": "^3.16.0"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.5.7",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^8.8.0",
+    "@vitest/ui": "^3.2.4",
     "@vueuse/nuxt": "^10.5.0",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "vitest": "^3.2.4"
   }
 }
