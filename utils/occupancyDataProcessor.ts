@@ -70,7 +70,7 @@ export default class OccupancyDataProcessor {
       }
     }
   }
-  private processPreviousHour(): void {
+  private processPreviousRecord(): void {
     if (!this.previousContext) return
     const { weekId, day, hour, hourlyMaxCapacity } = this.previousContext
     this.processWeeklyOccupancy(weekId, day, hour, hourlyMaxCapacity)
@@ -78,7 +78,7 @@ export default class OccupancyDataProcessor {
   }
 
   public finalizeProcessing(): void {
-    this.processPreviousHour()
+    this.processPreviousRecord()
     this.updateOverallMaxDayValues()
   }
 
@@ -191,8 +191,13 @@ export default class OccupancyDataProcessor {
     this.initializeOverallOccupancyEntry(day, hour)
     this.accumulator.initializeOverallAccumulator(day, hour)
 
-    if (this.previousContext && this.previousContext.hour !== hour) {
-      this.processPreviousHour()
+    if (
+      this.previousContext &&
+      (this.previousContext.weekId !== weekId ||
+        this.previousContext.day !== day ||
+        this.previousContext.hour !== hour)
+    ) {
+      this.processPreviousRecord()
       this.accumulator.resetWeeklyAccumulator()
     }
     this.previousContext = { weekId, day, hour, hourlyMaxCapacity }
