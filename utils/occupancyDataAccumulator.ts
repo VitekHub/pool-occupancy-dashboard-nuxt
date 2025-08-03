@@ -151,10 +151,12 @@ export default class OccupancyDataAccumulator {
     weightedAverage.count += weight
 
     const averageUtilizationRate = this.formatNumber(
-      average.sum / average.count
+      average.count > 0 ? average.sum / average.count : 0
     )
     const weightedAverageUtilizationRate = this.formatNumber(
-      weightedAverage.sum / weightedAverage.count
+      weightedAverage.count > 0
+        ? weightedAverage.sum / weightedAverage.count
+        : 0
     )
     return { averageUtilizationRate, weightedAverageUtilizationRate }
   }

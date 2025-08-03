@@ -31,16 +31,15 @@ export const getWeekId = (date: Date): string => {
 }
 
 export const formatWeekId = (weekId: string, locale: string): string => {
-  try {
-    const date = new Date(weekId)
+  const date = new Date(weekId)
+  if (!isNaN(date.getTime())) {
     return date.toLocaleDateString(locale === 'en' ? 'en-US' : 'cs-CZ', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     })
-  } catch {
-    return weekId
   }
+  return weekId
 }
 
 export const getHourFromTime = (timeStr: string): number => {

@@ -74,6 +74,12 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 
 ## 🛠️ Development
 
+### Testing
+
+The project includes unit tests for data processing and CSV parsing utility functions.
+
+Tests are located in the `tests/unit/` directory and use Vitest as the testing framework.
+
 ### Available Scripts
 
 ```bash
@@ -88,6 +94,11 @@ npm run lint         # Run ESLint
 npm run lint:check   # Check linting without fixing
 npm run format       # Format code with Prettier
 npm run format:check # Check formatting
+
+# Testing
+npm run test         # Run tests in watch mode
+npm run test:ui      # Run tests with UI interface
+npm run test:run     # Run tests once
 ```
 
 ### Project Structure
@@ -102,6 +113,9 @@ npm run format:check # Check formatting
 ├── layouts/              # Nuxt layouts
 ├── pages/                # Nuxt pages
 ├── stores/               # Pinia stores
+├── tests/                # Test files
+│   └── unit/             # Unit tests
+│       └── utils/        # Utility function tests
 ├── types/                # TypeScript type definitions
 ├── utils/                # Utility functions
 └── .github/workflows/    # GitHub Actions
