@@ -21,7 +21,8 @@ export default class HeatmapDataProcessor {
     private overallOccupancyMap: OverallOccupancyMap,
     private heatmapHighThreshold: number,
     private tooltipTranslationKey: string,
-    private t: TranslationFunction
+    private t: TranslationFunction,
+    private isPoolOpen: boolean
   ) {
     this.heatmapColorProcessor = new HeatmapColorProcessor(
       this.heatmapHighThreshold
@@ -149,7 +150,7 @@ export default class HeatmapDataProcessor {
       today.getHours() === hour
     const hourlyData =
       this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.[hour]
-    if (isNow && !hourlyData) {
+    if (isNow && !hourlyData && this.isPoolOpen) {
       // return previous hour data in case current hour is not available yet
       return this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.[hour - 1]
     }
@@ -161,12 +162,13 @@ export default class HeatmapDataProcessor {
     day: string,
     hour: number
   ): BaseCellData {
-    const utilizationRate =
-      this.getWeeklyOccupancyByHour(selectedWeekId, day, hour)
-        ?.utilizationRate || 0
+    const hourlyData = this.getWeeklyOccupancyByHour(selectedWeekId, day, hour)
+    if (!hourlyData) {
+      return this.getEmptyBaseCellData()
+    }
 
     return this.getCellDataWithUtilization({
-      utilizationRate,
+      utilizationRate: hourlyData.utilizationRate,
       maxDayUtilizationRate: this.getDayMaxUtilizationByWeek(selectedWeekId),
       day,
       hour,

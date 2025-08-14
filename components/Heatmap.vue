@@ -55,7 +55,8 @@ const dataProcessor = computed(() => {
     poolStore.overallOccupancyMap,
     poolStore.heatmapHighThreshold,
     tooltipTranslationKey.value,
-    t
+    t,
+    poolStore.isPoolOpen
   )
 })
 

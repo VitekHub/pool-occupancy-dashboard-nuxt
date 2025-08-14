@@ -143,7 +143,8 @@ describe('HeatmapDataProcessor', () => {
       mockOverallOccupancyMap,
       60, // heatmapHighThreshold
       'heatmap.weekly.percentage.tooltip',
-      mockT
+      mockT,
+      true // isPoolOpen
     )
   })
 
@@ -174,7 +175,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.overall.average.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
     })
 
@@ -224,7 +226,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.percentage.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
     })
 
@@ -275,7 +278,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
     })
 
@@ -321,7 +325,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
 
       const cellData = sameValueProcessor.getWeeklyRawMinMaxCellData(
@@ -356,7 +361,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.average.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
     })
 
@@ -427,7 +433,8 @@ describe('HeatmapDataProcessor', () => {
           testMap,
           60,
           'test.tooltip',
-          mockT
+          mockT,
+          true // isPoolOpen
         )
 
         const cellData = testProcessor.getOverallAverageCellData('Monday', 14)
@@ -469,7 +476,8 @@ describe('HeatmapDataProcessor', () => {
         emptyMap,
         60,
         'test.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
 
       const cellData = emptyProcessor.getOverallAverageCellData('Monday', 14)
@@ -494,6 +502,76 @@ describe('HeatmapDataProcessor', () => {
     })
   })
 
+  describe('current hour fallback logic', () => {
+    it("should return previous hour's data if pool is open and current hour has no data", () => {
+      // Mock current time to Monday, 16:00 (no data for 16, but data for 15)
+      const mockDate = new Date('2024-03-11T15:00:00Z')
+      vi.setSystemTime(mockDate)
+
+      // Mock isDayToday and nowInPrague
+      vi.doMock('~/utils/dateUtils', () => ({
+        isDayToday: vi.fn((day: string) => day === 'Monday'),
+        nowInPrague: vi.fn(() => mockDate),
+      }))
+
+      // Use the already existing mockWeeklyOccupancyMap
+      const processor = new HeatmapDataProcessor(
+        mockWeeklyOccupancyMap,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.weekly.percentage.tooltip',
+        mockT,
+        true // isPoolOpen
+      )
+
+      // 15:00 on Monday has data, so let's test 16:00 (no data, should fallback to 15:00)
+      const cellData = processor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Monday',
+        16
+      )
+      // Should fallback to hour 15 data
+      expect(cellData.displayText).toBe('45%')
+      expect(cellData.color).toBe(COLORS.HIGH)
+      expect(cellData.colorFillRatio).toBe(0.75) // 45/60 // maxWeekValues is 50, but the week is not over so maxOverallValues is `averageUtilizationRate: 60`
+      expect(cellData.title).toContain('Monday at 16:00 - 45% occupied')
+      expect(cellData.isCurrentHour).toBe(true)
+    })
+
+    it('should return empty data if pool is closed and current hour has no data', () => {
+      // Mock current time to Monday, 16:00 (no data for 16, but data for 15)
+      const mockDate = new Date('2024-03-11T15:00:00Z')
+      vi.setSystemTime(mockDate)
+
+      // Mock isDayToday and nowInPrague
+      vi.doMock('~/utils/dateUtils', () => ({
+        isDayToday: vi.fn((day: string) => day === 'Monday'),
+        nowInPrague: vi.fn(() => mockDate),
+      }))
+
+      const processor = new HeatmapDataProcessor(
+        mockWeeklyOccupancyMap,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.weekly.percentage.tooltip',
+        mockT,
+        false // isPoolOpen
+      )
+
+      const cellData = processor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Monday',
+        16
+      )
+      // Should NOT fallback, should be empty
+      expect(cellData.displayText).toBe('')
+      expect(cellData.color).toBe(COLORS.EMPTY)
+      expect(cellData.colorFillRatio).toBe(0)
+      expect(cellData.title).toBe('')
+      expect(cellData.isCurrentHour).toBe(false)
+    })
+  })
+
   describe('translation integration', () => {
     it('should call translation function with correct parameters', () => {
       // Create processor with overall average tooltip key
@@ -502,7 +580,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.overall.average.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
 
       overallProcessor.getOverallAverageCellData('Monday', 14)
@@ -531,7 +610,8 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
 
       // Test min-max tooltip
@@ -567,7 +647,8 @@ describe('HeatmapDataProcessor', () => {
         emptyOverallMap,
         60,
         'test.tooltip',
-        mockT
+        mockT,
+        true // isPoolOpen
       )
 
       const cellData = emptyProcessor.getOverallAverageCellData('Monday', 14)
