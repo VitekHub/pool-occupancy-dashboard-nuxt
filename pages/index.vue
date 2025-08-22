@@ -30,36 +30,12 @@ const isForceMobileView = computed(
 )
 const { isDesktop } = useDesktopView()
 
-// Use useFetch to handle CSV data fetching with auto-refresh
-const {
-  data: csvData,
-  pending,
-  error: fetchError,
-  refresh,
-} = useFetch<string>(() => poolStore.csvUrl, {
-  immediate: true, // Automatic SSR data fetching + automatic client-side fetching when needed
-  server: true, // Server-side
-})
-
-// Process new csv data
-watch(csvData, (newData) => {
-  if (newData) {
-    poolStore.processOccupancyCsvData(newData)
-  }
-})
-watch(pending, (isPending) => {
-  poolStore.isLoading = isPending
-})
-watch(fetchError, (error) => {
-  poolStore.error = error?.message || null
-})
-
-// Refresh data when pool selection changes
+// Fetch data when pool selection changes
 watch(
   () => poolStore.csvUrl,
   (newUrl) => {
     if (newUrl) {
-      refresh()
+      poolStore.fetchAndProcessCsvData()
     }
   }
 )
@@ -69,7 +45,7 @@ const refreshIntervalId = ref<NodeJS.Timeout>()
 
 onMounted(() => {
   refreshIntervalId.value = setInterval(() => {
-    refresh()
+    poolStore.fetchAndProcessCsvData()
     // reload pools config as mainly 'todayClosed' might changed
     poolStore.loadPoolsConfig()
   }, 120_000)
