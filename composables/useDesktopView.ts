@@ -1,8 +1,11 @@
-export const useDesktopView = () => {
+export const useDesktopView = (initialIsDesktop?: boolean) => {
   const poolStore = usePoolStore()
 
   // Use useState to ensure consistent SSR/client initial values
-  const isDesktopMediaQuery = useState('isDesktopMediaQuery', () => false)
+  const isDesktopMediaQuery = useState(
+    'isDesktopMediaQuery',
+    () => initialIsDesktop ?? false
+  )
 
   // Create reactive media query that only runs on client
   const mediaQuery = import.meta.client

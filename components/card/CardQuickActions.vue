@@ -35,7 +35,9 @@
         <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
           {{ $t('card.mobileView') }}
         </span>
+        <!-- Third party UToggle is rendered differently on the server. v-if="mounted" prevents Hydration mismatches -->
         <UToggle
+          v-if="mounted"
           v-model="forceMobileView"
           color="blue"
           size="sm"
@@ -47,6 +49,8 @@
 </template>
 
 <script setup lang="ts">
+const mounted = ref(false)
+
 const poolStore = usePoolStore()
 const { isDesktopMediaQuery } = useDesktopView()
 const forceMobileView = computed({
@@ -69,4 +73,8 @@ const exportData = () => {
     window.open(csvUrl, '_blank')
   }
 }
+
+onMounted(() => {
+  mounted.value = true
+})
 </script>
