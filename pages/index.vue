@@ -37,8 +37,8 @@ const {
   error: fetchError,
   refresh,
 } = useFetch<string>(() => poolStore.csvUrl, {
-  immediate: false, // Don't fetch immediately on mount
-  server: false, // Client-side only
+  immediate: true, // Automatic SSR data fetching + automatic client-side fetching when needed
+  server: true, // Server-side
 })
 
 // Process new csv data
@@ -68,9 +68,6 @@ watch(
 const refreshIntervalId = ref<NodeJS.Timeout>()
 
 onMounted(() => {
-  // Initial data fetch
-  refresh()
-
   refreshIntervalId.value = setInterval(() => {
     refresh()
     // reload pools config as mainly 'todayClosed' might changed
