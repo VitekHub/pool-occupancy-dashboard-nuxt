@@ -93,6 +93,11 @@ const poolStore = usePoolStore()
 // Track if component is mounted to avoid hydration mismatches
 const isMounted = ref(false)
 
+// Reactive check for client-side environment
+const isClient = computed(() => {
+  return isMounted.value && process.client && typeof window !== 'undefined'
+})
+
 const isDesktopExpanded = ref(false)
 
 const isExpanded = computed(() => {
@@ -102,7 +107,7 @@ const isExpanded = computed(() => {
   }
 
   // Mobile: always expanded when open
-  if (process.client && window.innerWidth < 1024) {
+  if (isClient.value && window.innerWidth < 1024) {
     return true
   }
   // Desktop: expanded on hover
@@ -116,12 +121,12 @@ onMounted(() => {
 })
 
 const onMouseEnter = () => {
-  if (isMounted.value && process.client && window.innerWidth >= 1024) {
+  if (isClient.value && window.innerWidth >= 1024) {
     isDesktopExpanded.value = true
   }
 }
 const onMouseLeave = () => {
-  if (isMounted.value && process.client && window.innerWidth >= 1024) {
+  if (isClient.value && window.innerWidth >= 1024) {
     isDesktopExpanded.value = false
   }
 }

@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   },
 
   // Disable SSR for static generation
-  ssr: false,
+  ssr: true,
 
   // Enable static site generation
   nitro: {

@@ -20,27 +20,20 @@
 const poolStore = usePoolStore()
 const { isDesktopMediaQuery } = useDesktopView()
 
-const preFetchAllPools = async () => {
-  await Promise.all(
-    poolStore.pools.map(async (pool) => {
-      const csvFileName = pool.outsidePool?.csvFile || pool.insidePool?.csvFile
-      try {
-        if (csvFileName) {
-          await $fetch(`${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}`)
-        }
-      } catch (err) {
-        console.error(`Failed to fetch ${csvFileName}:`, err)
-      }
-    })
-  )
-}
+// Pool initialization in the setup context for SSR
+await poolStore.loadPoolsConfig()
 
-onMounted(async () => {
-  try {
-    await poolStore.loadPoolsConfig()
-    await preFetchAllPools()
-  } catch (error) {
-    console.error('Error initializing pool config:', error)
-  }
-})
+// Pre-fetch all pools data
+await Promise.all(
+  poolStore.pools.map(async (pool) => {
+    const csvFileName = pool.outsidePool?.csvFile || pool.insidePool?.csvFile
+    try {
+      if (csvFileName) {
+        await $fetch(`${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}`)
+      }
+    } catch (err) {
+      console.error(`Failed to fetch ${csvFileName}:`, err)
+    }
+  })
+)
 </script>
