@@ -88,15 +88,11 @@
 import { POOL_TYPES } from '~/types'
 
 const { isMobileMenuOpen, closeMobileMenu } = useSidebar()
+const { isDesktopMediaQuery } = useDesktopView()
 const poolStore = usePoolStore()
 
 // Track if component is mounted to avoid hydration mismatches
 const isMounted = ref(false)
-
-// Reactive check for client-side environment
-const isClient = computed(() => {
-  return isMounted.value && process.client && typeof window !== 'undefined'
-})
 
 const isDesktopExpanded = ref(false)
 
@@ -106,11 +102,10 @@ const isExpanded = computed(() => {
     return false
   }
 
-  // Mobile: always expanded when open
-  if (isClient.value && window.innerWidth < 1024) {
+  // Mobile: always expanded when open, Desktop: expanded on hover
+  if (!isDesktopMediaQuery.value) {
     return true
   }
-  // Desktop: expanded on hover
   return isDesktopExpanded.value
 })
 const showText = computed(() => isExpanded.value)
@@ -121,12 +116,12 @@ onMounted(() => {
 })
 
 const onMouseEnter = () => {
-  if (isClient.value && window.innerWidth >= 1024) {
+  if (isDesktopMediaQuery.value) {
     isDesktopExpanded.value = true
   }
 }
 const onMouseLeave = () => {
-  if (isClient.value && window.innerWidth >= 1024) {
+  if (isDesktopMediaQuery.value) {
     isDesktopExpanded.value = false
   }
 }
