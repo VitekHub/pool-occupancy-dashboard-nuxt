@@ -17,8 +17,16 @@
 </template>
 
 <script setup lang="ts">
+import { isDesktopUserAgent } from '~/utils/deviceDetection'
+
 const poolStore = usePoolStore()
-const { isDesktopMediaQuery } = useDesktopView()
+
+// Server-side device detection from User-Agent
+const headers = useRequestHeaders(['user-agent'])
+const userAgent = headers['user-agent'] || ''
+const serverIsDesktop = isDesktopUserAgent(userAgent)
+
+const { isDesktopMediaQuery } = useDesktopView(serverIsDesktop)
 
 // Pool initialization in the setup context for SSR
 await poolStore.loadPoolsConfig()
