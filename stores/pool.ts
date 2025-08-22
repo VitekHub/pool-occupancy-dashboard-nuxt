@@ -214,11 +214,10 @@ export const usePoolStore = defineStore('pool', {
   actions: {
     async loadPoolsConfig() {
       try {
-        const response = await fetch(
+        const response = await $fetch(
           import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
         )
-        if (!response.ok) throw new Error('Failed to fetch pools config')
-        this.pools = await response.json()
+        this.pools = JSON.parse(response)
 
         // Auto-select first pool that has outside pool configuration
         if (!this.selectedPool) {
@@ -229,6 +228,11 @@ export const usePoolStore = defineStore('pool', {
             this.selectedPool = firstPoolWithOutside
           }
           this.selectedPoolType = POOL_TYPES.OUTSIDE
+
+          // Fetch initial data for the selected pool
+          if (this.selectedPool) {
+            await this.fetchAndProcessCsvData()
+          }
         } else {
           // Update selected pool from updated pool configuration
           const selectedName = this.selectedPool.name
@@ -304,6 +308,27 @@ export const usePoolStore = defineStore('pool', {
 
     setSelectedWeekId(selectedWeekId: string | null) {
       this.selectedWeekId = selectedWeekId
+    },
+
+    async fetchAndProcessCsvData() {
+      if (!this.csvUrl) {
+        this.error = 'No CSV URL available'
+        return
+      }
+
+      this.isLoading = true
+      this.error = null
+
+      try {
+        const csvText = await $fetch(this.csvUrl, { responseType: 'text' })
+        this.processOccupancyCsvData(csvText as string)
+      } catch (error) {
+        this.error =
+          error instanceof Error ? error.message : 'Failed to fetch CSV data'
+        console.error('Error fetching CSV data:', error)
+      } finally {
+        this.isLoading = false
+      }
     },
   },
 })
