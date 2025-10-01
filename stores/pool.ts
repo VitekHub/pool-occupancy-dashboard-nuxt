@@ -156,6 +156,8 @@ export const usePoolStore = defineStore('pool', {
       const poolConfig = state.currentPoolConfig
       if (!poolConfig) return false
 
+      if (state.isPoolTemporarilyClosed) return false
+
       if (poolConfig.todayClosed) return false
 
       const openingHours: string = state.todayOpeningHours
@@ -180,6 +182,33 @@ export const usePoolStore = defineStore('pool', {
       return isWeekend
         ? poolConfig.weekendOpeningHours
         : poolConfig.weekdaysOpeningHours
+    },
+
+    /**
+     * Returns true if the current pool type is temporarily closed based on the 'temporarilyClosed' field.
+     * The field should be a string in the format "1.9.2025 - 31.5.2026".
+     */
+    isPoolTemporarilyClosed: (state): boolean => {
+      const poolConfig = state.currentPoolConfig
+      if (!poolConfig || !poolConfig.temporarilyClosed) return false
+
+      // Example: "1.9.2025 - 31.5.2026"
+      const range = poolConfig.temporarilyClosed
+      const [startStr, endStr] = range.split('-').map(s => s.trim())
+      if (!startStr || !endStr) return false
+
+      // Parse dates as dd.mm.yyyy
+      const parseDate = (str: string) => {
+        const [day, month, year] = str.split('.').map(Number)
+        return new Date(year, month - 1, day)
+      }
+
+      const startDate = parseDate(startStr)
+      const endDate = parseDate(endStr)
+      const today = nowInPrague()
+      today.setHours(0, 0, 0, 0)
+
+      return today >= startDate && today <= endDate
     },
   },
   actions: {
