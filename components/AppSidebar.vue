@@ -136,7 +136,7 @@ const icons = [
   'i-heroicons-square-3-stack-3d',
 ]
 const filteredPools = computed(() => {
-  return poolStore.pools.filter((pool) => pool.outsidePool)
+  return poolStore.visiblePools
 })
 const getPoolIcon = (index: number) => {
   return icons[index] || 'i-heroicons-building-office-2'

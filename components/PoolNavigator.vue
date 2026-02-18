@@ -32,12 +32,13 @@ import { POOL_TYPES } from '~/types'
 const poolStore = usePoolStore()
 
 const changePool = (direction: 1 | -1) => {
-  const count = poolStore.pools.length
-  const poolIndex = poolStore.pools.findIndex(
+  const visiblePools = poolStore.visiblePools
+  const count = visiblePools.length
+  const poolIndex = visiblePools.findIndex(
     (pool) => pool.name === poolStore.selectedPool?.name
   )
   const newIndex = (poolIndex + direction + count) % count
-  poolStore.setSelectedPool(poolStore.pools[newIndex], POOL_TYPES.OUTSIDE)
+  poolStore.setSelectedPool(visiblePools[newIndex], POOL_TYPES.OUTSIDE)
 }
 
 const goToPreviousPool = () => changePool(-1)

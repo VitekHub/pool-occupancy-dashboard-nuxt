@@ -79,6 +79,14 @@ export const usePoolStore = defineStore('pool', {
       return weekIds
     },
 
+    // Get pools that are visible based on viewStats
+    visiblePools: (state): PoolConfig[] => {
+      return state.pools.filter((pool) => {
+        const poolTypeConfig = pool.outsidePool || pool.insidePool
+        return poolTypeConfig && poolTypeConfig.viewStats
+      })
+    },
+
     // Get the current pool configuration (inside or outside) based on selected type
     currentPoolConfig: (
       state
@@ -220,10 +228,10 @@ export const usePoolStore = defineStore('pool', {
         if (!response.ok) throw new Error('Failed to fetch pools config')
         this.pools = await response.json()
 
-        // Auto-select first pool that has outside pool configuration
+        // Auto-select first pool that has outside pool configuration and viewStats true
         if (!this.selectedPool) {
           const firstPoolWithOutside = this.pools.find(
-            (pool) => pool.outsidePool
+            (pool) => pool.outsidePool && pool.outsidePool.viewStats
           )
           if (firstPoolWithOutside) {
             this.selectedPool = firstPoolWithOutside
@@ -236,7 +244,22 @@ export const usePoolStore = defineStore('pool', {
             (pool) => pool.name === selectedName
           )
           if (updatedPool) {
-            this.selectedPool = updatedPool
+            // Check if the updated pool is still visible
+            const poolTypeConfig = updatedPool.outsidePool || updatedPool.insidePool
+            if (poolTypeConfig && poolTypeConfig.viewStats) {
+              this.selectedPool = updatedPool
+            } else {
+              // If not visible, select the first visible pool
+              const firstVisiblePool = this.pools.find(
+                (pool) => {
+                  const config = pool.outsidePool || pool.insidePool
+                  return config && config.viewStats
+                }
+              )
+              if (firstVisiblePool) {
+                this.selectedPool = firstVisiblePool
+              }
+            }
           }
         }
       } catch (error) {
