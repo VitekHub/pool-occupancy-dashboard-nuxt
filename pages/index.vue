@@ -23,6 +23,8 @@
 </template>
 
 <script setup lang="ts">
+import type { PrecomputedJson } from '~/types'
+
 const poolStore = usePoolStore()
 const { isDesktopMediaQuery } = useDesktopView()
 const isForceMobileView = computed(
@@ -30,21 +32,22 @@ const isForceMobileView = computed(
 )
 const { isDesktop } = useDesktopView()
 
-// Use useFetch to handle CSV data fetching with auto-refresh
+// Use useFetch to handle JSON data fetching with auto-refresh
 const {
-  data: csvData,
+  data: jsonData,
   pending,
   error: fetchError,
   refresh,
-} = useFetch<string>(() => poolStore.csvUrl, {
+} = useFetch<PrecomputedJson>(() => poolStore.jsonUrl, {
+  responseType: 'json',
   immediate: false, // Don't fetch immediately on mount
   server: false, // Client-side only
 })
 
-// Process new csv data
-watch(csvData, (newData) => {
+// Load precomputed JSON data
+watch(jsonData, (newData) => {
   if (newData) {
-    poolStore.processOccupancyCsvData(newData)
+    poolStore.loadPrecomputedJsonData(newData)
   }
 })
 watch(pending, (isPending) => {
@@ -56,7 +59,7 @@ watch(fetchError, (error) => {
 
 // Refresh data when pool selection changes
 watch(
-  () => poolStore.csvUrl,
+  () => poolStore.jsonUrl,
   (newUrl) => {
     if (newUrl) {
       refresh()

@@ -40,11 +40,12 @@ export default class OccupancyDataProcessor {
     }
     if (!this.weeklyOccupancyMap[weekId].days[day]) {
       this.weeklyOccupancyMap[weekId].days[day] = {
+        hours: {},
         maxDayValues: { utilizationRate: 0 },
       }
     }
-    if (!this.weeklyOccupancyMap[weekId].days[day][hour]) {
-      this.weeklyOccupancyMap[weekId].days[day][hour] = {
+    if (!this.weeklyOccupancyMap[weekId].days[day].hours[hour]) {
+      this.weeklyOccupancyMap[weekId].days[day].hours[hour] = {
         date,
         day,
         hour,
@@ -55,6 +56,7 @@ export default class OccupancyDataProcessor {
   private initializeOverallOccupancyEntry(day: string, hour: number): void {
     if (!this.overallOccupancyMap.days[day]) {
       this.overallOccupancyMap.days[day] = {
+        hours: {},
         maxDayValues: {
           averageUtilizationRate: 0,
           weightedAverageUtilizationRate: 0,
@@ -62,8 +64,8 @@ export default class OccupancyDataProcessor {
         },
       }
     }
-    if (!this.overallOccupancyMap.days[day][hour]) {
-      this.overallOccupancyMap.days[day][hour] = {
+    if (!this.overallOccupancyMap.days[day].hours[hour]) {
+      this.overallOccupancyMap.days[day].hours[hour] = {
         averageUtilizationRate: 0,
         weightedAverageUtilizationRate: 0,
         medianUtilizationRate: 0,
@@ -89,14 +91,14 @@ export default class OccupancyDataProcessor {
     hourlyMaxCapacity: number
   ): void {
     const hourlyOccupancySummary =
-      this.weeklyOccupancyMap[weekId]?.days?.[day]?.[hour]
+      this.weeklyOccupancyMap[weekId]?.days?.[day]?.hours?.[hour]
     if (!hourlyOccupancySummary) return
 
     const occupancyValues =
       this.accumulator.processWeeklyOccupancy(hourlyMaxCapacity)
 
     // Update the summary with finalized statistics
-    this.weeklyOccupancyMap[weekId].days[day][hour] = {
+    this.weeklyOccupancyMap[weekId].days[day].hours[hour] = {
       ...hourlyOccupancySummary,
       ...occupancyValues,
       maximumCapacity: hourlyMaxCapacity,
@@ -130,7 +132,7 @@ export default class OccupancyDataProcessor {
     hour: number
   ): void {
     const hourlyUtilizationRate =
-      this.weeklyOccupancyMap[weekId].days[day][hour].utilizationRate
+      this.weeklyOccupancyMap[weekId].days[day].hours[hour].utilizationRate
     if (hourlyUtilizationRate > 0) {
       const { averageUtilizationRate, weightedAverageUtilizationRate } =
         this.accumulator.processOverallAverageOccupancy(
@@ -138,9 +140,9 @@ export default class OccupancyDataProcessor {
           day,
           hour
         )
-      this.overallOccupancyMap.days[day][hour].averageUtilizationRate =
+      this.overallOccupancyMap.days[day].hours[hour].averageUtilizationRate =
         averageUtilizationRate
-      this.overallOccupancyMap.days[day][hour].weightedAverageUtilizationRate =
+      this.overallOccupancyMap.days[day].hours[hour].weightedAverageUtilizationRate =
         weightedAverageUtilizationRate
     }
   }
@@ -162,11 +164,8 @@ export default class OccupancyDataProcessor {
       const dayData = this.overallOccupancyMap.days[day]
       const { maxDayValues } = dayData
 
-      for (const hour of Object.keys(dayData)) {
-        if (hour === 'maxDayValues') {
-          continue
-        }
-        const hourlyData = dayData[parseInt(hour)]
+      for (const hour of Object.keys(dayData.hours)) {
+        const hourlyData = dayData.hours[parseInt(hour)]
         hourlyData.medianUtilizationRate =
           this.accumulator.processOverallMedianOccupancy(day, parseInt(hour))
 

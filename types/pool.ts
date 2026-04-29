@@ -76,6 +76,8 @@ export interface HourlyOccupancySummary {
   maxOccupancy: number
   averageOccupancy: number
   maximumCapacity: number
+  totalLanes?: number | null
+  openLanes?: number | null
   utilizationRate: number
   remainingCapacity: number
   date: Date
@@ -88,7 +90,9 @@ export interface WeeklyOccupancyMap {
     }
     days: {
       [day: string]: {
-        [hour: number]: HourlyOccupancySummary
+        hours: {
+          [hour: number]: HourlyOccupancySummary
+        }
         maxDayValues: {
           utilizationRate: number
         }
@@ -107,7 +111,9 @@ export interface OverallOccupancyMap {
   maxOverallValues: OverallUtilizationValues
   days: {
     [day: string]: {
-      [hour: number]: OverallUtilizationValues
+      hours: {
+        [hour: number]: OverallUtilizationValues
+      }
       maxDayValues: OverallUtilizationValues
     }
   }
@@ -126,4 +132,31 @@ export interface CurrentOccupancy {
   time: string
   averageUtilizationRate: number
   currentUtilizationRate: number
+  maximumCapacity?: number
+  totalLanes?: number | null
+  openLanes?: number | null
+}
+
+export interface PrecomputedJson {
+  schemaVersion: number
+  generatedAt: string
+  timezone: string
+  pool: {
+    name: string
+    poolType: PoolType
+    maximumCapacity: number
+    totalLanes: number | null
+    weekdaysOpeningHours: string
+    weekendOpeningHours: string
+    todayClosed: boolean
+    temporarilyClosed: string | null
+  }
+  dataRange: {
+    firstRecordAt: string
+    lastRecordAt: string
+  }
+  currentOccupancy: CurrentOccupancy | null
+  availableWeekIds: string[]
+  weeklyOccupancyMap: WeeklyOccupancyMap
+  overallOccupancyMap: OverallOccupancyMap
 }

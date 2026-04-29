@@ -10,6 +10,7 @@ import type {
   CurrentOccupancy,
   ViewMode,
   MetricType,
+  PrecomputedJson,
 } from '~/types'
 import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
 import { processAllOccupancyData } from '~/utils/poolDataProcessor'
@@ -31,6 +32,7 @@ interface PoolState {
   overallOccupancyMap: OverallOccupancyMap
   rawOccupancyData: OccupancyRecord[]
   currentMaxCapacity: number
+  precomputedCurrentOccupancy: CurrentOccupancy | null
 
   // Loading states
   isLoading: boolean
@@ -59,6 +61,7 @@ export const usePoolStore = defineStore('pool', {
     },
     rawOccupancyData: [],
     currentMaxCapacity: 0,
+    precomputedCurrentOccupancy: null,
     isLoading: false,
     error: null,
   }),
@@ -116,11 +119,23 @@ export const usePoolStore = defineStore('pool', {
     csvUrl: (state): string => {
       const csvFileName = state.csvFileName
       if (!csvFileName) return ''
-      return `${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}`
+      return `${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}.json`
+    },
+
+    // Get the full JSON URL for the selected pool
+    jsonUrl: (state): string => {
+      const csvFileName = state.csvFileName
+      if (!csvFileName) return ''
+      const jsonFileName = csvFileName.replace(/\.csv$/, '.json')
+      return `${import.meta.env.VITE_JSON_BASE_URL}${jsonFileName}`
     },
 
     // Get current occupancy (last record for today)
     currentOccupancy: (state): CurrentOccupancy | null => {
+      if (state.precomputedCurrentOccupancy) {
+        return state.precomputedCurrentOccupancy
+      }
+
       if (state.rawOccupancyData.length === 0) return null
 
       const today = nowInPrague()
@@ -138,7 +153,7 @@ export const usePoolStore = defineStore('pool', {
 
       const lastRecord = todayRecords[todayRecords.length - 1]
       const averageUtilizationRate =
-        state.overallOccupancyMap.days[lastRecord.day][
+        state.overallOccupancyMap.days[lastRecord.day]?.hours[
           getHourFromTime(lastRecord.time)
         ]?.averageUtilizationRate
       const currentUtilizationRate = Math.round(
@@ -295,6 +310,24 @@ export const usePoolStore = defineStore('pool', {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'
         console.error('Error loading occupancy data:', error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    loadPrecomputedJsonData(json: PrecomputedJson) {
+      this.isLoading = true
+      this.error = null
+
+      try {
+        this.weeklyOccupancyMap = json.weeklyOccupancyMap
+        this.overallOccupancyMap = json.overallOccupancyMap
+        this.currentMaxCapacity = json.pool.maximumCapacity
+        this.precomputedCurrentOccupancy = json.currentOccupancy
+      } catch (error) {
+        this.error =
+          error instanceof Error ? error.message : 'Unknown error occurred'
+        console.error('Error loading precomputed JSON data:', error)
       } finally {
         this.isLoading = false
       }
