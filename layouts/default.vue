@@ -23,16 +23,22 @@ const { isDesktopMediaQuery } = useDesktopView()
 const preFetchAllPools = async () => {
   await Promise.all(
     poolStore.pools.map(async (pool) => {
-      const overall =
-        pool.outsidePool?.data?.occupancy?.overall ||
-        pool.insidePool?.data?.occupancy?.overall
-      try {
-        if (overall) {
-          await $fetch(`${import.meta.env.VITE_JSON_BASE_URL}${overall}`)
-        }
-      } catch (err) {
-        console.error(`Failed to prefetch ${overall}:`, err)
-      }
+      const urls = [
+        pool.outsidePool?.data?.occupancy?.overall,
+        pool.insidePool?.data?.occupancy?.overall,
+        pool.outsidePool?.data?.occupancy?.weekly,
+        pool.insidePool?.data?.occupancy?.weekly,
+      ].filter(Boolean) as string[]
+
+      await Promise.all(
+        urls.map(async (url) => {
+          try {
+            await $fetch(`${import.meta.env.VITE_JSON_BASE_URL}${url}`)
+          } catch (err) {
+            console.error(`Failed to prefetch ${url}:`, err)
+          }
+        })
+      )
     })
   )
 }
