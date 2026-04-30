@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { parseOccupancyCSV } from '~/utils/csv'
-import { nowInPrague, getHourFromTime, getWeekId } from '~/utils/dateUtils'
+import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
@@ -10,7 +10,8 @@ import type {
   CurrentOccupancy,
   ViewMode,
   MetricType,
-  PrecomputedJson,
+  OverallJson,
+  WeeklyJson,
 } from '~/types'
 import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
 import { processAllOccupancyData } from '~/utils/poolDataProcessor'
@@ -29,10 +30,11 @@ interface PoolState {
 
   // Processed data
   weeklyOccupancyMap: WeeklyOccupancyMap
+  availableWeekIds: string[]
   overallOccupancyMap: OverallOccupancyMap
   rawOccupancyData: OccupancyRecord[]
-  currentMaxCapacity: number
   precomputedCurrentOccupancy: CurrentOccupancy | null
+  weeklyOccupancyLoaded: boolean
 
   // Loading states
   isLoading: boolean
@@ -51,6 +53,7 @@ export const usePoolStore = defineStore('pool', {
     metricType: METRIC_TYPES.AVERAGE,
     selectedWeekId: null,
     weeklyOccupancyMap: {},
+    availableWeekIds: [],
     overallOccupancyMap: {
       maxOverallValues: {
         averageUtilizationRate: 0,
@@ -60,28 +63,13 @@ export const usePoolStore = defineStore('pool', {
       days: {},
     },
     rawOccupancyData: [],
-    currentMaxCapacity: 0,
     precomputedCurrentOccupancy: null,
+    weeklyOccupancyLoaded: false,
     isLoading: false,
     error: null,
   }),
 
   getters: {
-    // Get available week IDs from the weekly occupancy map
-    availableWeekIds: (state): string[] => {
-      const weekIds = Object.keys(state.weeklyOccupancyMap).sort()
-      const currentWeekId = getWeekId(nowInPrague())
-      let week = weekIds[weekIds.length - 1]
-      // Add any missing weeks with no data up to the current date
-      while (week < currentWeekId) {
-        const date = new Date(week)
-        date.setDate(date.getDate() + 7)
-        week = getWeekId(date)
-        weekIds.push(week)
-      }
-      return weekIds
-    },
-
     // Get pools that are visible based on viewStats
     visiblePools: (state): PoolConfig[] => {
       return state.pools.filter((pool) => {
@@ -109,69 +97,30 @@ export const usePoolStore = defineStore('pool', {
       return null
     },
 
-    // Get the CSV file name for the selected pool and type
-    csvFileName: (state): string => {
-      const poolConfig = state.currentPoolConfig
-      return poolConfig?.csvFile || ''
-    },
-
-    // Get the full CSV URL for the selected pool
+    // Get the raw CSV download URL for the selected pool (used by export button)
     csvUrl: (state): string => {
-      const csvFileName = state.csvFileName
-      if (!csvFileName) return ''
-      return `${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}.json`
+      const raw = state.currentPoolConfig?.data?.occupancy?.raw
+      if (!raw) return ''
+      return `${import.meta.env.VITE_CSV_BASE_URL}${raw}`
     },
 
-    // Get the full JSON URL for the selected pool
-    jsonUrl: (state): string => {
-      const csvFileName = state.csvFileName
-      if (!csvFileName) return ''
-      const jsonFileName = csvFileName.replace(/\.csv$/, '.json')
-      return `${import.meta.env.VITE_JSON_BASE_URL}${jsonFileName}`
+    // Get the overall JSON URL for the selected pool
+    overallJsonUrl: (state): string => {
+      const overall = state.currentPoolConfig?.data?.occupancy?.overall
+      if (!overall) return ''
+      return `${import.meta.env.VITE_JSON_BASE_URL}${overall}`
+    },
+
+    // Get the weekly JSON URL for the selected pool
+    weeklyJsonUrl: (state): string => {
+      const weekly = state.currentPoolConfig?.data?.occupancy?.weekly
+      if (!weekly) return ''
+      return `${import.meta.env.VITE_JSON_BASE_URL}${weekly}`
     },
 
     // Get current occupancy (last record for today)
     currentOccupancy: (state): CurrentOccupancy | null => {
-      if (state.precomputedCurrentOccupancy) {
-        return state.precomputedCurrentOccupancy
-      }
-
-      if (state.rawOccupancyData.length === 0) return null
-
-      const today = nowInPrague()
-      const todayString = today.toLocaleDateString('en-GB').replace(/\//g, '.')
-
-      // Find the most recent record for today
-      const todayRecords = state.rawOccupancyData.filter((record) => {
-        const recordDateString = record.date
-          .toLocaleDateString('en-GB')
-          .replace(/\//g, '.')
-        return recordDateString === todayString
-      })
-
-      if (todayRecords.length === 0) return null
-
-      const lastRecord = todayRecords[todayRecords.length - 1]
-      const averageUtilizationRate =
-        state.overallOccupancyMap.days[lastRecord.day]?.hours[
-          getHourFromTime(lastRecord.time)
-        ]?.averageUtilizationRate
-      const currentUtilizationRate = Math.round(
-        (lastRecord.occupancy / state.currentMaxCapacity) * 100
-      )
-
-      return {
-        occupancy: lastRecord.occupancy,
-        time: lastRecord.time,
-        averageUtilizationRate,
-        currentUtilizationRate,
-      }
-    },
-
-    // Get maximum capacity for current pool
-    getCurrentMaxCapacity: (state): number => {
-      const poolConfig = state.currentPoolConfig
-      return poolConfig?.maximumCapacity || 0
+      return state.precomputedCurrentOccupancy
     },
 
     // Check if pool is currently open
@@ -305,7 +254,6 @@ export const usePoolStore = defineStore('pool', {
 
         this.weeklyOccupancyMap = processed.weeklyOccupancyMap
         this.overallOccupancyMap = processed.overallOccupancyMap
-        this.currentMaxCapacity = this.getCurrentMaxCapacity
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'
@@ -315,21 +263,32 @@ export const usePoolStore = defineStore('pool', {
       }
     },
 
-    loadPrecomputedJsonData(json: PrecomputedJson) {
+    loadOverallJsonData(json: OverallJson) {
       this.isLoading = true
       this.error = null
 
       try {
-        this.weeklyOccupancyMap = json.weeklyOccupancyMap
         this.overallOccupancyMap = json.overallOccupancyMap
-        this.currentMaxCapacity = json.pool.maximumCapacity
         this.precomputedCurrentOccupancy = json.currentOccupancy
+        this.weeklyOccupancyMap = {}
+        this.availableWeekIds = []
+        this.weeklyOccupancyLoaded = false
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : 'Unknown error occurred'
-        console.error('Error loading precomputed JSON data:', error)
+        console.error('Error loading overall JSON data:', error)
       } finally {
         this.isLoading = false
+      }
+    },
+
+    loadWeeklyJsonData(json: WeeklyJson) {
+      try {
+        this.weeklyOccupancyMap = json.weeklyOccupancyMap
+        this.availableWeekIds = json.availableWeekIds
+        this.weeklyOccupancyLoaded = true
+      } catch (error) {
+        console.error('Error loading weekly JSON data:', error)
       }
     },
 

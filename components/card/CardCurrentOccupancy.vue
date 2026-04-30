@@ -20,7 +20,7 @@
       >
         {{
           shouldShowOccupancy
-            ? `${currentOccupancy?.occupancy} / ${poolStore.currentMaxCapacity}`
+            ? `${currentOccupancy?.occupancy} / ${currentOccupancy?.maximumCapacity}`
             : $t('common.na')
         }}
       </div>
@@ -28,7 +28,7 @@
         {{ getOccupancyStatusText() }}
       </p>
       <div
-        v-if="shouldShowOccupancy && poolStore.currentMaxCapacity > 0"
+        v-if="shouldShowOccupancy && currentOccupancy && currentOccupancy.maximumCapacity > 0"
         class="mt-4"
       >
         <div class="text-sm text-gray-500 dark:text-gray-400">

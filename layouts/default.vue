@@ -23,13 +23,15 @@ const { isDesktopMediaQuery } = useDesktopView()
 const preFetchAllPools = async () => {
   await Promise.all(
     poolStore.pools.map(async (pool) => {
-      const csvFileName = pool.outsidePool?.csvFile || pool.insidePool?.csvFile
+      const overall =
+        pool.outsidePool?.data?.occupancy?.overall ||
+        pool.insidePool?.data?.occupancy?.overall
       try {
-        if (csvFileName) {
-          await $fetch(`${import.meta.env.VITE_CSV_BASE_URL}${csvFileName}`)
+        if (overall) {
+          await $fetch(`${import.meta.env.VITE_JSON_BASE_URL}${overall}`)
         }
       } catch (err) {
-        console.error(`Failed to fetch ${csvFileName}:`, err)
+        console.error(`Failed to prefetch ${overall}:`, err)
       }
     })
   )

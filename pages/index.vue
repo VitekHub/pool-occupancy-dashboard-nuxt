@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { PrecomputedJson } from '~/types'
+import type { OverallJson, WeeklyJson } from '~/types'
 
 const poolStore = usePoolStore()
 const { isDesktopMediaQuery } = useDesktopView()
@@ -32,37 +32,48 @@ const isForceMobileView = computed(
 )
 const { isDesktop } = useDesktopView()
 
-// Use useFetch to handle JSON data fetching with auto-refresh
+// Overall JSON — drives the loading spinner and first render
 const {
-  data: jsonData,
-  pending,
-  error: fetchError,
-  refresh,
-} = useFetch<PrecomputedJson>(() => poolStore.jsonUrl, {
+  data: overallData,
+  pending: overallPending,
+  error: overallError,
+  refresh: refreshOverall,
+} = useFetch<OverallJson>(() => poolStore.overallJsonUrl, {
   responseType: 'json',
-  immediate: false, // Don't fetch immediately on mount
-  server: false, // Client-side only
+  immediate: false,
+  server: false,
 })
 
-// Load precomputed JSON data
-watch(jsonData, (newData) => {
-  if (newData) {
-    poolStore.loadPrecomputedJsonData(newData)
-  }
+// Weekly JSON — loads silently in the background
+const {
+  data: weeklyData,
+  refresh: refreshWeekly,
+} = useFetch<WeeklyJson>(() => poolStore.weeklyJsonUrl, {
+  responseType: 'json',
+  immediate: false,
+  server: false,
 })
-watch(pending, (isPending) => {
+
+watch(overallData, (newData) => {
+  if (newData) poolStore.loadOverallJsonData(newData)
+})
+watch(weeklyData, (newData) => {
+  if (newData) poolStore.loadWeeklyJsonData(newData)
+})
+watch(overallPending, (isPending) => {
   poolStore.isLoading = isPending
 })
-watch(fetchError, (error) => {
+watch(overallError, (error) => {
   poolStore.error = error?.message || null
 })
 
-// Refresh data when pool selection changes
+// Refresh both when pool selection changes
 watch(
-  () => poolStore.jsonUrl,
+  () => poolStore.overallJsonUrl,
   (newUrl) => {
     if (newUrl) {
-      refresh()
+      refreshOverall()
+      refreshWeekly()
     }
   }
 )
@@ -71,12 +82,13 @@ watch(
 const refreshIntervalId = ref<NodeJS.Timeout>()
 
 onMounted(() => {
-  // Initial data fetch
-  refresh()
+  refreshOverall()
+  refreshWeekly()
 
   refreshIntervalId.value = setInterval(() => {
-    refresh()
-    // reload pools config as mainly 'todayClosed' might changed
+    refreshOverall()
+    refreshWeekly()
+    // reload pools config as mainly 'todayClosed' might change
     poolStore.loadPoolsConfig()
   }, 120_000)
 })
