@@ -71,14 +71,6 @@ export interface PoolConfig {
   outsidePool?: Omit<PoolTypeConfig, 'totalLanes'>
 }
 
-export interface OccupancyRecord {
-  date: Date
-  day: string
-  time: string
-  occupancy: number
-  hour: number
-}
-
 export interface HourlyOccupancySummary {
   day: string
   hour: number

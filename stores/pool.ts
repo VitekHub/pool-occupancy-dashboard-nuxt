@@ -1,12 +1,10 @@
 import { defineStore } from 'pinia'
-import { parseOccupancyCSV } from '~/utils/csv'
-import { nowInPrague, getHourFromTime } from '~/utils/dateUtils'
+import { nowInPrague } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   PoolType,
   WeeklyOccupancyMap,
   OverallOccupancyMap,
-  OccupancyRecord,
   CurrentOccupancy,
   ViewMode,
   MetricType,
@@ -14,7 +12,6 @@ import type {
   WeeklyJson,
 } from '~/types'
 import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
-import { processAllOccupancyData } from '~/utils/poolDataProcessor'
 
 interface PoolState {
   // Configuration
@@ -32,7 +29,6 @@ interface PoolState {
   weeklyOccupancyMap: WeeklyOccupancyMap
   availableWeekIds: string[]
   overallOccupancyMap: OverallOccupancyMap
-  rawOccupancyData: OccupancyRecord[]
   precomputedCurrentOccupancy: CurrentOccupancy | null
   weeklyOccupancyLoaded: boolean
 
@@ -62,7 +58,6 @@ export const usePoolStore = defineStore('pool', {
       },
       days: {},
     },
-    rawOccupancyData: [],
     precomputedCurrentOccupancy: null,
     weeklyOccupancyLoaded: false,
     isLoading: false,
@@ -229,37 +224,6 @@ export const usePoolStore = defineStore('pool', {
       } catch (error) {
         this.error = 'Failed to load pools configuration'
         console.error('Error loading pools config:', error)
-      }
-    },
-
-    processOccupancyCsvData(csvText: string) {
-      if (!this.selectedPool || !csvText) {
-        this.error = 'No pool selected or no CSV data provided'
-        return
-      }
-
-      this.isLoading = true
-      this.error = null
-
-      try {
-        const occupancyData = parseOccupancyCSV(csvText)
-
-        this.rawOccupancyData = occupancyData
-
-        const processed = processAllOccupancyData(
-          occupancyData,
-          this.selectedPool,
-          this.selectedPoolType
-        )
-
-        this.weeklyOccupancyMap = processed.weeklyOccupancyMap
-        this.overallOccupancyMap = processed.overallOccupancyMap
-      } catch (error) {
-        this.error =
-          error instanceof Error ? error.message : 'Unknown error occurred'
-        console.error('Error loading occupancy data:', error)
-      } finally {
-        this.isLoading = false
       }
     },
 

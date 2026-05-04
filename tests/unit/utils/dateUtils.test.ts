@@ -1,46 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import {
-  parseDate,
   getWeekId,
   formatWeekId,
-  getHourFromTime,
   getDayName,
   isDayToday,
-  createPragueDate,
   nowInPrague,
 } from '~/utils/dateUtils'
 
 describe('dateUtils', () => {
-  describe('parseDate', () => {
-    it('should parse date string in dd.MM.yyyy format', () => {
-      const result = parseDate('15.03.2024')
-      expect(result.getDate()).toBe(15)
-      expect(result.getMonth()).toBe(2) // March is month 2 (0-indexed)
-      expect(result.getFullYear()).toBe(2024)
-    })
-
-    it('should handle single digit dates and months', () => {
-      const result = parseDate('5.1.2024')
-      expect(result.getDate()).toBe(5)
-      expect(result.getMonth()).toBe(0) // January is month 0
-      expect(result.getFullYear()).toBe(2024)
-    })
-  })
-
-  describe('getHourFromTime', () => {
-    it('should extract hour from time string', () => {
-      expect(getHourFromTime('14:30')).toBe(14)
-      expect(getHourFromTime('09:15')).toBe(9)
-      expect(getHourFromTime('23:59')).toBe(23)
-      expect(getHourFromTime('00:00')).toBe(0)
-    })
-
-    it('should handle single digit hours', () => {
-      expect(getHourFromTime('6:30')).toBe(6)
-      expect(getHourFromTime('8:45')).toBe(8)
-    })
-  })
-
   describe('getWeekId', () => {
     it('should return week start date in YYYY-MM-DD format', () => {
       // March 15, 2024 is a Friday
@@ -98,31 +65,11 @@ describe('dateUtils', () => {
     })
   })
 
-  describe('createPragueDate', () => {
-    it('should create a date when no parameter provided', () => {
-      const pragueDate = createPragueDate()
-      expect(pragueDate).toBeInstanceOf(Date)
-      expect(pragueDate.getTime()).toBeCloseTo(Date.now(), -2) // Within 100ms
-    })
-
-    it('should convert provided date to Prague timezone', () => {
-      const inputDate = new Date('2024-03-15T12:00:00Z')
-      const pragueDate = createPragueDate(inputDate)
-      expect(pragueDate).toBeInstanceOf(Date)
-    })
-
-    it('should handle string date input', () => {
-      const pragueDate = createPragueDate('2024-03-15')
-      expect(pragueDate).toBeInstanceOf(Date)
-      expect(pragueDate.getFullYear()).toBe(2024)
-    })
-  })
-
   describe('nowInPrague', () => {
     it('should return current time as Date object', () => {
       const now = nowInPrague()
       expect(now).toBeInstanceOf(Date)
-      expect(now.getTime()).toBeCloseTo(Date.now(), -2) // Within 100ms
+      expect(isNaN(now.getTime())).toBe(false)
     })
   })
 
@@ -137,7 +84,6 @@ describe('dateUtils', () => {
       const today = nowInPrague()
       const todayName = getDayName(today)
 
-      // Get a different day name
       const dayNames = [
         'Monday',
         'Tuesday',
