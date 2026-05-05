@@ -13,6 +13,9 @@ import type {
 } from '~/types'
 import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
 
+const dataBaseUrl = import.meta.env.VITE_DATA_BASE_URL
+const poolConfigUrl = import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
+
 interface PoolState {
   // Configuration
   pools: PoolConfig[]
@@ -96,21 +99,21 @@ export const usePoolStore = defineStore('pool', {
     csvUrl: (state): string => {
       const raw = state.currentPoolConfig?.data?.occupancy?.raw
       if (!raw) return ''
-      return `${import.meta.env.VITE_CSV_BASE_URL}${raw}`
+      return `${dataBaseUrl}${raw}`
     },
 
     // Get the overall JSON URL for the selected pool
     overallJsonUrl: (state): string => {
       const overall = state.currentPoolConfig?.data?.occupancy?.overall
       if (!overall) return ''
-      return `${import.meta.env.VITE_JSON_BASE_URL}${overall}`
+      return `${dataBaseUrl}${overall}`
     },
 
     // Get the weekly JSON URL for the selected pool
     weeklyJsonUrl: (state): string => {
       const weekly = state.currentPoolConfig?.data?.occupancy?.weekly
       if (!weekly) return ''
-      return `${import.meta.env.VITE_JSON_BASE_URL}${weekly}`
+      return `${dataBaseUrl}${weekly}`
     },
 
     // Get current occupancy (last record for today)
@@ -181,9 +184,7 @@ export const usePoolStore = defineStore('pool', {
   actions: {
     async loadPoolsConfig() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
-        )
+        const response = await fetch(poolConfigUrl)
         if (!response.ok) throw new Error('Failed to fetch pools config')
         this.pools = await response.json()
 

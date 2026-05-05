@@ -33,7 +33,7 @@ const preFetchAllPools = async () => {
       await Promise.all(
         urls.map(async (url) => {
           try {
-            await $fetch(`${import.meta.env.VITE_JSON_BASE_URL}${url}`)
+            await $fetch(`${import.meta.env.VITE_DATA_BASE_URL}${url}`)
           } catch (err) {
             console.error(`Failed to prefetch ${url}:`, err)
           }
