@@ -131,7 +131,7 @@ The project includes automated deployment to GitHub Pages:
 
    ```typescript
    app: {
-     baseURL: '/pool-occupancy-dashboard-nuxt/', // Update this
+     baseURL: '/pool-occupancy-dashboard-nuxt/', // Update this if needed for GitHub Pages
    }
    ```
 
@@ -176,21 +176,30 @@ VITE_DATA_BASE_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tra
 Pool configuration is now loaded from an external URL. The configuration format is:
 
 ```json
-[
-  {
+{
     "name": "Pool Name",
-    "outsidePool": {
-      "url": "https://pool-website.com",
-      "pattern": "occupancy pattern regex",
-      "csvFile": "data-file.csv",
-      "maximumCapacity": 100,
-      "weekdaysOpeningHours": "6-22",
-      "weekendOpeningHours": "8-21",
-      "collectStats": true,
-      "viewStats": true
+    "outsidePool": {  // or "insidePool"
+        "url": "https://pool-website.com",
+        "pattern": "regex_pattern_for_occupancy",
+        "maximumCapacity": 135,
+        "totalLanes": 6,  // for pools with lanes
+        "weekdaysOpeningHours": "6-22",
+        "weekendOpeningHours": "8-21",
+        "collectStats": true,
+        "viewStats": true,
+        "data": {
+            "occupancy": {
+                "raw": "output_filename.csv",
+                "overall": "overall/output_filename.json",
+                "weekly": "weekly/output_filename.json"
+            },
+            "capacity": {
+                "raw": "capacity.csv",
+                "forecast": "week_capacity.csv"
+            }
+        }
     }
-  }
-]
+}
 ```
 
 ## 📊 Data Sources
@@ -198,7 +207,7 @@ Pool configuration is now loaded from an external URL. The configuration format 
 Pool occupancy data is sourced from:
 
 - Official pool websites with real-time occupancy
-- CSV files updated regularly via automated scraping
+- CSV files and JSON aggregated files updated regularly via automated scraping
 - Historical data spanning multiple weeks/months
 
 Data format: Date, Day, Time, Occupancy count
