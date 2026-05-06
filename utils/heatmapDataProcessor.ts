@@ -110,7 +110,7 @@ export default class HeatmapDataProcessor {
     type: keyof OverallUtilizationValues
   ): BaseCellData {
     const utilizationRate =
-      this.overallOccupancyMap?.days?.[day]?.[hour]?.[type] || 0
+      this.overallOccupancyMap?.days?.[day]?.hours?.[hour]?.[type] || 0
     const maxDayUtilizationRate =
       this.overallOccupancyMap?.maxOverallValues[type] || 0
 
@@ -149,10 +149,10 @@ export default class HeatmapDataProcessor {
       isDayToday(day) &&
       today.getHours() === hour
     const hourlyData =
-      this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.[hour]
+      this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.hours?.[hour]
     if (isNow && !hourlyData && this.isPoolOpen) {
       // return previous hour data in case current hour is not available yet
-      return this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.[hour - 1]
+      return this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.hours?.[hour - 1]
     }
     return hourlyData
   }

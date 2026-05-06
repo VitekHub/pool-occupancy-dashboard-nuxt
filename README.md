@@ -167,8 +167,8 @@ Create `.env` file:
 # Pool configuration URL
 VITE_POOL_OCCUPANCY_CONFIG_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/pool_occupancy_config.json
 
-# CSV data source URL
-VITE_CSV_BASE_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/
+# Data source URL (for CSV and JSON files)
+VITE_DATA_BASE_URL=https://raw.githubusercontent.com/VitekHub/pool-occupancy-tracker/main/data/
 ```
 
 ### Pool Configuration

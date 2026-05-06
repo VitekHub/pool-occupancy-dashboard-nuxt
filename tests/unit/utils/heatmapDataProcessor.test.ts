@@ -22,41 +22,45 @@ describe('HeatmapDataProcessor', () => {
       days: {
         Monday: {
           maxDayValues: { utilizationRate: 30 },
-          14: {
-            date: new Date('2024-03-11T14:00:00Z'),
-            day: 'Monday',
-            hour: 14,
-            minOccupancy: 20,
-            maxOccupancy: 30,
-            averageOccupancy: 25,
-            maximumCapacity: 100,
-            utilizationRate: 25,
-            remainingCapacity: 75,
-          },
-          15: {
-            date: new Date('2024-03-11T15:00:00Z'),
-            day: 'Monday',
-            hour: 15,
-            minOccupancy: 40,
-            maxOccupancy: 50,
-            averageOccupancy: 45,
-            maximumCapacity: 100,
-            utilizationRate: 45,
-            remainingCapacity: 55,
+          hours: {
+            14: {
+              date: new Date('2024-03-11T14:00:00Z'),
+              day: 'Monday',
+              hour: 14,
+              minOccupancy: 20,
+              maxOccupancy: 30,
+              averageOccupancy: 25,
+              maximumCapacity: 100,
+              utilizationRate: 25,
+              remainingCapacity: 75,
+            },
+            15: {
+              date: new Date('2024-03-11T15:00:00Z'),
+              day: 'Monday',
+              hour: 15,
+              minOccupancy: 40,
+              maxOccupancy: 50,
+              averageOccupancy: 45,
+              maximumCapacity: 100,
+              utilizationRate: 45,
+              remainingCapacity: 55,
+            },
           },
         },
         Tuesday: {
           maxDayValues: { utilizationRate: 50 },
-          14: {
-            date: new Date('2024-03-12T14:00:00Z'),
-            day: 'Tuesday',
-            hour: 14,
-            minOccupancy: 45,
-            maxOccupancy: 55,
-            averageOccupancy: 50,
-            maximumCapacity: 100,
-            utilizationRate: 50,
-            remainingCapacity: 50,
+          hours: {
+            14: {
+              date: new Date('2024-03-12T14:00:00Z'),
+              day: 'Tuesday',
+              hour: 14,
+              minOccupancy: 45,
+              maxOccupancy: 55,
+              averageOccupancy: 50,
+              maximumCapacity: 100,
+              utilizationRate: 50,
+              remainingCapacity: 50,
+            },
           },
         },
       },
@@ -66,16 +70,18 @@ describe('HeatmapDataProcessor', () => {
       days: {
         Monday: {
           maxDayValues: { utilizationRate: 40 },
-          14: {
-            date: new Date('2024-03-18T14:00:00Z'),
-            day: 'Monday',
-            hour: 14,
-            minOccupancy: 35,
-            maxOccupancy: 45,
-            averageOccupancy: 40,
-            maximumCapacity: 100,
-            utilizationRate: 40,
-            remainingCapacity: 60,
+          hours: {
+            14: {
+              date: new Date('2024-03-18T14:00:00Z'),
+              day: 'Monday',
+              hour: 14,
+              minOccupancy: 35,
+              maxOccupancy: 45,
+              averageOccupancy: 40,
+              maximumCapacity: 100,
+              utilizationRate: 40,
+              remainingCapacity: 60,
+            },
           },
         },
       },
@@ -95,15 +101,17 @@ describe('HeatmapDataProcessor', () => {
           weightedAverageUtilizationRate: 40,
           medianUtilizationRate: 30,
         },
-        14: {
-          averageUtilizationRate: 32,
-          weightedAverageUtilizationRate: 35,
-          medianUtilizationRate: 30,
-        },
-        15: {
-          averageUtilizationRate: 45,
-          weightedAverageUtilizationRate: 50,
-          medianUtilizationRate: 40,
+        hours: {
+          14: {
+            averageUtilizationRate: 32,
+            weightedAverageUtilizationRate: 35,
+            medianUtilizationRate: 30,
+          },
+          15: {
+            averageUtilizationRate: 45,
+            weightedAverageUtilizationRate: 50,
+            medianUtilizationRate: 40,
+          },
         },
       },
       Tuesday: {
@@ -112,10 +120,12 @@ describe('HeatmapDataProcessor', () => {
           weightedAverageUtilizationRate: 65,
           medianUtilizationRate: 55,
         },
-        14: {
-          averageUtilizationRate: 60,
-          weightedAverageUtilizationRate: 65,
-          medianUtilizationRate: 55,
+        hours: {
+          14: {
+            averageUtilizationRate: 60,
+            weightedAverageUtilizationRate: 65,
+            medianUtilizationRate: 55,
+          },
         },
       },
     },
@@ -304,16 +314,18 @@ describe('HeatmapDataProcessor', () => {
           days: {
             Monday: {
               maxDayValues: { utilizationRate: 30 },
-              14: {
-                date: new Date('2024-03-11T14:00:00Z'),
-                day: 'Monday',
-                hour: 14,
-                minOccupancy: 25,
-                maxOccupancy: 25, // Same as min
-                averageOccupancy: 25,
-                maximumCapacity: 100,
-                utilizationRate: 25,
-                remainingCapacity: 75,
+              hours: {
+                14: {
+                  date: new Date('2024-03-11T14:00:00Z'),
+                  day: 'Monday',
+                  hour: 14,
+                  minOccupancy: 25,
+                  maxOccupancy: 25, // Same as min
+                  averageOccupancy: 25,
+                  maximumCapacity: 100,
+                  utilizationRate: 25,
+                  remainingCapacity: 75,
+                },
               },
             },
           },
@@ -419,10 +431,12 @@ describe('HeatmapDataProcessor', () => {
                 weightedAverageUtilizationRate: 100,
                 medianUtilizationRate: 100,
               },
-              14: {
-                averageUtilizationRate: rate,
-                weightedAverageUtilizationRate: rate,
-                medianUtilizationRate: rate,
+              hours: {
+                14: {
+                  averageUtilizationRate: rate,
+                  weightedAverageUtilizationRate: rate,
+                  medianUtilizationRate: rate,
+                },
               },
             },
           },
@@ -462,10 +476,12 @@ describe('HeatmapDataProcessor', () => {
               weightedAverageUtilizationRate: 0,
               medianUtilizationRate: 0,
             },
-            14: {
-              averageUtilizationRate: 0,
-              weightedAverageUtilizationRate: 0,
-              medianUtilizationRate: 0,
+            hours: {
+              14: {
+                averageUtilizationRate: 0,
+                weightedAverageUtilizationRate: 0,
+                medianUtilizationRate: 0,
+              },
             },
           },
         },

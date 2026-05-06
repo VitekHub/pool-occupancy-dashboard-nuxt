@@ -44,7 +44,6 @@ interface PoolTypeConfig {
   customName?: string
   url: string
   pattern: string
-  csvFile: string
   maximumCapacity: number
   totalLanes?: number
   weekdaysOpeningHours: string
@@ -53,20 +52,23 @@ interface PoolTypeConfig {
   collectStats: boolean
   viewStats: boolean
   temporarilyClosed?: string
+  data: {
+    occupancy: {
+      raw: string
+      overall: string
+      weekly: string
+    }
+    capacity?: {
+      raw: string
+      forecast?: string
+    }
+  }
 }
 
 export interface PoolConfig {
   name: string
   insidePool?: PoolTypeConfig
   outsidePool?: Omit<PoolTypeConfig, 'totalLanes'>
-}
-
-export interface OccupancyRecord {
-  date: Date
-  day: string
-  time: string
-  occupancy: number
-  hour: number
 }
 
 export interface HourlyOccupancySummary {
@@ -76,6 +78,8 @@ export interface HourlyOccupancySummary {
   maxOccupancy: number
   averageOccupancy: number
   maximumCapacity: number
+  totalLanes?: number | null
+  openLanes?: number | null
   utilizationRate: number
   remainingCapacity: number
   date: Date
@@ -88,7 +92,9 @@ export interface WeeklyOccupancyMap {
     }
     days: {
       [day: string]: {
-        [hour: number]: HourlyOccupancySummary
+        hours: {
+          [hour: number]: HourlyOccupancySummary
+        }
         maxDayValues: {
           utilizationRate: number
         }
@@ -107,7 +113,9 @@ export interface OverallOccupancyMap {
   maxOverallValues: OverallUtilizationValues
   days: {
     [day: string]: {
-      [hour: number]: OverallUtilizationValues
+      hours: {
+        [hour: number]: OverallUtilizationValues
+      }
       maxDayValues: OverallUtilizationValues
     }
   }
@@ -126,4 +134,37 @@ export interface CurrentOccupancy {
   time: string
   averageUtilizationRate: number
   currentUtilizationRate: number
+  maximumCapacity: number
+  totalLanes?: number | null
+  openLanes?: number | null
+}
+
+interface PrecomputedJsonBase {
+  schemaVersion: number
+  generatedAt: string
+  timezone: string
+  pool: {
+    name: string
+    poolType: PoolType
+    maximumCapacity: number
+    totalLanes: number | null
+    weekdaysOpeningHours: string
+    weekendOpeningHours: string
+    todayClosed: boolean
+    temporarilyClosed: string | null
+  }
+  dataRange: {
+    firstRecordAt: string
+    lastRecordAt: string
+  }
+}
+
+export interface OverallJson extends PrecomputedJsonBase {
+  currentOccupancy: CurrentOccupancy | null
+  overallOccupancyMap: OverallOccupancyMap
+}
+
+export interface WeeklyJson extends PrecomputedJsonBase {
+  availableWeekIds: string[]
+  weeklyOccupancyMap: WeeklyOccupancyMap
 }
