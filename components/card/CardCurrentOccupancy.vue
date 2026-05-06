@@ -28,7 +28,11 @@
         {{ getOccupancyStatusText() }}
       </p>
       <div
-        v-if="shouldShowOccupancy && currentOccupancy && currentOccupancy.maximumCapacity > 0"
+        v-if="
+          shouldShowOccupancy &&
+          currentOccupancy &&
+          currentOccupancy.maximumCapacity > 0
+        "
         class="mt-4"
       >
         <div class="text-sm text-gray-500 dark:text-gray-400">

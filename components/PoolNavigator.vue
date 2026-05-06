@@ -27,8 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { POOL_TYPES } from '~/types'
-
 const poolStore = usePoolStore()
 
 const changePool = (direction: 1 | -1) => {
@@ -38,7 +36,7 @@ const changePool = (direction: 1 | -1) => {
     (pool) => pool.name === poolStore.selectedPool?.name
   )
   const newIndex = (poolIndex + direction + count) % count
-  poolStore.setSelectedPool(visiblePools[newIndex], POOL_TYPES.OUTSIDE)
+  poolStore.setSelectedPool(visiblePools[newIndex])
 }
 
 const goToPreviousPool = () => changePool(-1)

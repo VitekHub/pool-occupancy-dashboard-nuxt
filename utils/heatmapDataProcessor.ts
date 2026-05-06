@@ -152,7 +152,9 @@ export default class HeatmapDataProcessor {
       this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.hours?.[hour]
     if (isNow && !hourlyData && this.isPoolOpen) {
       // return previous hour data in case current hour is not available yet
-      return this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.hours?.[hour - 1]
+      return this.weeklyOccupancyMap[selectedWeekId]?.days?.[day]?.hours?.[
+        hour - 1
+      ]
     }
     return hourlyData
   }

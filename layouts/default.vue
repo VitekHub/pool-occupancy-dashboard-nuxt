@@ -24,10 +24,8 @@ const preFetchAllPools = async () => {
   await Promise.all(
     poolStore.pools.map(async (pool) => {
       const urls = [
-        pool.outsidePool?.data?.occupancy?.overall,
-        pool.insidePool?.data?.occupancy?.overall,
-        pool.outsidePool?.data?.occupancy?.weekly,
-        pool.insidePool?.data?.occupancy?.weekly,
+        pool.data?.occupancy?.overall,
+        pool.data?.occupancy?.weekly,
       ].filter(Boolean) as string[]
 
       await Promise.all(

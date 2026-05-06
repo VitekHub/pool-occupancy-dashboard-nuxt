@@ -177,28 +177,26 @@ Pool configuration is now loaded from an external URL. The configuration format 
 
 ```json
 {
-    "name": "Pool Name",
-    "outsidePool": {  // or "insidePool"
-        "url": "https://pool-website.com",
-        "pattern": "regex_pattern_for_occupancy",
-        "maximumCapacity": 135,
-        "totalLanes": 6,  // for pools with lanes
-        "weekdaysOpeningHours": "6-22",
-        "weekendOpeningHours": "8-21",
-        "collectStats": true,
-        "viewStats": true,
-        "data": {
-            "occupancy": {
-                "raw": "output_filename.csv",
-                "overall": "overall/output_filename.json",
-                "weekly": "weekly/output_filename.json"
-            },
-            "capacity": {
-                "raw": "capacity.csv",
-                "forecast": "week_capacity.csv"
-            }
-        }
+  "name": "Pool Name",
+  "url": "https://pool-website.com",
+  "pattern": "regex_pattern_for_occupancy",
+  "maximumCapacity": 135,
+  "totalLanes": 6, // for pools with lanes
+  "weekdaysOpeningHours": "6-22",
+  "weekendOpeningHours": "8-21",
+  "collectStats": true,
+  "viewStats": true,
+  "data": {
+    "occupancy": {
+      "raw": "output_filename.csv",
+      "overall": "overall/output_filename.json",
+      "weekly": "weekly/output_filename.json"
+    },
+    "capacity": {
+      "raw": "capacity.csv",
+      "forecast": "week_capacity.csv"
     }
+  }
 }
 ```
 
