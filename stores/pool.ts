@@ -21,6 +21,7 @@ interface PoolState {
   selectedPool: PoolConfig | null
   heatmapHighThreshold: number
   uniformHeatmapBarHeight: boolean
+  showOpenLanes: boolean
   forceMobileView: boolean
   viewMode: ViewMode
   metricType: MetricType
@@ -44,6 +45,7 @@ export const usePoolStore = defineStore('pool', {
     selectedPool: null,
     heatmapHighThreshold: 60,
     uniformHeatmapBarHeight: false,
+    showOpenLanes: false,
     forceMobileView: false,
     viewMode: VIEW_MODES.OVERALL,
     metricType: METRIC_TYPES.AVERAGE,
@@ -233,6 +235,10 @@ export const usePoolStore = defineStore('pool', {
 
     setUniformHeatmapBarHeight(uniform: boolean) {
       this.uniformHeatmapBarHeight = uniform
+    },
+
+    setShowOpenLanes(show: boolean) {
+      this.showOpenLanes = show
     },
 
     setForceMobileView(force: boolean) {

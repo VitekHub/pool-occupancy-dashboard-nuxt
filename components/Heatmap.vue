@@ -4,7 +4,15 @@
     <UiSpinner v-if="!dataProcessor" />
     <div v-else>
       <h2 class="mt-2 h2-title">
-        <PoolNavigator />
+        <div
+          class="relative flex items-center justify-center"
+          :class="!isDesktop && 'flex-col gap-2'"
+        >
+          <PoolNavigator />
+          <ShowOpenLanesToggle
+            :class="isDesktop ? 'absolute right-0 mt-1' : ''"
+          />
+        </div>
       </h2>
       <HeatmapHourLabels :hours="hours" />
       <HeatmapGrid
@@ -33,6 +41,7 @@ const poolStore = usePoolStore()
 const tooltipTranslationKey = computed(
   () => `heatmap.${poolStore.viewMode}.${poolStore.metricType}.tooltip`
 )
+const laneTooltipTranslationKey = computed(() => `heatmap.weekly.lanes.tooltip`)
 const hours = Array.from({ length: 16 }, (_, i) => i + 6)
 const dataProcessor = computed(() => {
   // For overall view, check if overallOccupancyMap has data
@@ -55,6 +64,7 @@ const dataProcessor = computed(() => {
     poolStore.overallOccupancyMap,
     poolStore.heatmapHighThreshold,
     tooltipTranslationKey.value,
+    laneTooltipTranslationKey.value,
     t,
     poolStore.isPoolOpen
   )

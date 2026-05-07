@@ -92,7 +92,11 @@
         "title": "Weekly Average Pool Occupancy Heatmap",
         "description": "Average occupancy values for the week starting {date}",
         "tooltip": "{day} at {hour}:00 - average {average} people"
-      }
+      },
+      "lanes": {
+        "tooltip": "{day} at {hour}:00 - {open} of {total} lanes open"
+      },
+      "showOpenLanes": "Show open lanes"
     },
 
     "average": "(average)",

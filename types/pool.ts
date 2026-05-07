@@ -31,7 +31,6 @@ export const UTILIZATION_COLORS = {
 
 export interface PoolConfig {
   name: string
-  customName?: string
   url: string
   pattern: string
   maximumCapacity: number
@@ -105,12 +104,22 @@ export interface OverallOccupancyMap {
   }
 }
 
+export interface LaneCellData {
+  openLanes: number
+  totalLanes: number
+  openRatio: number
+  closedRatio: number
+  displayText: string
+  title: string
+}
+
 export interface BaseCellData {
   color: string
   colorFillRatio: number
   displayText: string
   title: string
   isCurrentHour: boolean
+  laneData?: LaneCellData | null
 }
 
 export interface CurrentOccupancy {

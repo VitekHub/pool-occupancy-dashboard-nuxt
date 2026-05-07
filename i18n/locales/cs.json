@@ -92,7 +92,11 @@
         "title": "Týdenní mapa průměrné obsazenosti bazénu",
         "description": "Skutečné hodnoty obsazenosti pro týden začínající {date}",
         "tooltip": "{day} v {hour}:00 - průměrně {average} lidí"
-      }
+      },
+      "lanes": {
+        "tooltip": "{day} v {hour}:00 - {open} z {total} drah otevřeno"
+      },
+      "showOpenLanes": "Zobrazit otevřené dráhy"
     },
     "average": "(průměr)",
     "avg": "(avg)",
