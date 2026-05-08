@@ -45,14 +45,14 @@ const {
 })
 
 // Weekly JSON — loads silently in the background
-const {
-  data: weeklyData,
-  refresh: refreshWeekly,
-} = useFetch<WeeklyJson>(() => poolStore.weeklyJsonUrl, {
-  responseType: 'json',
-  immediate: false,
-  server: false,
-})
+const { data: weeklyData, refresh: refreshWeekly } = useFetch<WeeklyJson>(
+  () => poolStore.weeklyJsonUrl,
+  {
+    responseType: 'json',
+    immediate: false,
+    server: false,
+  }
+)
 
 watch(overallData, (newData) => {
   if (newData) poolStore.loadOverallJsonData(newData)

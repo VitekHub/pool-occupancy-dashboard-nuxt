@@ -134,6 +134,9 @@ describe('HeatmapDataProcessor', () => {
   beforeEach(() => {
     mockT = vi.fn((key: string, options?: any) => {
       // Mock translation function
+      if (key.includes('lanes.tooltip')) {
+        return `${options?.day} at ${options?.hour}:00 - ${options?.open} of ${options?.total} lanes open`
+      }
       if (key.includes('tooltip')) {
         return `${options?.day} at ${options?.hour}:00 - ${options?.utilization || options?.min || options?.average}% occupied`
       }
@@ -153,6 +156,7 @@ describe('HeatmapDataProcessor', () => {
       mockOverallOccupancyMap,
       60, // heatmapHighThreshold
       'heatmap.weekly.percentage.tooltip',
+      'heatmap.weekly.lanes.tooltip',
       mockT,
       true // isPoolOpen
     )
@@ -185,6 +189,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.overall.average.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -236,6 +241,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.percentage.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -288,6 +294,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -337,6 +344,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -373,6 +381,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.average.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -447,6 +456,7 @@ describe('HeatmapDataProcessor', () => {
           testMap,
           60,
           'test.tooltip',
+          'heatmap.weekly.lanes.tooltip',
           mockT,
           true // isPoolOpen
         )
@@ -492,6 +502,7 @@ describe('HeatmapDataProcessor', () => {
         emptyMap,
         60,
         'test.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -536,6 +547,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.percentage.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -570,6 +582,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.percentage.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         false // isPoolOpen
       )
@@ -596,6 +609,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.overall.average.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -626,6 +640,7 @@ describe('HeatmapDataProcessor', () => {
         mockOverallOccupancyMap,
         60,
         'heatmap.weekly.minMax.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -663,6 +678,7 @@ describe('HeatmapDataProcessor', () => {
         emptyOverallMap,
         60,
         'test.tooltip',
+        'heatmap.weekly.lanes.tooltip',
         mockT,
         true // isPoolOpen
       )
@@ -696,6 +712,210 @@ describe('HeatmapDataProcessor', () => {
 
       expect(cellData.displayText).toBe('')
       expect(cellData.colorFillRatio).toBe(0)
+    })
+  })
+
+  describe('lane data', () => {
+    const weeklyWithLanes: WeeklyOccupancyMap = {
+      '2024-03-11': {
+        maxWeekValues: { utilizationRate: 50 },
+        days: {
+          Monday: {
+            maxDayValues: { utilizationRate: 50 },
+            hours: {
+              14: {
+                date: new Date('2024-03-11T14:00:00Z'),
+                day: 'Monday',
+                hour: 14,
+                minOccupancy: 20,
+                maxOccupancy: 30,
+                averageOccupancy: 25,
+                maximumCapacity: 100,
+                totalLanes: 6,
+                openLanes: 4,
+                utilizationRate: 25,
+                remainingCapacity: 75,
+              },
+              15: {
+                date: new Date('2024-03-11T15:00:00Z'),
+                day: 'Monday',
+                hour: 15,
+                minOccupancy: 40,
+                maxOccupancy: 50,
+                averageOccupancy: 45,
+                maximumCapacity: 100,
+                totalLanes: 6,
+                openLanes: 2,
+                utilizationRate: 45,
+                remainingCapacity: 55,
+              },
+            },
+          },
+          Tuesday: {
+            maxDayValues: { utilizationRate: 50 },
+            hours: {
+              14: {
+                date: new Date('2024-03-12T14:00:00Z'),
+                day: 'Tuesday',
+                hour: 14,
+                minOccupancy: 45,
+                maxOccupancy: 55,
+                averageOccupancy: 50,
+                maximumCapacity: 100,
+                totalLanes: null,
+                openLanes: null,
+                utilizationRate: 50,
+                remainingCapacity: 50,
+              },
+            },
+          },
+          Wednesday: {
+            maxDayValues: { utilizationRate: 30 },
+            hours: {
+              14: {
+                date: new Date('2024-03-13T14:00:00Z'),
+                day: 'Wednesday',
+                hour: 14,
+                minOccupancy: 15,
+                maxOccupancy: 30,
+                averageOccupancy: 22,
+                maximumCapacity: 100,
+                totalLanes: 6,
+                openLanes: 6,
+                utilizationRate: 30,
+                remainingCapacity: 70,
+              },
+            },
+          },
+        },
+      },
+    }
+
+    let laneProcessor: HeatmapDataProcessor
+
+    beforeEach(() => {
+      laneProcessor = new HeatmapDataProcessor(
+        weeklyWithLanes,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.weekly.percentage.tooltip',
+        'heatmap.weekly.lanes.tooltip',
+        mockT,
+        true
+      )
+    })
+
+    it('should include laneData when totalLanes and openLanes are present', () => {
+      const cellData = laneProcessor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Monday',
+        14
+      )
+
+      expect(cellData.laneData).toBeDefined()
+      expect(cellData.laneData).not.toBeNull()
+      expect(cellData.laneData!.openLanes).toBe(4)
+      expect(cellData.laneData!.totalLanes).toBe(6)
+      expect(cellData.laneData!.openRatio).toBeCloseTo(4 / 6)
+      expect(cellData.laneData!.closedRatio).toBeCloseTo(2 / 6)
+      expect(cellData.laneData!.displayText).toBe('4/6')
+      expect(cellData.laneData!.title).toContain('4 of 6 lanes open')
+    })
+
+    it('should compute correct ratios when all lanes are open', () => {
+      const cellData = laneProcessor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Wednesday',
+        14
+      )
+
+      expect(cellData.laneData).toBeDefined()
+      expect(cellData.laneData!.openLanes).toBe(6)
+      expect(cellData.laneData!.totalLanes).toBe(6)
+      expect(cellData.laneData!.openRatio).toBe(1)
+      expect(cellData.laneData!.closedRatio).toBe(0)
+      expect(cellData.laneData!.displayText).toBe('6/6')
+    })
+
+    it('should set laneData to null when totalLanes and openLanes are null', () => {
+      const cellData = laneProcessor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Tuesday',
+        14
+      )
+
+      expect(cellData.laneData).toBeNull()
+    })
+
+    it('should set laneData to null for empty cells', () => {
+      const cellData = laneProcessor.getWeeklyPercentageCellData(
+        '2024-03-11',
+        'Monday',
+        10
+      )
+
+      expect(cellData.laneData).toBeNull()
+    })
+
+    it('should include laneData in min-max metric', () => {
+      const minMaxProcessor = new HeatmapDataProcessor(
+        weeklyWithLanes,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.weekly.minMax.tooltip',
+        'heatmap.weekly.lanes.tooltip',
+        mockT,
+        true
+      )
+
+      const cellData = minMaxProcessor.getWeeklyRawMinMaxCellData(
+        '2024-03-11',
+        'Monday',
+        14
+      )
+
+      expect(cellData.laneData).toBeDefined()
+      expect(cellData.laneData!.openLanes).toBe(4)
+      expect(cellData.laneData!.totalLanes).toBe(6)
+      expect(cellData.laneData!.displayText).toBe('4/6')
+    })
+
+    it('should include laneData in average metric', () => {
+      const avgProcessor = new HeatmapDataProcessor(
+        weeklyWithLanes,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.weekly.average.tooltip',
+        'heatmap.weekly.lanes.tooltip',
+        mockT,
+        true
+      )
+
+      const cellData = avgProcessor.getWeeklyRawAverageCellData(
+        '2024-03-11',
+        'Monday',
+        14
+      )
+
+      expect(cellData.laneData).toBeDefined()
+      expect(cellData.laneData!.openLanes).toBe(4)
+      expect(cellData.laneData!.totalLanes).toBe(6)
+    })
+
+    it('should not include laneData in overall view cells', () => {
+      const overallProcessor = new HeatmapDataProcessor(
+        weeklyWithLanes,
+        mockOverallOccupancyMap,
+        60,
+        'heatmap.overall.average.tooltip',
+        'heatmap.weekly.lanes.tooltip',
+        mockT,
+        true
+      )
+
+      const cellData = overallProcessor.getOverallAverageCellData('Monday', 14)
+
+      expect(cellData.laneData).toBeUndefined()
     })
   })
 })

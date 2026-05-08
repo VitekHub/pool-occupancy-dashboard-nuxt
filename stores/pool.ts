@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { nowInPrague } from '~/utils/dateUtils'
 import type {
   PoolConfig,
-  PoolType,
   WeeklyOccupancyMap,
   OverallOccupancyMap,
   CurrentOccupancy,
@@ -11,7 +10,7 @@ import type {
   OverallJson,
   WeeklyJson,
 } from '~/types'
-import { METRIC_TYPES, POOL_TYPES, VIEW_MODES } from '~/types'
+import { METRIC_TYPES, VIEW_MODES } from '~/types'
 
 const dataBaseUrl = import.meta.env.VITE_DATA_BASE_URL
 const poolConfigUrl = import.meta.env.VITE_POOL_OCCUPANCY_CONFIG_URL
@@ -20,9 +19,9 @@ interface PoolState {
   // Configuration
   pools: PoolConfig[]
   selectedPool: PoolConfig | null
-  selectedPoolType: PoolType
   heatmapHighThreshold: number
   uniformHeatmapBarHeight: boolean
+  showOpenLanes: boolean
   forceMobileView: boolean
   viewMode: ViewMode
   metricType: MetricType
@@ -44,9 +43,9 @@ export const usePoolStore = defineStore('pool', {
   state: (): PoolState => ({
     pools: [],
     selectedPool: null,
-    selectedPoolType: POOL_TYPES.OUTSIDE,
     heatmapHighThreshold: 60,
     uniformHeatmapBarHeight: false,
+    showOpenLanes: false,
     forceMobileView: false,
     viewMode: VIEW_MODES.OVERALL,
     metricType: METRIC_TYPES.AVERAGE,
@@ -71,47 +70,27 @@ export const usePoolStore = defineStore('pool', {
     // Get pools that are visible based on viewStats
     visiblePools: (state): PoolConfig[] => {
       return state.pools.filter((pool) => {
-        const poolTypeConfig = pool.outsidePool || pool.insidePool
-        return poolTypeConfig && poolTypeConfig.viewStats
+        return pool.viewStats
       })
-    },
-
-    // Get the current pool configuration (inside or outside) based on selected type
-    currentPoolConfig: (
-      state
-    ): PoolConfig['insidePool'] | PoolConfig['outsidePool'] | null => {
-      if (!state.selectedPool) return null
-      if (
-        state.selectedPoolType === POOL_TYPES.INSIDE &&
-        state.selectedPool.insidePool
-      ) {
-        return state.selectedPool.insidePool
-      } else if (
-        state.selectedPoolType === POOL_TYPES.OUTSIDE &&
-        state.selectedPool.outsidePool
-      ) {
-        return state.selectedPool.outsidePool
-      }
-      return null
     },
 
     // Get the raw CSV download URL for the selected pool (used by export button)
     csvUrl: (state): string => {
-      const raw = state.currentPoolConfig?.data?.occupancy?.raw
+      const raw = state.selectedPool?.data?.occupancy?.raw
       if (!raw) return ''
       return `${dataBaseUrl}${raw}`
     },
 
     // Get the overall JSON URL for the selected pool
     overallJsonUrl: (state): string => {
-      const overall = state.currentPoolConfig?.data?.occupancy?.overall
+      const overall = state.selectedPool?.data?.occupancy?.overall
       if (!overall) return ''
       return `${dataBaseUrl}${overall}`
     },
 
     // Get the weekly JSON URL for the selected pool
     weeklyJsonUrl: (state): string => {
-      const weekly = state.currentPoolConfig?.data?.occupancy?.weekly
+      const weekly = state.selectedPool?.data?.occupancy?.weekly
       if (!weekly) return ''
       return `${dataBaseUrl}${weekly}`
     },
@@ -123,12 +102,12 @@ export const usePoolStore = defineStore('pool', {
 
     // Check if pool is currently open
     isPoolOpen: (state): boolean => {
-      const poolConfig = state.currentPoolConfig
-      if (!poolConfig) return false
+      const pool = state.selectedPool
+      if (!pool) return false
 
       if (state.isPoolTemporarilyClosed) return false
 
-      if (poolConfig.todayClosed) return false
+      if (pool.todayClosed) return false
 
       const openingHours: string = state.todayOpeningHours
       if (!openingHours) return false
@@ -143,15 +122,13 @@ export const usePoolStore = defineStore('pool', {
 
     // Get today's opening hours
     todayOpeningHours: (state): string => {
-      const poolConfig = state.currentPoolConfig
-      if (!poolConfig) return ''
+      const pool = state.selectedPool
+      if (!pool) return ''
 
       const now = nowInPrague()
       const isWeekend = now.getDay() === 0 || now.getDay() === 6 // Sunday = 0, Saturday = 6
 
-      return isWeekend
-        ? poolConfig.weekendOpeningHours
-        : poolConfig.weekdaysOpeningHours
+      return isWeekend ? pool.weekendOpeningHours : pool.weekdaysOpeningHours
     },
 
     /**
@@ -159,12 +136,12 @@ export const usePoolStore = defineStore('pool', {
      * The field should be a string in the format "1.9.2025 - 31.5.2026".
      */
     isPoolTemporarilyClosed: (state): boolean => {
-      const poolConfig = state.currentPoolConfig
-      if (!poolConfig || !poolConfig.temporarilyClosed) return false
+      const pool = state.selectedPool
+      if (!pool || !pool.temporarilyClosed) return false
 
       // Example: "1.9.2025 - 31.5.2026"
-      const range = poolConfig.temporarilyClosed
-      const [startStr, endStr] = range.split('-').map(s => s.trim())
+      const range = pool.temporarilyClosed
+      const [startStr, endStr] = range.split('-').map((s) => s.trim())
       if (!startStr || !endStr) return false
 
       // Parse dates as dd.mm.yyyy
@@ -188,15 +165,12 @@ export const usePoolStore = defineStore('pool', {
         if (!response.ok) throw new Error('Failed to fetch pools config')
         this.pools = await response.json()
 
-        // Auto-select first pool that has outside pool configuration and viewStats true
+        // Auto-select first pool with viewStats true
         if (!this.selectedPool) {
-          const firstPoolWithOutside = this.pools.find(
-            (pool) => pool.outsidePool && pool.outsidePool.viewStats
-          )
-          if (firstPoolWithOutside) {
-            this.selectedPool = firstPoolWithOutside
+          const firstVisiblePool = this.pools.find((pool) => pool.viewStats)
+          if (firstVisiblePool) {
+            this.selectedPool = firstVisiblePool
           }
-          this.selectedPoolType = POOL_TYPES.OUTSIDE
         } else {
           // Update selected pool from updated pool configuration
           const selectedName = this.selectedPool.name
@@ -205,17 +179,11 @@ export const usePoolStore = defineStore('pool', {
           )
           if (updatedPool) {
             // Check if the updated pool is still visible
-            const poolTypeConfig = updatedPool.outsidePool || updatedPool.insidePool
-            if (poolTypeConfig && poolTypeConfig.viewStats) {
+            if (updatedPool.viewStats) {
               this.selectedPool = updatedPool
             } else {
               // If not visible, select the first visible pool
-              const firstVisiblePool = this.pools.find(
-                (pool) => {
-                  const config = pool.outsidePool || pool.insidePool
-                  return config && config.viewStats
-                }
-              )
+              const firstVisiblePool = this.pools.find((pool) => pool.viewStats)
               if (firstVisiblePool) {
                 this.selectedPool = firstVisiblePool
               }
@@ -257,9 +225,8 @@ export const usePoolStore = defineStore('pool', {
       }
     },
 
-    setSelectedPool(pool: PoolConfig, poolType: PoolType) {
+    setSelectedPool(pool: PoolConfig) {
       this.selectedPool = pool
-      this.selectedPoolType = poolType
     },
 
     setHeatmapHighThreshold(threshold: number) {
@@ -268,6 +235,10 @@ export const usePoolStore = defineStore('pool', {
 
     setUniformHeatmapBarHeight(uniform: boolean) {
       this.uniformHeatmapBarHeight = uniform
+    },
+
+    setShowOpenLanes(show: boolean) {
+      this.showOpenLanes = show
     },
 
     setForceMobileView(force: boolean) {

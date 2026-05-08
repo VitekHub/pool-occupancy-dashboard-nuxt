@@ -85,8 +85,6 @@
 </template>
 
 <script setup lang="ts">
-import { POOL_TYPES } from '~/types'
-
 const { isMobileMenuOpen, closeMobileMenu } = useSidebar()
 const poolStore = usePoolStore()
 
@@ -142,7 +140,7 @@ const getPoolIcon = (index: number) => {
   return icons[index] || 'i-heroicons-building-office-2'
 }
 const selectPool = (pool: any) => {
-  poolStore.setSelectedPool(pool, POOL_TYPES.OUTSIDE)
+  poolStore.setSelectedPool(pool)
   closeMobileMenu()
 }
 </script>

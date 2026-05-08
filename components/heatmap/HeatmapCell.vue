@@ -1,11 +1,14 @@
 <template>
   <div
     :class="[
-      'relative dark:border-gray-600 cursor-pointer transition-opacity duration-200 hover:opacity-80 flex items-center justify-center',
+      'relative cursor-pointer transition-opacity duration-200 hover:opacity-80 flex items-center justify-center',
+      isDesktop ? 'w-12 h-12 rounded p-1' : 'flex-1 min-w-2 h-16',
+      cellData?.isCurrentHour && poolStore.isPoolOpen ? 'animate-pulse' : '',
       isDesktop
-        ? 'border border-gray-200 w-12 h-12 rounded p-1'
-        : 'flex-1 min-w-2 h-16',
-      cellData?.isCurrentHour ? 'animate-pulse' : '',
+        ? cellData?.isCurrentHour && poolStore.isPoolOpen
+          ? 'border-2 border-gray-300 dark:border-red-100'
+          : 'border border-gray-200 dark:border-gray-600'
+        : '',
     ]"
     :title="cellData?.title || ''"
   >

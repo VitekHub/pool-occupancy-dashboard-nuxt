@@ -1,14 +1,3 @@
-export const POOL_TYPES = {
-  INSIDE: 'inside',
-  OUTSIDE: 'outside',
-} as const
-
-export type PoolType = (typeof POOL_TYPES)[keyof typeof POOL_TYPES]
-
-export const isInsidePool = (poolType: PoolType): boolean => {
-  return poolType === POOL_TYPES.INSIDE
-}
-
 export const VIEW_MODES = {
   OVERALL: 'overall',
   WEEKLY: 'weekly',
@@ -40,8 +29,8 @@ export const UTILIZATION_COLORS = {
   VERY_HIGH: 'bg-red-400 dark:bg-red-600',
 } as const
 
-interface PoolTypeConfig {
-  customName?: string
+export interface PoolConfig {
+  name: string
   url: string
   pattern: string
   maximumCapacity: number
@@ -63,12 +52,6 @@ interface PoolTypeConfig {
       forecast?: string
     }
   }
-}
-
-export interface PoolConfig {
-  name: string
-  insidePool?: PoolTypeConfig
-  outsidePool?: Omit<PoolTypeConfig, 'totalLanes'>
 }
 
 export interface HourlyOccupancySummary {
@@ -121,12 +104,22 @@ export interface OverallOccupancyMap {
   }
 }
 
+export interface LaneCellData {
+  openLanes: number
+  totalLanes: number
+  openRatio: number
+  closedRatio: number
+  displayText: string
+  title: string
+}
+
 export interface BaseCellData {
   color: string
   colorFillRatio: number
   displayText: string
   title: string
   isCurrentHour: boolean
+  laneData?: LaneCellData | null
 }
 
 export interface CurrentOccupancy {
@@ -145,7 +138,6 @@ interface PrecomputedJsonBase {
   timezone: string
   pool: {
     name: string
-    poolType: PoolType
     maximumCapacity: number
     totalLanes: number | null
     weekdaysOpeningHours: string

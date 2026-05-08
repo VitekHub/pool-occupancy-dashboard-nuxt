@@ -21,12 +21,21 @@
       </div>
 
       <!-- Hour cells -->
-      <div class="flex flex-1 gap-1 mb-2">
-        <HeatmapCell
+      <div :class="['flex flex-1 gap-1', isDesktop ? 'mb-4' : '']">
+        <div
           v-for="hour in hours"
           :key="`${day}-${hour}`"
-          :cell-data="getCellData(day, hour)"
-        />
+          :class="[
+            isDesktop ? 'flex flex-col gap-0' : 'flex flex-1',
+            !isDesktop && poolStore.showOpenLanes ? 'grid grid-rows-2' : '',
+          ]"
+        >
+          <HeatmapCell :cell-data="getCellData(day, hour)" />
+          <HeatmapLaneCell
+            :lane-data="getCellData(day, hour)?.laneData ?? null"
+            :is-current-hour="getCellData(day, hour)?.isCurrentHour ?? false"
+          />
+        </div>
       </div>
     </div>
   </div>

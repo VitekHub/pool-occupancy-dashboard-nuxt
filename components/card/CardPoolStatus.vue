@@ -93,19 +93,6 @@ const poolStatusCssClass = computed(() => {
 
 const poolWebsiteUrl = computed((): string | null => {
   if (!poolStore.selectedPool) return null
-
-  if (
-    poolStore.selectedPoolType === 'inside' &&
-    poolStore.selectedPool.insidePool
-  ) {
-    return poolStore.selectedPool.insidePool.url
-  } else if (
-    poolStore.selectedPoolType === 'outside' &&
-    poolStore.selectedPool.outsidePool
-  ) {
-    return poolStore.selectedPool.outsidePool.url
-  }
-
-  return null
+  return poolStore.selectedPool.url
 })
 </script>
