@@ -7,3 +7,7 @@ node_modules
 .data
 .env
 dist
+.claude/settings.local.json
+.claude/*.local.*
+.claude/.cache/
+.claude/logs/

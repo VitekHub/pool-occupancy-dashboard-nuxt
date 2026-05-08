@@ -58,7 +58,7 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 
    ```bash
    cp .env.example .env
-   # Edit .env if you need to customize the CSV data source
+   # Edit .env if you need to customize the data source
    ```
 
 4. **Start development server**
@@ -76,7 +76,7 @@ Web application for monitoring real-time pool occupancy and analytics across mul
 
 ### Testing
 
-The project includes unit tests for data processing and CSV parsing utility functions.
+The project includes unit tests for data processing and utility functions.
 
 Tests are located in the `tests/unit/` directory and use Vitest as the testing framework.
 
@@ -219,7 +219,7 @@ Data format: Date, Day, Time, Occupancy count
 - **State Management**: Pinia for reactive state
 - **Build Tool**: Vite for fast development
 - **Deployment**: GitHub Actions + GitHub Pages
-- **Data Processing**: Custom CSV parsing and analytics
+- **Data Processing**: Custom analytics
 - **Icons**: Heroicons via Nuxt Icon
 
 ## 📄 License
