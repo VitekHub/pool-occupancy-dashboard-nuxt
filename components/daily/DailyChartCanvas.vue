@@ -103,6 +103,7 @@ ChartJS.register(
 
 const { t, locale } = useI18n()
 const poolStore = usePoolStore()
+const { isDesktop } = useDesktopView()
 
 const localeStr = computed(() => (locale.value === 'cs' ? 'cs-CZ' : 'en-US'))
 
@@ -110,7 +111,7 @@ const currentDayLabel = computed(() => {
   if (!poolStore.selectedDailyDate) return ''
   const date = new Date(poolStore.selectedDailyDate + 'T12:00:00')
   const shortDate = new Intl.DateTimeFormat(localeStr.value, {
-    month: 'long',
+    month: 'numeric',
     day: 'numeric',
   }).format(date)
   const dayName = poolStore.selectedDailyDayName
@@ -125,7 +126,7 @@ const previousDayLabel = computed(() => {
     -7
   )
   const shortDate = new Intl.DateTimeFormat(localeStr.value, {
-    month: 'long',
+    month: 'numeric',
     day: 'numeric',
   }).format(prevDate)
   const dayName = poolStore.selectedDailyDayName
@@ -206,7 +207,7 @@ function buildDaySection(
 function externalTooltipHandler(context: { chart: any; tooltip: any }) {
   const { chart, tooltip } = context
 
-  if (tooltip.opacity === 0) {
+  if (tooltip.opacity === 0 || !poolStore.showDailyTooltip) {
     tooltipVisible.value = false
     return
   }
@@ -347,6 +348,7 @@ const chartOptions = computed(
         labels: {
           usePointStyle: true,
           padding: 16,
+          boxHeight: isDesktop.value ? 16 : 8,
         },
       },
       tooltip: {

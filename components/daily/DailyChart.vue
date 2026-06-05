@@ -15,10 +15,19 @@
         class="relative flex items-center justify-center"
         :class="!isDesktop && 'flex-col gap-2'"
       >
+        <DailyTooltipToggle
+          v-if="isDesktop"
+          :class="isDesktop ? 'absolute left-0 mt-1' : ''"
+        />
         <PoolNavigator />
         <ShowOpenLanesToggle
+          v-if="isDesktop"
           :class="isDesktop ? 'absolute right-0 mt-1' : ''"
         />
+        <div v-else class="flex items-center justify-center gap-6">
+          <DailyTooltipToggle />
+          <ShowOpenLanesToggle />
+        </div>
       </div>
     </h2>
     <DailyChartCanvas />

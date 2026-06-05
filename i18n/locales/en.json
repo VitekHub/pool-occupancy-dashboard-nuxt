@@ -130,7 +130,8 @@
       "tooltipStats": "{percentage}% (👤{min}-{max} people, avg {average})",
       "tooltipLanes": "Lanes: {open}/{total} open",
       "lanesStripLabel": "Open lanes: {dayDate}",
-      "lanesAt": "at {hour}:00"
+      "lanesAt": "at {hour}:00",
+      "showTooltip": "Show tooltip"
     }
   }
 }

@@ -23,6 +23,7 @@ interface PoolState {
   heatmapHighThreshold: number
   uniformHeatmapBarHeight: boolean
   showOpenLanes: boolean
+  showDailyTooltip: boolean
   forceMobileView: boolean
   viewMode: ViewMode
   metricType: MetricType
@@ -48,6 +49,7 @@ export const usePoolStore = defineStore('pool', {
     heatmapHighThreshold: 60,
     uniformHeatmapBarHeight: false,
     showOpenLanes: false,
+    showDailyTooltip: true,
     forceMobileView: false,
     viewMode: VIEW_MODES.DAILY,
     metricType: METRIC_TYPES.AVERAGE,
@@ -286,6 +288,10 @@ export const usePoolStore = defineStore('pool', {
 
     setShowOpenLanes(show: boolean) {
       this.showOpenLanes = show
+    },
+
+    setShowDailyTooltip(show: boolean) {
+      this.showDailyTooltip = show
     },
 
     setForceMobileView(force: boolean) {

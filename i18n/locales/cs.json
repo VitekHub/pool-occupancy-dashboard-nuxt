@@ -102,7 +102,7 @@
       "lanes": {
         "tooltip": "{day} v {hour}:00 - {open} z {total} drah otevřeno"
       },
-      "showOpenLanes": "Zobrazit otevřené dráhy"
+      "showOpenLanes": "Zobrazit dráhy"
     },
     "average": "(průměr)",
     "avg": "(avg)",
@@ -129,7 +129,8 @@
       "tooltipStats": "{percentage}% (👤{min}-{max} lidí, prům. {average})",
       "tooltipLanes": "Dráhy: {open}/{total} otevřeno",
       "lanesStripLabel": "Otevřené dráhy: {dayDate}",
-      "lanesAt": "v {hour}:00"
+      "lanesAt": "v {hour}:00",
+      "showTooltip": "Zobrazit tooltip"
     }
   }
 }
