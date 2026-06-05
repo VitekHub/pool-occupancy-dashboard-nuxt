@@ -1,6 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import '@vuepic/vue-datepicker/dist/main.css';
 
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {

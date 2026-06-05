@@ -117,6 +117,28 @@ export const usePoolStore = defineStore('pool', {
       return getWeekId(date)
     },
 
+    // Returns the latest date string (yyyy-MM-dd) with data in weeklyOccupancyMap
+    lastAvailableDailyDate: (state): string | null => {
+      if (!state.availableWeekIds || state.availableWeekIds.length === 0)
+        return null
+      const lastWeekId =
+        state.availableWeekIds[state.availableWeekIds.length - 1]
+      const week = state.weeklyOccupancyMap[lastWeekId]
+      if (!week) return null
+      let latest: string | null = null
+      for (const dayName of Object.keys(week.days)) {
+        const hours = week.days[dayName].hours
+        for (const hour of Object.keys(hours)) {
+          const entry = hours[Number(hour)]
+          if (entry?.date) {
+            const dateStr = format(new Date(entry.date), 'yyyy-MM-dd')
+            if (!latest || dateStr > latest) latest = dateStr
+          }
+        }
+      }
+      return latest
+    },
+
     // Get the weekId for one week before the selected daily date
     selectedDailyPreviousWeekId: (state): string => {
       if (!state.selectedDailyDate) return ''

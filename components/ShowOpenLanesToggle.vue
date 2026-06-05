@@ -21,7 +21,8 @@ const poolStore = usePoolStore()
 
 const hasLaneData = computed(
   () =>
-    poolStore.viewMode === VIEW_MODES.WEEKLY &&
+    (poolStore.viewMode === VIEW_MODES.WEEKLY ||
+      poolStore.viewMode === VIEW_MODES.DAILY) &&
     !!poolStore.selectedPool?.totalLanes
 )
 

@@ -47,7 +47,7 @@
 <script setup lang="ts">
 const { t, locale } = useI18n()
 import { VIEW_MODES } from '~/types'
-import { formatWeekId } from '~/utils/dateUtils'
+import { formatWeekId, getWeekId, nowInPrague } from '~/utils/dateUtils'
 
 const poolStore = usePoolStore()
 const viewMode = computed(() => poolStore.viewMode)
@@ -91,17 +91,22 @@ const updateSelectedWeekId = (newWeekId: string | null) => {
   selectedWeekId.value = newWeekId
 }
 
-// Auto-select first week when switching to weekly view
+// Auto-select week when switching to weekly view, preferring the current week
 watch(
   [viewMode, availableWeeks],
   ([newViewMode, newAvailableWeeks]) => {
     if (newViewMode !== VIEW_MODES.OVERALL && newAvailableWeeks.length > 0) {
-      // If no week is selected or selected week is not available, select the most recent week
       if (
         !selectedWeekId.value ||
         !newAvailableWeeks.includes(selectedWeekId.value)
       ) {
-        updateSelectedWeekId(newAvailableWeeks[newAvailableWeeks.length - 1])
+        const currentWeekId = getWeekId(nowInPrague())
+        const found = newAvailableWeeks.includes(currentWeekId)
+        updateSelectedWeekId(
+          found
+            ? currentWeekId
+            : newAvailableWeeks[newAvailableWeeks.length - 1]
+        )
       }
     }
   },

@@ -20,6 +20,7 @@
     "@nuxt/ui": "^2.18.4",
     "@nuxtjs/i18n": "^9.3.0",
     "@pinia/nuxt": "^0.5.1",
+    "@vuepic/vue-datepicker": "^14.0.0",
     "chart.js": "^4.5.1",
     "css-select": "^4.3.0",
     "date-fns": "^3.6.0",

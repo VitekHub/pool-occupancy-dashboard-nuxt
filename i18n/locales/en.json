@@ -28,8 +28,8 @@
     "version": "Pool Occupancy Dashboard v1.0.0"
   },
   "footer": {
-    "copyright": "© 2025 Pool Occupancy Dashboard. All rights reserved.",
-    "version": "Version 1.0.0"
+    "copyright": "© 2026 Pool Occupancy Dashboard. All rights reserved.",
+    "version": "Version 1.1.0"
   },
   "card": {
     "quickActions": "Quick Actions",
@@ -126,9 +126,11 @@
       "overallLabel": "Overall {metric}",
       "previousDayLabel": "Previous",
       "noData": "No data available for this date",
-      "tooltipOverall": "Overall ({metric}): {value}%",
-      "tooltipCurrent": "{date}: {percentage}% (avg {average}, min {min}, max {max})",
-      "tooltipPrevious": "{date}: {percentage}% (avg {average}, min {min}, max {max})"
+      "tooltipOverall": "Overall ({metric})",
+      "tooltipStats": "{percentage}% (👤{min}-{max} people, avg {average})",
+      "tooltipLanes": "Lanes: {open}/{total} open",
+      "lanesStripLabel": "Open lanes: {dayDate}",
+      "lanesAt": "at {hour}:00"
     }
   }
 }

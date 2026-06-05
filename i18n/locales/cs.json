@@ -28,8 +28,8 @@
     "version": "Pool Occupancy Dashboard v1.0.0"
   },
   "footer": {
-    "copyright": "© 2025 Pool Occupancy Dashboard. Všechna práva vyhrazena.",
-    "version": "Verze 1.0.0"
+    "copyright": "© 2026 Pool Occupancy Dashboard. Všechna práva vyhrazena.",
+    "version": "Verze 1.1.0"
   },
   "card": {
     "quickActions": "Rychlé akce",
@@ -122,12 +122,14 @@
     "weekOfLabel": "Týden od",
     "daily": {
       "title": "Denní graf obsazenosti",
-      "overallLabel": "Celková {metric}",
+      "overallLabel": "Celkový {metric}",
       "previousDayLabel": "Předchozí",
       "noData": "Pro toto datum nejsou k dispozici žádná data",
-      "tooltipOverall": "Celková ({metric}): {value}%",
-      "tooltipCurrent": "{date}: {percentage}% (prům. {average}, min {min}, max {max})",
-      "tooltipPrevious": "{date}: {percentage}% (prům. {average}, min {min}, max {max})"
+      "tooltipOverall": "Celkový ({metric})",
+      "tooltipStats": "{percentage}% (👤{min}-{max} lidí, prům. {average})",
+      "tooltipLanes": "Dráhy: {open}/{total} otevřeno",
+      "lanesStripLabel": "Otevřené dráhy: {dayDate}",
+      "lanesAt": "v {hour}:00"
     }
   }
 }

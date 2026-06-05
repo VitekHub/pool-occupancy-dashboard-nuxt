@@ -4,6 +4,7 @@ import type {
   WeeklyOccupancyMap,
   MetricType,
   HourlyOccupancySummary,
+  LaneCellData,
 } from '~/types'
 import { METRIC_TYPES } from '~/types'
 
@@ -12,6 +13,29 @@ export interface DailyHourData {
   overallValue: number
   currentDay: HourlyOccupancySummary | null
   previousDay: HourlyOccupancySummary | null
+}
+
+export function buildDailyLaneCellData(
+  summary: HourlyOccupancySummary
+): LaneCellData | null {
+  if (
+    summary.totalLanes == null ||
+    summary.openLanes == null ||
+    summary.totalLanes === 0
+  ) {
+    return null
+  }
+  const openLanes = summary.openLanes
+  const totalLanes = summary.totalLanes
+  const openRatio = openLanes / totalLanes
+  return {
+    openLanes,
+    totalLanes,
+    openRatio,
+    closedRatio: 1 - openRatio,
+    displayText: `${openLanes}/${totalLanes}`,
+    title: '',
+  }
 }
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6)
@@ -84,6 +108,16 @@ export function useDailyChartData() {
     previousDayValues.value.some((v) => v !== null)
   )
 
+  const currentDayLaneData = computed(() =>
+    hourlyData.value.map((d) =>
+      d.currentDay ? buildDailyLaneCellData(d.currentDay) : null
+    )
+  )
+
+  const hasCurrentDayLaneData = computed(() =>
+    currentDayLaneData.value.some((v) => v !== null)
+  )
+
   return {
     hours,
     hourlyData,
@@ -92,6 +126,8 @@ export function useDailyChartData() {
     previousDayValues,
     hasCurrentDayData,
     hasPreviousDayData,
+    currentDayLaneData,
+    hasCurrentDayLaneData,
     dayName,
     currentWeekId,
     previousWeekId,
