@@ -50,7 +50,8 @@
   "heatmap": {
     "selection": {
       "viewMode": "Occupancy View",
-      "overall": "Historical Average",
+      "daily": "Daily",
+      "overall": "Overall",
       "weekly": "Weekly",
       "average": "Average",
       "weightedAverage": "Weighted Average",
@@ -58,7 +59,12 @@
       "percentage": "Percentage",
       "minMax": "Min-Max",
       "selectWeek": "Select Week",
-      "selectWeekPlaceholder": "Select a week"
+      "selectWeekPlaceholder": "Select a week",
+      "selectDate": "Select Date",
+      "dayBack": "Go back one day",
+      "dayForward": "Go forward one day",
+      "weekBack": "Go back one week",
+      "weekForward": "Go forward one week"
     },
     "overall": {
       "average": {
@@ -114,6 +120,15 @@
       }
     },
     "overallTooltip": "{day} at {hour}:00 - {utilization}% occupancy",
-    "weekOfLabel": "Week of"
+    "weekOfLabel": "Week of",
+    "daily": {
+      "title": "Daily Occupancy Chart",
+      "overallLabel": "Overall {metric}",
+      "previousDayLabel": "Previous",
+      "noData": "No data available for this date",
+      "tooltipOverall": "Overall ({metric}): {value}%",
+      "tooltipCurrent": "{date}: {percentage}% (avg {average}, min {min}, max {max})",
+      "tooltipPrevious": "{date}: {percentage}% (avg {average}, min {min}, max {max})"
+    }
   }
 }

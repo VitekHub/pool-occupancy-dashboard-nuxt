@@ -20,10 +20,12 @@
     "@nuxt/ui": "^2.18.4",
     "@nuxtjs/i18n": "^9.3.0",
     "@pinia/nuxt": "^0.5.1",
+    "chart.js": "^4.5.1",
     "css-select": "^4.3.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.0.0",
-    "nuxt": "^3.16.0"
+    "nuxt": "^3.16.0",
+    "vue-chartjs": "^5.3.3"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.5.7",

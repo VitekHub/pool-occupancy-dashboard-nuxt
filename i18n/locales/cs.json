@@ -50,7 +50,8 @@
   "heatmap": {
     "selection": {
       "viewMode": "Zobrazení obsazenosti",
-      "overall": "Historická průměrná",
+      "daily": "Denní",
+      "overall": "Celková",
       "weekly": "Týdenní",
       "average": "Průměr",
       "weightedAverage": "Vážený průměr",
@@ -58,7 +59,12 @@
       "percentage": "Procentuální",
       "minMax": "Min-Max",
       "selectWeek": "Vybrat týden",
-      "selectWeekPlaceholder": "Vyberte týden"
+      "selectWeekPlaceholder": "Vyberte týden",
+      "selectDate": "Vybrat datum",
+      "dayBack": "Přejít o den zpět",
+      "dayForward": "Přejít o den dopředu",
+      "weekBack": "Přejít o týden zpět",
+      "weekForward": "Přejít o týden dopředu"
     },
     "overall": {
       "average": {
@@ -113,6 +119,15 @@
       }
     },
     "overallTooltip": "{day} v {hour}:00 - {utilization}% obsazenost",
-    "weekOfLabel": "Týden od"
+    "weekOfLabel": "Týden od",
+    "daily": {
+      "title": "Denní graf obsazenosti",
+      "overallLabel": "Celková {metric}",
+      "previousDayLabel": "Předchozí",
+      "noData": "Pro toto datum nejsou k dispozici žádná data",
+      "tooltipOverall": "Celková ({metric}): {value}%",
+      "tooltipCurrent": "{date}: {percentage}% (prům. {average}, min {min}, max {max})",
+      "tooltipPrevious": "{date}: {percentage}% (prům. {average}, min {min}, max {max})"
+    }
   }
 }

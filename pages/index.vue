@@ -15,15 +15,29 @@
       <div :class="['grid gap-4', isDesktop ? 'grid-cols-5' : 'grid-cols-1']">
         <HeatmapSelectionViewMode class="col-span-2" />
         <HeatmapSelectionMetric class="col-span-1" />
-        <HeatmapSelectionWeek class="col-span-2" />
+        <div
+          v-if="poolStore.viewMode === VIEW_MODES.DAILY"
+          class="col-span-2 flex items-end"
+        >
+          <DailyDatePicker />
+        </div>
+        <HeatmapSelectionWeek
+          v-if="poolStore.viewMode === VIEW_MODES.WEEKLY"
+          class="col-span-2"
+        />
       </div>
     </div>
-    <Heatmap id="statistics-section" />
+    <DailyChart
+      v-if="poolStore.viewMode === VIEW_MODES.DAILY"
+      id="statistics-section"
+    />
+    <Heatmap v-else id="statistics-section" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { OverallJson, WeeklyJson } from '~/types'
+import { VIEW_MODES } from '~/types'
 
 const poolStore = usePoolStore()
 const { isDesktopMediaQuery } = useDesktopView()

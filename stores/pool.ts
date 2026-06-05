@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { nowInPrague } from '~/utils/dateUtils'
+import { format } from 'date-fns'
+import { nowInPrague, getWeekId } from '~/utils/dateUtils'
 import type {
   PoolConfig,
   WeeklyOccupancyMap,
@@ -26,6 +27,7 @@ interface PoolState {
   viewMode: ViewMode
   metricType: MetricType
   selectedWeekId: string | null
+  selectedDailyDate: string | null
 
   // Processed data
   weeklyOccupancyMap: WeeklyOccupancyMap
@@ -47,9 +49,10 @@ export const usePoolStore = defineStore('pool', {
     uniformHeatmapBarHeight: false,
     showOpenLanes: false,
     forceMobileView: false,
-    viewMode: VIEW_MODES.OVERALL,
+    viewMode: VIEW_MODES.DAILY,
     metricType: METRIC_TYPES.AVERAGE,
     selectedWeekId: null,
+    selectedDailyDate: format(nowInPrague(), 'yyyy-MM-dd'),
     weeklyOccupancyMap: {},
     availableWeekIds: [],
     overallOccupancyMap: {
@@ -98,6 +101,28 @@ export const usePoolStore = defineStore('pool', {
     // Get current occupancy (last record for today)
     currentOccupancy: (state): CurrentOccupancy | null => {
       return state.precomputedCurrentOccupancy
+    },
+
+    // Get the day name (e.g., "Wednesday") for the selected daily date
+    selectedDailyDayName: (state): string => {
+      if (!state.selectedDailyDate) return ''
+      const date = new Date(state.selectedDailyDate + 'T12:00:00')
+      return date.toLocaleDateString('en-US', { weekday: 'long' })
+    },
+
+    // Get the weekId for the selected daily date
+    selectedDailyWeekId: (state): string => {
+      if (!state.selectedDailyDate) return ''
+      const date = new Date(state.selectedDailyDate + 'T12:00:00')
+      return getWeekId(date)
+    },
+
+    // Get the weekId for one week before the selected daily date
+    selectedDailyPreviousWeekId: (state): string => {
+      if (!state.selectedDailyDate) return ''
+      const date = new Date(state.selectedDailyDate + 'T12:00:00')
+      date.setDate(date.getDate() - 7)
+      return getWeekId(date)
     },
 
     // Check if pool is currently open
@@ -255,6 +280,10 @@ export const usePoolStore = defineStore('pool', {
 
     setSelectedWeekId(selectedWeekId: string | null) {
       this.selectedWeekId = selectedWeekId
+    },
+
+    setSelectedDailyDate(date: string) {
+      this.selectedDailyDate = date
     },
   },
 })

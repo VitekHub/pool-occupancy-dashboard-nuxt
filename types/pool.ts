@@ -1,4 +1,5 @@
 export const VIEW_MODES = {
+  DAILY: 'daily',
   OVERALL: 'overall',
   WEEKLY: 'weekly',
 } as const

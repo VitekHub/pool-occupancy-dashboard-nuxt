@@ -38,16 +38,19 @@ const metricType = computed({
 })
 
 const viewModeOptions = computed(() => {
-  return [VIEW_MODES.OVERALL, VIEW_MODES.WEEKLY].map((mode) => ({
-    value: mode,
-    label: t(`heatmap.selection.${mode}`),
-  }))
+  return [VIEW_MODES.DAILY, VIEW_MODES.WEEKLY, VIEW_MODES.OVERALL].map(
+    (mode) => ({
+      value: mode,
+      label: t(`heatmap.selection.${mode}`),
+    })
+  )
 })
 const updateViewMode = (newViewMode: ViewMode) => {
-  metricType.value =
-    newViewMode === VIEW_MODES.OVERALL
-      ? METRIC_TYPES.AVERAGE
-      : METRIC_TYPES.PERCENTAGE
+  if (newViewMode === VIEW_MODES.WEEKLY) {
+    metricType.value = METRIC_TYPES.PERCENTAGE
+  } else {
+    metricType.value = METRIC_TYPES.AVERAGE
+  }
   viewMode.value = newViewMode
 }
 </script>

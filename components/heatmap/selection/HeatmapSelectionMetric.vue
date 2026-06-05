@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="viewMode === VIEW_MODES.OVERALL || isDesktop"
+    v-if="viewMode !== VIEW_MODES.WEEKLY || isDesktop"
     class="flex items-end"
   >
     <URadioGroup
@@ -42,7 +42,7 @@ const metricType = computed({
 })
 
 const metricItems = computed(() => {
-  const overalViewMetrics = [
+  const overallAndDailyMetrics = [
     METRIC_TYPES.AVERAGE,
     METRIC_TYPES.WEIGHTED_AVERAGE,
     METRIC_TYPES.MEDIAN,
@@ -53,9 +53,9 @@ const metricItems = computed(() => {
     METRIC_TYPES.AVERAGE,
   ]
   const metrics =
-    viewMode.value === VIEW_MODES.OVERALL
-      ? overalViewMetrics
-      : weeklyViewMetrics
+    viewMode.value === VIEW_MODES.WEEKLY
+      ? weeklyViewMetrics
+      : overallAndDailyMetrics
   return metrics.map((metric) => ({
     value: metric,
     label: t(`heatmap.selection.${metric}`),
