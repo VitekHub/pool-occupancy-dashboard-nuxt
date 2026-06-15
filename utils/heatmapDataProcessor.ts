@@ -217,7 +217,7 @@ export default class HeatmapDataProcessor {
       totalLanes,
       openRatio,
       closedRatio,
-      displayText: `${openLanes}/${totalLanes}`,
+      displayText: `${openLanes ?? ''}/${totalLanes ?? ''}`,
       title: this.t(this.laneTooltipTranslationKey, {
         day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
@@ -239,8 +239,8 @@ export default class HeatmapDataProcessor {
 
     const displayText =
       hourlyData.minOccupancy === hourlyData.maxOccupancy
-        ? `${hourlyData.minOccupancy}`
-        : `${hourlyData.minOccupancy}-${hourlyData.maxOccupancy}`
+        ? `${hourlyData.minOccupancy ?? ''}`
+        : `${hourlyData.minOccupancy ?? ''}-${hourlyData.maxOccupancy ?? ''}`
 
     const maxDayUtilizationRate =
       this.getDayMaxUtilizationByWeek(selectedWeekId)
@@ -280,7 +280,7 @@ export default class HeatmapDataProcessor {
     const cellData = this.getBaseCellData({
       utilizationRate: hourlyData.utilizationRate,
       maxDayUtilizationRate,
-      displayText: `${hourlyData.averageOccupancy}`,
+      displayText: `${hourlyData.averageOccupancy ?? ''}`,
       title: this.t(this.tooltipTranslationKey, {
         day: this.t(`common.days.${day.toLowerCase()}`),
         hour,
