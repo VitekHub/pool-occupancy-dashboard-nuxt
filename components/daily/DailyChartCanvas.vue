@@ -160,7 +160,7 @@ const metricLabel = computed(() => {
 
 interface TooltipDaySection {
   label: string
-  stats: string
+  stats: string | null
   lanes: string | null
 }
 
@@ -257,19 +257,23 @@ function externalTooltipHandler(context: { chart: any; tooltip: any }) {
   const canvasRect = canvasEl.getBoundingClientRect()
   const wrapperRect = wrapper.getBoundingClientRect()
   const offsetX = canvasRect.left - wrapperRect.left
-  const offsetY = canvasRect.top - wrapperRect.top
 
   const rawX = tooltip.caretX + offsetX
-  const rawY = tooltip.caretY + offsetY
 
+  // Check viewport coordinates so we only flip when the tooltip would
+  // actually go off-screen, not just past the narrower chart wrapper.
+  const caretViewportX = canvasRect.left + tooltip.caretX
   const tooltipWidth = 240
+  const tooltipOffsetRight = 12  // gap when tooltip is to the right of cursor
+  const tooltipOffsetLeft = 80   // gap from cursor to tooltip's right edge when flipped left
+  const tooltipOffsetTop = 40    // vertical offset from wrapper top
   const left =
-    rawX + tooltipWidth + 16 > wrapperRect.width
-      ? rawX - tooltipWidth - 8
-      : rawX + 12
+    caretViewportX + tooltipWidth + tooltipOffsetRight > window.innerWidth
+      ? rawX - tooltipWidth + tooltipOffsetLeft
+      : rawX + tooltipOffsetRight
 
   tooltipStyle.value = {
-    top: `${Math.max(0, rawY - 16)}px`,
+    top: `${tooltipOffsetTop}px`,
     left: `${Math.max(0, left)}px`,
   }
 
