@@ -132,5 +132,9 @@
       "lanesAt": "v {hour}:00",
       "showTooltip": "Zobrazit tooltip"
     }
+  },
+  "holiday": {
+    "label": "Státní svátek",
+    "notice": "V tento den je státní svátek, obsazenost se proto může lišit od běžného dne."
   }
 }

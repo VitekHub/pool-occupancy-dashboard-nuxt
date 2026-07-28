@@ -5,8 +5,11 @@
         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
           {{ $t('heatmap.daily.title') }}
         </h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p
+          class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1.5"
+        >
           {{ formattedDate }} ({{ localizedDayName }})
+          <HolidayBadge :date="selectedDate" />
         </p>
       </div>
     </div>
@@ -56,4 +59,10 @@ const localizedDayName = computed(() => {
   if (!dayName) return ''
   return t(`common.days.${dayName.toLowerCase()}`)
 })
+
+const selectedDate = computed(() =>
+  poolStore.selectedDailyDate
+    ? new Date(poolStore.selectedDailyDate + 'T12:00:00')
+    : null
+)
 </script>

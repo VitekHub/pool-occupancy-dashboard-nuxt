@@ -133,5 +133,9 @@
       "lanesAt": "at {hour}:00",
       "showTooltip": "Show tooltip"
     }
+  },
+  "holiday": {
+    "label": "Public holiday",
+    "notice": "This day is a public holiday, so occupancy may differ from a regular day."
   }
 }

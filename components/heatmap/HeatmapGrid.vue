@@ -15,8 +15,12 @@
         <span :class="isDayToday(day) ? 'text-red-600 dark:text-red-400' : ''">
           {{ getDayLabel(day) }}
         </span>
-        <span class="text-xs text-gray-400 dark:text-gray-400">
+        <span
+          v-if="poolStore.viewMode === VIEW_MODES.WEEKLY"
+          class="text-xs text-gray-400 dark:text-gray-400 flex items-center gap-1"
+        >
           {{ getDateForDay(dayIndex) }}
+          <HolidayBadge :date="getDateObjForDay(dayIndex)" />
         </span>
       </div>
 
@@ -44,6 +48,7 @@
 <script setup lang="ts">
 import { format, addDays, parseISO, isValid } from 'date-fns'
 import type { BaseCellData } from '~/types'
+import { VIEW_MODES } from '~/types'
 import { isDayToday } from '~/utils/dateUtils'
 
 const { isDesktop } = useDesktopView()
@@ -86,5 +91,13 @@ const getDateForDay = (dayIndex: number) => {
   if (!isValid(monday)) return ''
   const date = addDays(monday, dayIndex)
   return format(date, 'd.M.')
+}
+
+// Returns the actual Date for the given day index, or null when unavailable.
+const getDateObjForDay = (dayIndex: number): Date | null => {
+  if (!poolStore.selectedWeekId) return null
+  const monday = parseISO(poolStore.selectedWeekId)
+  if (!isValid(monday)) return null
+  return addDays(monday, dayIndex)
 }
 </script>

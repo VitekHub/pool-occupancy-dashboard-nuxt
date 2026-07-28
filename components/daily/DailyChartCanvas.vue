@@ -264,9 +264,9 @@ function externalTooltipHandler(context: { chart: any; tooltip: any }) {
   // actually go off-screen, not just past the narrower chart wrapper.
   const caretViewportX = canvasRect.left + tooltip.caretX
   const tooltipWidth = 240
-  const tooltipOffsetRight = 12  // gap when tooltip is to the right of cursor
-  const tooltipOffsetLeft = 80   // gap from cursor to tooltip's right edge when flipped left
-  const tooltipOffsetTop = 40    // vertical offset from wrapper top
+  const tooltipOffsetRight = 12 // gap when tooltip is to the right of cursor
+  const tooltipOffsetLeft = 80 // gap from cursor to tooltip's right edge when flipped left
+  const tooltipOffsetTop = 40 // vertical offset from wrapper top
   const left =
     caretViewportX + tooltipWidth + tooltipOffsetRight > window.innerWidth
       ? rawX - tooltipWidth + tooltipOffsetLeft
